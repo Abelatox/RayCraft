@@ -15,12 +15,14 @@ import java.util.Map;
 import java.util.Set;
 
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 public class Utils {
@@ -30,15 +32,32 @@ public class Utils {
 			if (props.getModel().equals("robopirate") || props.getModel().equals("robopirate2")) {
 				return ModModels.renderPirate;
 			}
-			if(props.getModel().equals("rayman")) {
+			if (props.getModel().equals("rayman")) {
 				return ModModels.renderRayman;
 			}
 		}
 		return null;
 	}
 
+	public static int getSlotFor(EntityPlayer player, ItemStack stack) {
+		for (int i = 0; i < player.inventory.mainInventory.size(); ++i) {
+			if (!player.inventory.mainInventory.get(i).isEmpty() && stackEqualExact(stack, player.inventory.mainInventory.get(i))) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Checks item, NBT, and meta if the item is not damageable
+	 */
+	private static boolean stackEqualExact(ItemStack stack1, ItemStack stack2) {
+		return stack1.getItem() == stack2.getItem() && ItemStack.areItemStackTagsEqual(stack1, stack2);
+	}
+
 	public static void generateJSONModels() {
-		Iterator i = Reference.items.iterator();
+		Iterator<Item> i = Reference.items.iterator();
 
 		while (i.hasNext()) {
 			Item item = (Item) i.next();
@@ -124,8 +143,8 @@ public class Utils {
 		return text.replaceAll("\\s+", "").toLowerCase().replaceAll("'", "").replaceAll("-", "").replaceAll(":", "").replaceAll("#", "").replace(",", "");
 	}
 
-	public static void lockSelectedItem(EntityPlayer player, int slot) {
-		player.inventory.currentItem = slot;
+	public static void lockSelectedItem(EntityPlayer player, ItemStack stack) {
+		player.inventory.currentItem = Utils.getSlotFor(player, stack);
 	}
 
 	public static BlockPos getAvailablePos(EntityPlayer player) {

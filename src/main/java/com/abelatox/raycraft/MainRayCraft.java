@@ -73,7 +73,6 @@ public class MainRayCraft {
 		
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new GUIHealth());
 
 	}
 
@@ -87,18 +86,18 @@ public class MainRayCraft {
 		ModCapabilities.register();
 		DeferredWorkQueue.runLater(() -> {
 			PacketHandler.register(); // NetworkRegistry.createInstance
-
-			// internals unsafe
 		});
-		// new PacketHandler();
-
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		// do something that can only be done on the client
 		LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
+		MinecraftForge.EVENT_BUS.register(new GUIHealth());
+
 		ModModels.register();
+		
+		
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {

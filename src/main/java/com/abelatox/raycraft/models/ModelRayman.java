@@ -2,7 +2,6 @@ package com.abelatox.raycraft.models;
 
 import org.lwjgl.opengl.GL11;
 
-import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Reference;
 
@@ -127,9 +126,8 @@ public class ModelRayman extends ModelBiped {
 				GL11.glPushMatrix();
 				{
 					Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(Reference.MODID, "textures/models/barrel.png"));
-					GL11.glScaled(1.3, 1.3, 1.5);
-					GL11.glTranslated(0, -0.75, -0.2);
-					// GL11.glRotated(90, 0, 1, 0);
+					GL11.glScaled(1.3, 1.3, 1.3);
+					GL11.glTranslated(0, -0.75, -0.1);
 					this.barrel.render(entity, f, f1, f2, f3, f4, f5);
 				}
 				GL11.glPopMatrix();

@@ -1,5 +1,6 @@
 package com.abelatox.raycraft.proxy;
 
+import com.abelatox.raycraft.entities.ModEntities;
 import com.abelatox.raycraft.lib.Reference;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,7 +23,7 @@ public class ClientProxy implements IProxy {
     //Register the entity models
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
-        //ModEntities.registerModels();
+        ModEntities.registerModels();
 		//ModelLoader.setCustomModelResourceLocation(ModItems.kingdomKey, 0, new ModelResourceLocation("", "inventory"));
 
     }

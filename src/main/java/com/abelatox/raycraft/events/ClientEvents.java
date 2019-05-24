@@ -25,7 +25,7 @@ public class ClientEvents {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			
 			if (player.inventory.hasItemStack(new ItemStack(ModItems.barrel))) {
-				Utils.lockSelectedItem(player, player.inventory.getSlotFor(new ItemStack(ModItems.barrel)));
+				Utils.lockSelectedItem(player, new ItemStack(ModItems.barrel));
 			}
 
 			IPlayerModelCapability props = ModCapabilities.get((EntityPlayer) player);
@@ -35,7 +35,6 @@ public class ClientEvents {
 				render.doRender(event.getEntityLiving(), event.getX(), event.getY(), event.getZ(), 0F, 0.0625F);
 			}
 		}
-
 	}
 
 	@SubscribeEvent
@@ -43,7 +42,7 @@ public class ClientEvents {
 		EntityPlayer player = Minecraft.getInstance().player;
 		
 		if (player.inventory.hasItemStack(new ItemStack(ModItems.barrel))) {
-			Utils.lockSelectedItem(player, player.inventory.getSlotFor(new ItemStack(ModItems.barrel)));
+			Utils.lockSelectedItem(player, new ItemStack(ModItems.barrel));
 		}
 
 		IPlayerModelCapability props = ModCapabilities.get(player);
@@ -54,6 +53,9 @@ public class ClientEvents {
 			render.renderFirstPersonArm(player);
 		}
 	}
+	
+	
+	
 
 	@SubscribeEvent
 	public void MouseClick(MouseInputEvent event) {
