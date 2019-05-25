@@ -105,7 +105,7 @@ public class RenderRayman extends Render<EntityLivingBase> implements IRayCraftR
 		}
 		//GlStateManager.disableBlend();
 		//Minecraft.getInstance().entityRenderer.disableLightmap();
-		// RenderHelper.disableStandardItemLighting();
+		RenderHelper.disableStandardItemLighting();
 	}
 
 	@Override

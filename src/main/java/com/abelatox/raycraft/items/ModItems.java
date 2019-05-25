@@ -18,30 +18,12 @@ public class ModItems {
 		// Generic property that will cover most standard items
 		Item.Properties genericItemProperties = new Item.Properties().group(MainRayCraft.rayCraftGroup);
 
-		// Register and set item references here, no array needed here as only 1 thing
-		// needs to be registered
+		// Register and set item references here, no array needed here as only 1 thing needs to be registered
 		event.getRegistry().registerAll(
 			barrel = new ItemBarrel(new Properties().maxStackSize(1).group(MainRayCraft.rayCraftGroup)).setRegistryName(Reference.MODID, "barrel")
 		);
 	}
 
-	/*
-	 * public static Item barrel = new ItemBarrel();
-	 * 
-	 * @SubscribeEvent public static void registerItems(RegistryEvent.Register<Item>
-	 * event) { event.getRegistry().registerAll(createNewItem(barrel, "barrel"));
-	 * 
-	 * Utils.generateLangFiles(); Utils.generateJSONModels(); }
-	 * 
-	 * private static Item createNewItem(Item item, String localizedName) { String
-	 * truename = Utils.getFancyName(localizedName); Reference.langMap.put("item." +
-	 * Reference.MODID + "." + truename, localizedName); Item newItem =
-	 * item.setRegistryName(Reference.MODID, truename);
-	 * 
-	 * Reference.items.add(newItem);
-	 * 
-	 * return newItem; }
-	 */
 	public static Item createNewItem(String name, Item.Properties properties) {
 		return new Item(properties).setRegistryName(Reference.MODID, name);
 	}

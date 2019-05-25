@@ -4,31 +4,33 @@ import java.util.function.Supplier;
 
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.lib.Utils;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketRightMouse {
 
-	//private String model;
+	private boolean charged = false;
 
 	public PacketRightMouse() {
 	}
 
-	public PacketRightMouse(String power) {
-		//this.model = power;
+	public PacketRightMouse(boolean charged) {
+		this.charged = charged;
 	}
 
 	public void encode(PacketBuffer buffer) {
-		//buffer.writeInt(this.model.length());
-		//buffer.writeString(this.model);
+		buffer.writeBoolean(this.charged);
+		
 	}
 
 	public static PacketRightMouse decode(PacketBuffer buffer) {
 		PacketRightMouse msg = new PacketRightMouse();
-		//int len = buffer.readInt();
-		//msg.model = buffer.readString(len);
+		msg.charged = buffer.readBoolean();
 		return msg;
 	}
 
@@ -36,8 +38,10 @@ public class PacketRightMouse {
 		ctx.get().enqueueWork(() -> {
 			EntityPlayer player = ctx.get().getSender();
 			IPlayerModelCapability props = ModCapabilities.get(player);
-			if(props.getModel().startsWith("robo") && props.getCarrying().equals("null")) {
-				System.out.println("shoot");
+			if(props.hasCustomModel() && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
+				EntityThrowable shot = Utils.getEntityShot(player, message.charged);
+				player.world.spawnEntity(shot);
+				shot.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1F, 0);
 			}
 		});
 		ctx.get().setPacketHandled(true);

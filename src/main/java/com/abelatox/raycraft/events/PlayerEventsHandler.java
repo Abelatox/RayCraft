@@ -40,7 +40,7 @@ public class PlayerEventsHandler {
 					player.motionZ /= 2;
 
 					// If sneaking drop the barrel as block
-					if (player.isSneaking()) {
+					/*if (player.isSneaking()) {
 						if (Utils.getAvailablePos(player) == null) {
 							if (!warned) {
 								player.sendMessage(new TextComponentString("You can't drop the barrel here"));
@@ -56,7 +56,7 @@ public class PlayerEventsHandler {
 						warned = false;
 
 						// System.out.println("attack");
-					}
+					}*/
 				}
 
 				// Prevent the player from changing item while holding a barrel

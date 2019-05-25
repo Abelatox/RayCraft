@@ -5,4 +5,8 @@ public interface IPlayerModelCapability {
 	void setModel(String modelString);
 	String getCarrying();
 	void setCarrying(String itemCarrying);
+	boolean hasCustomModel();
+	
+	int getShotLevel();
+	void setShotLevel(int level);
 }

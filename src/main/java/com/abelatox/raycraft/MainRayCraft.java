@@ -22,6 +22,8 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.model.b3d.B3DLoader;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,7 +43,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class MainRayCraft {
 	// Directly reference a log4j logger.
 	private static final Logger LOGGER = LogManager.getLogger();
-	
 
 	public static MainRayCraft instance;
 
@@ -56,7 +57,7 @@ public class MainRayCraft {
 			return new ItemStack(ModBlocks.barrel);
 		}
 	};
-	
+
 	public MainRayCraft() {
 		// Register the setup method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -70,7 +71,6 @@ public class MainRayCraft {
 		String basicPath = System.getProperty("java.class.path");
 		Reference.PROJECT_RESOURCES_FOLDER = basicPath.substring(0, basicPath.indexOf("\\bin")).replace("file:/", "").replace("%20", " ") + "/src/main/resources";
 
-		
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
 
@@ -96,8 +96,6 @@ public class MainRayCraft {
 		MinecraftForge.EVENT_BUS.register(new GUIHealth());
 
 		ModModels.register();
-		
-		
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {

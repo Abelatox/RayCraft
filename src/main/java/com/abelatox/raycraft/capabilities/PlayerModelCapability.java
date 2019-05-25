@@ -1,5 +1,9 @@
 package com.abelatox.raycraft.capabilities;
 
+import com.abelatox.raycraft.entities.EntityBarrel;
+import com.abelatox.raycraft.lib.Strings;
+
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -27,7 +31,8 @@ public class PlayerModelCapability implements IPlayerModelCapability {
 
 	private String playerModel = "null";
 	private String carrying = "null";
-
+	private int shotLevel = 0;
+	
 	public String getModel() {
 		return playerModel;
 	}
@@ -45,4 +50,19 @@ public class PlayerModelCapability implements IPlayerModelCapability {
 	public void setCarrying(String itemCarrying) {
 		carrying = itemCarrying;
 	}
+
+	@Override
+	public boolean hasCustomModel() {
+		return !playerModel.equals("null");
+	}
+
+	@Override
+	public int getShotLevel() {
+		return shotLevel;
+	}
+
+	@Override
+	public void setShotLevel(int level) {
+		this.shotLevel = level;
+	}	
 }

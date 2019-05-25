@@ -15,11 +15,14 @@ import java.util.Map;
 import java.util.Set;
 
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
-import com.abelatox.raycraft.items.ModItems;
+import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.entities.EntityBarrel;
+import com.abelatox.raycraft.entities.EntityFist;
 import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -45,8 +48,20 @@ public class Utils {
 				return i;
 			}
 		}
-
 		return -1;
+	}
+
+	public static EntityThrowable getEntityShot(EntityPlayer player, boolean charged) {
+		IPlayerModelCapability props = ModCapabilities.get(player);
+		switch (props.getModel()) {
+		case Strings.ROBO_PIRATE_RED:
+			return new EntityBarrel(player.world, player);
+		case Strings.ROBO_PIRATE_GREEN:
+			return new EntityBarrel(player.world, player);
+		case Strings.RAYMAN:
+			return new EntityFist(player.world, player, props.getShotLevel(), charged);
+		}
+		return null;
 	}
 
 	/**

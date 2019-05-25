@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ModEntities {
 
     public static EntityType<EntityBarrel> TYPE_BARREL = createEntityType(EntityBarrel.class, EntityBarrel::new, "entity_barrel");
+    public static EntityType<EntityFist> TYPE_FIST = createEntityType(EntityFist.class, EntityFist::new, "entity_fist");
 
     /**
      * Helper method to create a new EntityType and set the registry name
@@ -36,6 +37,7 @@ public class ModEntities {
      */
     public static void registerModels() {
         RenderingRegistry.registerEntityRenderingHandler(EntityBarrel.class, RenderEntityBarrel.FACTORY);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFist.class, RenderEntityFist.FACTORY);
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -44,7 +46,7 @@ public class ModEntities {
         @SubscribeEvent
         public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
             event.getRegistry().register(TYPE_BARREL);
-          //  event.getRegistry().register(TYPE_HEARTLESS_SHADOW);
+            event.getRegistry().register(TYPE_FIST);
         }
 
     }

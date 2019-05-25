@@ -23,7 +23,7 @@ public class ClientEvents {
 	public void RenderEntity(RenderPlayerEvent.Pre event) {
 		if (event.getEntityLiving() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			
+
 			if (player.inventory.hasItemStack(new ItemStack(ModItems.barrel))) {
 				Utils.lockSelectedItem(player, new ItemStack(ModItems.barrel));
 			}
@@ -40,7 +40,7 @@ public class ClientEvents {
 	@SubscribeEvent
 	public void CustomHandRendering(RenderHandEvent event) {
 		EntityPlayer player = Minecraft.getInstance().player;
-		
+
 		if (player.inventory.hasItemStack(new ItemStack(ModItems.barrel))) {
 			Utils.lockSelectedItem(player, new ItemStack(ModItems.barrel));
 		}
@@ -53,20 +53,28 @@ public class ClientEvents {
 			render.renderFirstPersonArm(player);
 		}
 	}
-	
-	
-	
+
+	long time = 0;
 
 	@SubscribeEvent
 	public void MouseClick(MouseInputEvent event) {
-		if (Minecraft.getInstance().player != null) {
-			switch (event.getButton()) {
-			case 0:
-				PacketHandler.sendToServer(new PacketLeftMouse());
-				break;
-			case 1:
-				PacketHandler.sendToServer(new PacketRightMouse());
-				break;
+		if(event.getAction() == 1) {
+			time = System.currentTimeMillis();
+		}
+		if (event.getAction() == 0) {
+			boolean charged = false;
+			if(time + 2000 < System.currentTimeMillis()) {
+				charged = true;
+			}
+			if (Minecraft.getInstance().player != null) {
+				switch (event.getButton()) {
+				case 0:
+					PacketHandler.sendToServer(new PacketLeftMouse());
+					break;
+				case 1:
+					PacketHandler.sendToServer(new PacketRightMouse(charged));
+					break;
+				}
 			}
 		}
 	}

@@ -1,9 +1,6 @@
 package com.abelatox.raycraft.entities;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
-import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
-import com.abelatox.raycraft.network.PacketHandler;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;

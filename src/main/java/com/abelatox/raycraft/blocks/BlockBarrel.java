@@ -43,33 +43,32 @@ public class BlockBarrel extends BaseBlock {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onEntityCollision(IBlockState state, World world, BlockPos pos, Entity entity) {
-		/*
-		 * if (entity instanceof EntityPlayer) { EntityPlayer player = (EntityPlayer)
-		 * entity; IPlayerModelCapability props = ModCapabilities.get(player);
-		 * if(player.motionX == 0 && player.motionY == 0 && player.motionZ == 0) {
-		 * System.out.println("change"); props.setCarrying("barrel");
-		 * PacketHandler.sendToAllAround(player, props); world.removeBlock(pos); } }
-		 */
+
+		if (entity instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) entity;
+			IPlayerModelCapability props = ModCapabilities.get(player);
+			if (player.motionX == 0 && player.motionY == 0 && player.motionZ == 0 && player.isSneaking()) {
+				player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
+				world.removeBlock(pos);
+			}
+		}
+	
 	}
 
 	@Override
 	public void onBlockClicked(IBlockState state, World world, BlockPos pos, EntityPlayer player) {
-		IPlayerModelCapability props = ModCapabilities.get(player);
+		/*IPlayerModelCapability props = ModCapabilities.get(player);
 		System.out.println("change");
 		props.setCarrying("barrel");
 		PacketHandler.sendToAllAround(player, props);
-		world.removeBlock(pos);
+		world.removeBlock(pos);*/
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
-			IPlayerModelCapability props = ModCapabilities.get(player);
-			System.out.println("change");
-			// props.setCarrying("barrel");
 			player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
-			PacketHandler.sendToAllAround(player, props);
 			world.removeBlock(pos);
 		}
 		return false;
