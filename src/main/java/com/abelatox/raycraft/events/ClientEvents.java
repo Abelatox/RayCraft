@@ -59,16 +59,14 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public void MouseClick(MouseInputEvent event) {
-		// System.out.println(Minecraft.getInstance().player.getHeldItemMainhand());
 		if (event.getAction() == 1) {
 			time = System.currentTimeMillis();
 			// If empty hand should shoot, if not it shouldn't (barrel + fist)
+			shouldShoot = false;
+
 			if (Minecraft.getInstance().player != null && ItemStack.areItemStacksEqual(Minecraft.getInstance().player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 				shouldShoot = true;
-			} else {
-				shouldShoot = false;
 			}
-			System.out.println(shouldShoot);
 		}
 		if (event.getAction() == 0) {
 			if (Minecraft.getInstance().player != null) {

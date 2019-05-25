@@ -17,7 +17,8 @@ import java.util.Set;
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.EntityBarrel;
-import com.abelatox.raycraft.entities.EntityFist;
+import com.abelatox.raycraft.entities.EntityFist0;
+import com.abelatox.raycraft.entities.EntityFist1;
 import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
 
@@ -59,9 +60,26 @@ public class Utils {
 		case Strings.ROBO_PIRATE_GREEN:
 			return new EntityBarrel(player.world, player);
 		case Strings.RAYMAN:
-			return new EntityFist(player.world, player, props.getShotLevel(), charged);
+			return getRaymanPunchLevel(player, charged);
 		}
 		return null;
+	}
+
+	private static EntityThrowable getRaymanPunchLevel(EntityPlayer player, boolean charged) {
+		IPlayerModelCapability props = ModCapabilities.get(player);
+		int level = 1;
+		switch(level) {
+		case 0:
+			return new EntityFist0(player.world, player, props.getShotLevel(), charged);
+		case 1:
+			return new EntityFist1(player.world, player, props.getShotLevel(), charged);
+		case 2:
+			
+		case 3:
+			
+		}
+		return null;
+
 	}
 
 	/**

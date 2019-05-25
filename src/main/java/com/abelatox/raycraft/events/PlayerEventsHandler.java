@@ -118,9 +118,8 @@ public class PlayerEventsHandler {
 				}
 			} else {
 				player.inventory.removeStackFromSlot(player.inventory.currentItem);
-				// props.setCarrying("null");
 				player.world.setBlockState(Utils.getAvailablePos(player), ModBlocks.barrel.getDefaultState());
-				// PacketHandler.sendToAllAround(player, props);
+				warned = false;
 			}
 		}
 	}

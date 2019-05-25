@@ -1,11 +1,15 @@
 package com.abelatox.raycraft.entities;
 
+import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.items.ModItems;
+import com.abelatox.raycraft.lib.Utils;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -51,7 +55,23 @@ public class EntityBarrel extends EntityThrowable {
 	private void explode() {
 		System.out.println("Boom");
 		world.createExplosion(this, posX, posY, posZ, 5, false);
+		removeBreakableBlocks();
 		this.remove();
+	}
+
+	private void removeBreakableBlocks() {
+		for(int x=0;x<3;x++) {
+			for(int y=0;y<3;y++) {
+			for(int z=0;z<3;z++) {
+				BlockPos pos = new BlockPos(posX+1-x,posY+1-y,posZ+1-z);
+				if(world.getBlockState(pos).getBlock() == Blocks.IRON_DOOR || world.getBlockState(pos).getBlock() == Blocks.IRON_TRAPDOOR) {
+					System.out.println("Block found");
+					world.setBlockState(pos, Blocks.AIR.getDefaultState());
+				}
+			}
+			}
+			
+		}
 	}
 
 }

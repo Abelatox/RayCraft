@@ -2,6 +2,8 @@ package com.abelatox.raycraft.models;
 
 import org.lwjgl.opengl.GL11;
 
+import com.abelatox.raycraft.entities.EntityFist0;
+
 import net.minecraft.client.renderer.entity.model.ModelBase;
 import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -25,6 +27,8 @@ public class ModelFist extends ModelBase {
 			//RenderHelper.enableStandardItemLighting();
 			//Minecraft.getInstance().entityRenderer.enableLightmap();
 			//GlStateManager.enableBlend();
+
+			
 
 			GL11.glTranslated(0, 0.1,0);
 			this.fist.render(f5);

@@ -16,7 +16,8 @@ import net.minecraftforge.fml.common.Mod;
 public class ModEntities {
 
     public static EntityType<EntityBarrel> TYPE_BARREL = createEntityType(EntityBarrel.class, EntityBarrel::new, "entity_barrel");
-    public static EntityType<EntityFist> TYPE_FIST = createEntityType(EntityFist.class, EntityFist::new, "entity_fist");
+    public static EntityType<EntityBaseFist> TYPE_FIST = createEntityType(EntityFist0.class, EntityFist0::new, "entity_fist");
+    public static EntityType<EntityBaseFist> TYPE_FIST_1 = createEntityType(EntityFist1.class, EntityFist1::new, "entity_fist1");
 
     /**
      * Helper method to create a new EntityType and set the registry name
@@ -37,7 +38,8 @@ public class ModEntities {
      */
     public static void registerModels() {
         RenderingRegistry.registerEntityRenderingHandler(EntityBarrel.class, RenderEntityBarrel.FACTORY);
-        RenderingRegistry.registerEntityRenderingHandler(EntityFist.class, RenderEntityFist.FACTORY);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFist0.class, RenderEntityFist.FACTORY);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFist1.class, RenderEntityFist.FACTORY);
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -47,6 +49,7 @@ public class ModEntities {
         public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
             event.getRegistry().register(TYPE_BARREL);
             event.getRegistry().register(TYPE_FIST);
+            event.getRegistry().register(TYPE_FIST_1);
         }
 
     }
