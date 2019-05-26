@@ -19,6 +19,9 @@ import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.entities.EntityFist0;
 import com.abelatox.raycraft.entities.EntityFist1;
+import com.abelatox.raycraft.entities.EntityFist2;
+import com.abelatox.raycraft.entities.EntityFist3;
+import com.abelatox.raycraft.entities.EntityFist4;
 import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
 
@@ -67,16 +70,21 @@ public class Utils {
 
 	private static EntityThrowable getRaymanPunchLevel(EntityPlayer player, boolean charged) {
 		IPlayerModelCapability props = ModCapabilities.get(player);
-		int level = 1;
+		int level = 3;
+		if(charged && level < 4) {
+			level++;
+		}
 		switch(level) {
 		case 0:
-			return new EntityFist0(player.world, player, props.getShotLevel(), charged);
+			return new EntityFist0(player.world, player, props.getShotLevel());
 		case 1:
-			return new EntityFist1(player.world, player, props.getShotLevel(), charged);
+			return new EntityFist1(player.world, player, props.getShotLevel());
 		case 2:
-			
+			return new EntityFist2(player.world, player, props.getShotLevel());
 		case 3:
-			
+			return new EntityFist3(player.world, player, props.getShotLevel(), charged);
+		case 4:
+			return new EntityFist4(player.world, player, props.getShotLevel(), charged);
 		}
 		return null;
 

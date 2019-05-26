@@ -15,7 +15,7 @@ public class EntityBaseFist extends EntityThrowable {
 	int maxBounces;
 	int lvl = 0;
 	float power;
-	boolean charged = false;
+	boolean explosion = false;
 	//private static final DataParameter<Boolean> CHARGED = EntityDataManager.createKey(EntityFist.class, DataSerializers.BOOLEAN);
 
 	public EntityBaseFist(World world) {
@@ -25,13 +25,12 @@ public class EntityBaseFist extends EntityThrowable {
 		this.setSize(0.3F, 0.3F);
 	}
 
-	public EntityBaseFist(EntityType<EntityBaseFist> type, World worldIn, EntityLivingBase throwerIn, int lvl, boolean charged) {
+	public EntityBaseFist(EntityType<EntityBaseFist> type, World worldIn, EntityLivingBase throwerIn, int lvl) {
 		super(type, throwerIn, worldIn);
 		this.preventEntitySpawning = true;
 		this.isImmuneToFire = true;
 		this.setSize(0.3F, 0.3F);
 		this.lvl = lvl;
-		this.charged = charged;
 		this.maxBounces = 0;
 		this.power = 2;
 	}
@@ -60,14 +59,14 @@ public class EntityBaseFist extends EntityThrowable {
 				EntityLivingBase target = (EntityLivingBase) result.entity;
 				target.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), power);
 				System.out.println(power);
-				if (charged && lvl >= 2) { // if is charged && high level do explosion
+				if (explosion) { // if is charged && high level do explosion
 					explode();
 				} else {
 					remove();
 				}
 			} else {
 				if (result.type == Type.BLOCK) {
-					if (charged && lvl >= 2) { // if is charged && high level do explosion
+					if (explosion) { // if is charged && high level do explosion
 						explode();
 					} else {
 						bounces++;
@@ -88,33 +87,8 @@ public class EntityBaseFist extends EntityThrowable {
 
 	private void explode() {
 		//System.out.println("Boom");
-		world.createExplosion(this, posX, posY, posZ, power, false);
+		world.createExplosion(this, posX, posY, posZ, power/4, false);
 		this.remove();
-	}
-
-	private void loadData() {
-		switch (lvl) {
-		case 0: // First punch, no bounces
-			maxBounces = 0;
-			power = 2;
-			break;
-		case 1: // Blue punch, grab purple lums, 1 bounce
-			maxBounces = 1;
-			power = 4;
-			break;
-		case 2: // Yellow punch, 2 bounces, explode if charged
-			maxBounces = 2;
-			power = 8;
-			break;
-		case 3: // Golden punch, 3 bounces, explode if charged
-			maxBounces = 3;
-			power = 20;
-			break;
-		}
-
-		if (charged) {
-			power *= 2;
-		}
 	}
 
 /*	@Override

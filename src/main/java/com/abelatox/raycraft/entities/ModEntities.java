@@ -14,10 +14,13 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 
 public class ModEntities {
-
+	
     public static EntityType<EntityBarrel> TYPE_BARREL = createEntityType(EntityBarrel.class, EntityBarrel::new, "entity_barrel");
     public static EntityType<EntityBaseFist> TYPE_FIST = createEntityType(EntityFist0.class, EntityFist0::new, "entity_fist");
     public static EntityType<EntityBaseFist> TYPE_FIST_1 = createEntityType(EntityFist1.class, EntityFist1::new, "entity_fist1");
+    public static EntityType<EntityBaseFist> TYPE_FIST_2 = createEntityType(EntityFist2.class, EntityFist2::new, "entity_fist2");
+    public static EntityType<EntityBaseFist> TYPE_FIST_3 = createEntityType(EntityFist3.class, EntityFist3::new, "entity_fist3");
+    public static EntityType<EntityBaseFist> TYPE_FIST_4 = createEntityType(EntityFist4.class, EntityFist4::new, "entity_fist4");
 
     /**
      * Helper method to create a new EntityType and set the registry name
@@ -33,13 +36,13 @@ public class ModEntities {
         return type;
     }
 
-    /**
-     * Register the render classes for the entities, called in {@link online.kingdomkeys.kingdomkeys.proxy.ClientProxy#registerModels(ModelRegistryEvent)}  }
-     */
     public static void registerModels() {
         RenderingRegistry.registerEntityRenderingHandler(EntityBarrel.class, RenderEntityBarrel.FACTORY);
         RenderingRegistry.registerEntityRenderingHandler(EntityFist0.class, RenderEntityFist.FACTORY);
         RenderingRegistry.registerEntityRenderingHandler(EntityFist1.class, RenderEntityFist.FACTORY);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFist2.class, RenderEntityFist.FACTORY);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFist3.class, RenderEntityFist.FACTORY);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFist4.class, RenderEntityFist.FACTORY);
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -50,6 +53,9 @@ public class ModEntities {
             event.getRegistry().register(TYPE_BARREL);
             event.getRegistry().register(TYPE_FIST);
             event.getRegistry().register(TYPE_FIST_1);
+            event.getRegistry().register(TYPE_FIST_2);
+            event.getRegistry().register(TYPE_FIST_3);
+            event.getRegistry().register(TYPE_FIST_4);
         }
 
     }
