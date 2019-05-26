@@ -18,28 +18,28 @@ public class PacketSyncCapabilityToAll {
 
 	private String name;
 	private String model;
-	private String carrying;
+	private int shotLevel;
 
 	public PacketSyncCapabilityToAll() {
 	}
 
 	public PacketSyncCapabilityToAll(String name, IPlayerModelCapability capability) {
 		this.name = name;
-		this.model = capability.getModel();
-		this.carrying = capability.getCarrying();
+		this.model = capability.getPlayerType();
+		this.shotLevel = capability.getShotLevel();
 	}
 
 	public void encode(PacketBuffer buffer) {
 		buffer.writeString(name);
 		buffer.writeString(model);
-		buffer.writeString(carrying);
+		buffer.writeInt(shotLevel);
 	}
 
 	public static PacketSyncCapabilityToAll decode(PacketBuffer buffer) {
 		PacketSyncCapabilityToAll msg = new PacketSyncCapabilityToAll();
 		msg.name = buffer.readString(40);
 		msg.model = buffer.readString(40);
-		msg.carrying = buffer.readString(40);
+		msg.shotLevel = buffer.readInt();
 		return msg;
 	}
 
@@ -49,8 +49,8 @@ public class PacketSyncCapabilityToAll {
 			//System.out.println(player+" "+message.model);
 			LazyOptional<IPlayerModelCapability> props = player.getCapability(ModCapabilities.PLAYER_MODEL);
 			
-			props.ifPresent(cap -> cap.setModel(message.model));
-			props.ifPresent(cap -> cap.setCarrying(message.carrying));
+			props.ifPresent(cap -> cap.setPlayerType(message.model));
+			props.ifPresent(cap -> cap.setShotLevel(message.shotLevel));
 			
 		});
 		ctx.get().setPacketHandled(true);

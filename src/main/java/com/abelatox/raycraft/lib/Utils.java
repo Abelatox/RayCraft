@@ -36,10 +36,10 @@ public class Utils {
 
 	public static IRayCraftRender getRender(IPlayerModelCapability props) {
 		if (props != null) {
-			if (props.getModel().equals("robopirate") || props.getModel().equals("robopirate2")) {
+			if (props.getPlayerType().equals("robopirate") || props.getPlayerType().equals("robopirate2")) {
 				return ModModels.renderPirate;
 			}
-			if (props.getModel().equals("rayman")) {
+			if (props.getPlayerType().equals("rayman")) {
 				return ModModels.renderRayman;
 			}
 		}
@@ -57,7 +57,7 @@ public class Utils {
 
 	public static EntityThrowable getEntityShot(EntityPlayer player, boolean charged) {
 		IPlayerModelCapability props = ModCapabilities.get(player);
-		switch (props.getModel()) {
+		switch (props.getPlayerType()) {
 		case Strings.ROBO_PIRATE_RED:
 			return new EntityBarrel(player.world, player);
 		case Strings.ROBO_PIRATE_GREEN:
@@ -70,7 +70,7 @@ public class Utils {
 
 	private static EntityThrowable getRaymanPunchLevel(EntityPlayer player, boolean charged) {
 		IPlayerModelCapability props = ModCapabilities.get(player);
-		int level = 3;
+		int level = props.getShotLevel();
 		if(charged && level < 4) {
 			level++;
 		}

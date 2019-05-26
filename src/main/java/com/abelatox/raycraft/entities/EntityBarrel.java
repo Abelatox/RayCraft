@@ -53,7 +53,7 @@ public class EntityBarrel extends EntityThrowable {
 	}
 
 	private void explode() {
-		System.out.println("Boom");
+		//System.out.println("Boom");
 		world.createExplosion(this, posX, posY, posZ, 5, false);
 		removeBreakableBlocks();
 		this.remove();

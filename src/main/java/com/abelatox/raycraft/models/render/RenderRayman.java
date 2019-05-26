@@ -110,6 +110,6 @@ public class RenderRayman extends Render<EntityLivingBase> implements IRayCraftR
 
 	@Override
 	public ResourceLocation getEntityTexture(EntityLivingBase entity) {
-		return new ResourceLocation(Reference.MODID, "textures/models/" + ModCapabilities.get((EntityPlayer) entity).getModel() + ".png");
+		return new ResourceLocation(Reference.MODID, "textures/models/" + ModCapabilities.get((EntityPlayer) entity).getPlayerType() + ".png");
 	}
 }

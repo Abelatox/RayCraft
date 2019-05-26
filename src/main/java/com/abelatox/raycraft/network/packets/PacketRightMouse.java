@@ -38,7 +38,7 @@ public class PacketRightMouse {
 		ctx.get().enqueueWork(() -> {
 			EntityPlayer player = ctx.get().getSender();
 			IPlayerModelCapability props = ModCapabilities.get(player);
-			if(props.hasCustomModel() && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
+			if(props.hasCustomPlayerType() && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 				EntityThrowable shot = Utils.getEntityShot(player, message.charged);
 				player.world.spawnEntity(shot);
 				shot.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1F, 0);

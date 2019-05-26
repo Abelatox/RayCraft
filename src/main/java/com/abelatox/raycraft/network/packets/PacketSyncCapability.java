@@ -20,7 +20,7 @@ public class PacketSyncCapability {
 	}
 
 	public PacketSyncCapability(IPlayerModelCapability capability) {
-		this.model = capability.getModel();
+		this.model = capability.getPlayerType();
 	}
 
 	public void encode(PacketBuffer buffer) {
@@ -38,7 +38,7 @@ public class PacketSyncCapability {
 	public static void handle(final PacketSyncCapability message, Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			LazyOptional<IPlayerModelCapability> props = Minecraft.getInstance().player.getCapability(ModCapabilities.PLAYER_MODEL);
-			props.ifPresent(cap -> cap.setModel(message.model));
+			props.ifPresent(cap -> cap.setPlayerType(message.model));
 		});
 		ctx.get().setPacketHandled(true);
 	}

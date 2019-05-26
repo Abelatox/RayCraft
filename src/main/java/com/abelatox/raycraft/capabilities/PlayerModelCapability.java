@@ -1,9 +1,5 @@
 package com.abelatox.raycraft.capabilities;
 
-import com.abelatox.raycraft.entities.EntityBarrel;
-import com.abelatox.raycraft.lib.Strings;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -16,16 +12,16 @@ public class PlayerModelCapability implements IPlayerModelCapability {
 		@Override
 		public INBTBase writeNBT(Capability<IPlayerModelCapability> capability, IPlayerModelCapability instance, EnumFacing side) {
 			NBTTagCompound props = new NBTTagCompound();
-			props.setString("PlayerModel", instance.getModel());
-			props.setString("Carrying", instance.getCarrying());
+			props.setString("PlayerModel", instance.getPlayerType());
+			props.setInt("ShotLevel", instance.getShotLevel());
 			return props;
 		}
 
 		@Override
 		public void readNBT(Capability<IPlayerModelCapability> capability, IPlayerModelCapability instance, EnumFacing side, INBTBase nbt) {
 			NBTTagCompound properties = (NBTTagCompound) nbt;
-			instance.setModel(properties.getString("PlayerModel"));
-			instance.setCarrying(properties.getString("Carrying"));
+			instance.setPlayerType(properties.getString("PlayerModel"));
+			instance.setShotLevel(properties.getInt("ShotLevel"));
 		}
 	}
 
@@ -33,26 +29,16 @@ public class PlayerModelCapability implements IPlayerModelCapability {
 	private String carrying = "null";
 	private int shotLevel = 0;
 	
-	public String getModel() {
+	public String getPlayerType() {
 		return playerModel;
 	}
 
-	public void setModel(String modelString) {
+	public void setPlayerType(String modelString) {
 		playerModel = modelString;
 	}
 
 	@Override
-	public String getCarrying() {
-		return carrying;
-	}
-
-	@Override
-	public void setCarrying(String itemCarrying) {
-		carrying = itemCarrying;
-	}
-
-	@Override
-	public boolean hasCustomModel() {
+	public boolean hasCustomPlayerType() {
 		return !playerModel.equals("null");
 	}
 

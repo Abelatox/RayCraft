@@ -36,9 +36,7 @@ public class PacketLeftMouse {
 		ctx.get().enqueueWork(() -> {
 			EntityPlayer player = ctx.get().getSender();
 			IPlayerModelCapability props = ModCapabilities.get(player);
-			if(props.getCarrying().equals("barrel")) {
-				System.out.println("throw barrel");
-			}
+			
 		});
 		ctx.get().setPacketHandled(true);
 	}

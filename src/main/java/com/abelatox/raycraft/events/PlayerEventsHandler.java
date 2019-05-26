@@ -8,7 +8,6 @@ import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.network.PacketHandler;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
@@ -67,8 +66,6 @@ public class PlayerEventsHandler {
 		}
 	}
 	
-
-
 	@SubscribeEvent
 	public void onPlayerJump(LivingJumpEvent event) {
 		if(event.getEntityLiving() instanceof EntityPlayer) {
@@ -139,12 +136,12 @@ public class PlayerEventsHandler {
 			EntityPlayer player = (EntityPlayer) event.getSource().getImmediateSource();
 			IPlayerModelCapability props = ModCapabilities.get(player);
 
-			if (props.getModel().equals("robopirate")) {
-				props.setModel("robopirate2");
-			} else if (props.getModel().equals("robopirate2")) {
-				props.setModel("rayman");
+			if (props.getPlayerType().equals("robopirate")) {
+				props.setPlayerType("robopirate2");
+			} else if (props.getPlayerType().equals("robopirate2")) {
+				props.setPlayerType("rayman");
 			} else {
-				props.setModel("robopirate");
+				props.setPlayerType("robopirate");
 			}
 
 			PacketHandler.sendToAllAround(player, props);

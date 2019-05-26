@@ -36,8 +36,8 @@ public class PacketSetModel {
 		ctx.get().enqueueWork(() -> {
 			EntityPlayer player = ctx.get().getSender();
 			IPlayerModelCapability props = ModCapabilities.get(player);
-			props.setModel(message.model);
-			System.out.println(props.getModel());
+			props.setPlayerType(message.model);
+			System.out.println(props.getPlayerType());
 		});
 		ctx.get().setPacketHandled(true);
 	}

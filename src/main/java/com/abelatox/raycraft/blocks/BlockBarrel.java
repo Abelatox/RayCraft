@@ -29,7 +29,7 @@ public class BlockBarrel extends BaseBlock {
 	public void onEntityCollision(IBlockState state, World world, BlockPos pos, Entity entity) {
 		if (entity instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) entity;
-			if (player.motionX == 0 && player.motionY == 0 && player.motionZ == 0 && player.isSneaking()) {
+			if (player.motionX == 0 && player.motionY == 0 && player.motionZ == 0 && player.isSneaking() && player.onGround) {
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 					player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
 					world.removeBlock(pos);
