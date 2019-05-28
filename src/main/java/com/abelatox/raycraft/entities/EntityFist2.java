@@ -9,10 +9,11 @@ public class EntityFist2 extends EntityBaseFist {
 		super(world);
 	}
 
-	public EntityFist2(World worldIn, EntityLivingBase throwerIn, int lvl) {
+	public EntityFist2(World worldIn, EntityLivingBase throwerIn) {
 		super(ModEntities.TYPE_FIST_2, worldIn, throwerIn, 2);
 		this.maxBounces = 2;
 		this.power = 8;
+		this.maxTicks = 100;
 	}
 
 }

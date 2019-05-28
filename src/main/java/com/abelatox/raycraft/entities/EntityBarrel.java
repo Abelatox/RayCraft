@@ -53,24 +53,23 @@ public class EntityBarrel extends EntityThrowable {
 	}
 
 	private void explode() {
-		//System.out.println("Boom");
+		// System.out.println("Boom");
 		world.createExplosion(this, posX, posY, posZ, 5, false);
 		removeBreakableBlocks();
 		this.remove();
 	}
 
 	private void removeBreakableBlocks() {
-		for(int x=0;x<3;x++) {
-			for(int y=0;y<3;y++) {
-			for(int z=0;z<3;z++) {
-				BlockPos pos = new BlockPos(posX+1-x,posY+1-y,posZ+1-z);
-				if(world.getBlockState(pos).getBlock() == Blocks.IRON_DOOR || world.getBlockState(pos).getBlock() == Blocks.IRON_TRAPDOOR) {
-					System.out.println("Block found");
-					world.setBlockState(pos, Blocks.AIR.getDefaultState());
+		for (int x = 0; x < 3; x++) {
+			for (int y = 0; y < 3; y++) {
+				for (int z = 0; z < 3; z++) {
+					BlockPos pos = new BlockPos(posX + 1 - x, posY + 1 - y, posZ + 1 - z);
+					if (world.getBlockState(pos).getBlock() == Blocks.IRON_DOOR || world.getBlockState(pos).getBlock() == Blocks.IRON_TRAPDOOR) {
+						System.out.println("Block found");
+						world.setBlockState(pos, Blocks.AIR.getDefaultState());
+					}
 				}
 			}
-			}
-			
 		}
 	}
 

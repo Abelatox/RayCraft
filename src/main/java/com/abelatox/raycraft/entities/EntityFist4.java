@@ -10,16 +10,17 @@ public class EntityFist4 extends EntityBaseFist {
 		super(world);
 	}
 
-	public EntityFist4(World worldIn, EntityLivingBase throwerIn, int lvl, boolean explosion) {
+	public EntityFist4(World worldIn, EntityLivingBase throwerIn, boolean explosion) {
 		super(ModEntities.TYPE_FIST_4, worldIn, throwerIn, 4);
 		this.maxBounces = 0;
 		this.power = 30;
 		this.explosion = explosion;
+		this.maxTicks = 140;
 	}
 	
 	@Override
 	public void tick() {
-		world.spawnParticle(Particles.ENTITY_EFFECT, posX, posY, posZ, 1, 1, 0);
+		world.addParticle(Particles.ENTITY_EFFECT, posX, posY, posZ, 1, 1, 0);
 		super.tick();
 	}
 }

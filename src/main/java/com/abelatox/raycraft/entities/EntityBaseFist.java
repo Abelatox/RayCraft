@@ -1,10 +1,13 @@
 package com.abelatox.raycraft.entities;
 
+import com.abelatox.raycraft.sounds.ModSounds;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
@@ -16,6 +19,7 @@ public class EntityBaseFist extends EntityThrowable {
 	int lvl = 0;
 	float power;
 	boolean explosion = false;
+	int maxTicks = 60;
 	//private static final DataParameter<Boolean> CHARGED = EntityDataManager.createKey(EntityFist.class, DataSerializers.BOOLEAN);
 
 	public EntityBaseFist(World world) {
@@ -42,7 +46,7 @@ public class EntityBaseFist extends EntityThrowable {
 
 	@Override
 	public void tick() {
-		if (this.ticksExisted > 60) {
+		if (this.ticksExisted > maxTicks) {
 			this.remove();
 		}
 
@@ -58,7 +62,7 @@ public class EntityBaseFist extends EntityThrowable {
 			if (result.entity != null && result.entity instanceof EntityLivingBase) {
 				EntityLivingBase target = (EntityLivingBase) result.entity;
 				target.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), power);
-				System.out.println(power);
+				//System.out.println(power);
 				if (explosion) { // if is charged && high level do explosion
 					explode();
 				} else {
@@ -69,6 +73,8 @@ public class EntityBaseFist extends EntityThrowable {
 					if (explosion) { // if is charged && high level do explosion
 						explode();
 					} else {
+						world.playSound(null, getPosition(), ModSounds.fistBounce, SoundCategory.MASTER, 1F, 1F);
+
 						bounces++;
 						if (result.sideHit == EnumFacing.NORTH || result.sideHit == EnumFacing.SOUTH) {
 							this.motionZ = -this.motionZ;

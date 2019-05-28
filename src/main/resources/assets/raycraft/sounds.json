@@ -1,0 +1,44 @@
+{
+	"fist_shot_0": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:fist_shot0", "stream": false}
+		]
+	},
+	"fist_shot_1": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:fist_shot1", "stream": false}
+		]
+	},
+	"fist_shot_2": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:fist_shot2", "stream": false}
+		]
+	},
+	"fist_bounce": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:fist_bounce", "stream": false}
+		]
+	},
+	"fist_gold_charged": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:fist_gold_charged", "stream": false}
+		]
+	},
+	"pirate_shot1": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:pirate_shot1", "stream": false}
+		]
+	},
+	"pirate_shot2": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:pirate_shot2", "stream": false}
+		]
+	}
+}

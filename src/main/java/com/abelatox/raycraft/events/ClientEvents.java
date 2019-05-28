@@ -8,10 +8,13 @@ import com.abelatox.raycraft.models.render.IRayCraftRender;
 import com.abelatox.raycraft.network.PacketHandler;
 import com.abelatox.raycraft.network.packets.PacketLeftMouse;
 import com.abelatox.raycraft.network.packets.PacketRightMouse;
+import com.abelatox.raycraft.sounds.ModSounds;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -59,17 +62,19 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public void MouseClick(MouseInputEvent event) {
+		EntityPlayerSP player = Minecraft.getInstance().player;
 		if (event.getAction() == 1) {
 			time = System.currentTimeMillis();
 			// If empty hand should shoot, if not it shouldn't (barrel + fist)
 			shouldShoot = false;
 
-			if (Minecraft.getInstance().player != null && ItemStack.areItemStacksEqual(Minecraft.getInstance().player.getHeldItemMainhand(), ItemStack.EMPTY)) {
+			if (player != null && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 				shouldShoot = true;
 			}
 		}
 		if (event.getAction() == 0) {
-			if (Minecraft.getInstance().player != null) {
+			if (player != null) {
+
 				boolean charged = false;
 				if (time + 2000 < System.currentTimeMillis()) {
 					charged = true;
@@ -82,6 +87,7 @@ public class ClientEvents {
 				case 1:
 					if (shouldShoot) {
 						PacketHandler.sendToServer(new PacketRightMouse(charged));
+
 					}
 					break;
 				}

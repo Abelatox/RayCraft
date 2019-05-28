@@ -12,8 +12,8 @@ public class PlayerModelCapability implements IPlayerModelCapability {
 		@Override
 		public INBTBase writeNBT(Capability<IPlayerModelCapability> capability, IPlayerModelCapability instance, EnumFacing side) {
 			NBTTagCompound props = new NBTTagCompound();
-			props.setString("PlayerModel", instance.getPlayerType());
-			props.setInt("ShotLevel", instance.getShotLevel());
+			props.putString("PlayerModel", instance.getPlayerType());
+			props.putInt("ShotLevel", instance.getShotLevel());
 			return props;
 		}
 

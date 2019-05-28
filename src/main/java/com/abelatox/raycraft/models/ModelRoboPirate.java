@@ -143,7 +143,7 @@ public ModelBarrel barrel;
 				GL11.glRotated(-90, 0, 0, 1);
 				GL11.glRotated(90, 0, 1, 0);
 				GL11.glTranslated(0.4, 0.2, -0.7);
-				Minecraft.getInstance().entityRenderer.itemRenderer.renderItem((EntityPlayer) entity, ((EntityPlayer) entity).getHeldItemMainhand(), TransformType.THIRD_PERSON_RIGHT_HAND);
+				Minecraft.getInstance().gameRenderer.itemRenderer.renderItem((EntityPlayer) entity, ((EntityPlayer) entity).getHeldItemMainhand(), TransformType.THIRD_PERSON_RIGHT_HAND);
 				GL11.glPopMatrix();
 			}
 		}

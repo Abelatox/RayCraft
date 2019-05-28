@@ -17,6 +17,7 @@ import java.util.Set;
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.EntityBarrel;
+import com.abelatox.raycraft.entities.EntityBaseFist;
 import com.abelatox.raycraft.entities.EntityFist0;
 import com.abelatox.raycraft.entities.EntityFist1;
 import com.abelatox.raycraft.entities.EntityFist2;
@@ -24,12 +25,14 @@ import com.abelatox.raycraft.entities.EntityFist3;
 import com.abelatox.raycraft.entities.EntityFist4;
 import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
+import com.abelatox.raycraft.sounds.ModSounds;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 
 public class Utils {
@@ -68,23 +71,23 @@ public class Utils {
 		return null;
 	}
 
-	private static EntityThrowable getRaymanPunchLevel(EntityPlayer player, boolean charged) {
+	private static EntityBaseFist getRaymanPunchLevel(EntityPlayer player, boolean charged) {
 		IPlayerModelCapability props = ModCapabilities.get(player);
 		int level = props.getShotLevel();
-		if(charged && level < 4) {
+		if (charged && level < 4) {
 			level++;
 		}
-		switch(level) {
+		switch (level) {
 		case 0:
-			return new EntityFist0(player.world, player, props.getShotLevel());
+			return new EntityFist0(player.world, player);
 		case 1:
-			return new EntityFist1(player.world, player, props.getShotLevel());
+			return new EntityFist1(player.world, player);
 		case 2:
-			return new EntityFist2(player.world, player, props.getShotLevel());
+			return new EntityFist2(player.world, player);
 		case 3:
-			return new EntityFist3(player.world, player, props.getShotLevel(), charged);
+			return new EntityFist3(player.world, player, charged);
 		case 4:
-			return new EntityFist4(player.world, player, props.getShotLevel(), charged);
+			return new EntityFist4(player.world, player, charged);
 		}
 		return null;
 
@@ -198,6 +201,32 @@ public class Utils {
 			return player.getPosition().south();
 		} else if (player.world.getBlockState(player.getPosition().west()).getBlock() == Blocks.AIR) {
 			return player.getPosition().west();
+		}
+		return null;
+	}
+
+	public static SoundEvent getShootSound(EntityPlayer player, boolean charged) {
+		IPlayerModelCapability props = ModCapabilities.get(player);
+		switch (props.getPlayerType()) {
+		case Strings.RAYMAN:
+			switch (props.getShotLevel()) {
+			case 0:
+				
+			case 1:
+				return ModSounds.fistShot1;
+			case 2:
+				if(charged)
+					return ModSounds.fistShot2;
+				return ModSounds.fistShot1;
+			case 3:
+				if(charged)
+					return ModSounds.fistGoldCharged;
+				return ModSounds.fistShot2;
+			}
+		case Strings.ROBO_PIRATE_GREEN:
+			return ModSounds.pirateShot1;
+		case Strings.ROBO_PIRATE_RED:
+			return ModSounds.pirateShot2;
 		}
 		return null;
 	}
