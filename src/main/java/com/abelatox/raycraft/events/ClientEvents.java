@@ -63,33 +63,35 @@ public class ClientEvents {
 	@SubscribeEvent
 	public void MouseClick(MouseInputEvent event) {
 		EntityPlayerSP player = Minecraft.getInstance().player;
-		if (event.getAction() == 1) {
-			time = System.currentTimeMillis();
-			// If empty hand should shoot, if not it shouldn't (barrel + fist)
-			shouldShoot = false;
+		if (Minecraft.getInstance().currentScreen == null) {
+			if (event.getAction() == 1) {
+				time = System.currentTimeMillis();
+				// If empty hand should shoot, if not it shouldn't (barrel + fist)
+				shouldShoot = false;
 
-			if (player != null && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
-				shouldShoot = true;
-			}
-		}
-		if (event.getAction() == 0) {
-			if (player != null) {
-
-				boolean charged = false;
-				if (time + 2000 < System.currentTimeMillis()) {
-					charged = true;
+				if (player != null && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
+					shouldShoot = true;
 				}
+			}
+			if (event.getAction() == 0) {
+				if (player != null) {
 
-				switch (event.getButton()) {
-				case 0:
-					PacketHandler.sendToServer(new PacketLeftMouse());
-					break;
-				case 1:
-					if (shouldShoot) {
-						PacketHandler.sendToServer(new PacketRightMouse(charged));
-
+					boolean charged = false;
+					if (time + 2000 < System.currentTimeMillis()) {
+						charged = true;
 					}
-					break;
+
+					switch (event.getButton()) {
+					case 0:
+						PacketHandler.sendToServer(new PacketLeftMouse());
+						break;
+					case 1:
+						if (shouldShoot) {
+							PacketHandler.sendToServer(new PacketRightMouse(charged));
+
+						}
+						break;
+					}
 				}
 			}
 		}
