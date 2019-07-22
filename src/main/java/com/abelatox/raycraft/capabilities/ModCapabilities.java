@@ -1,9 +1,6 @@
 package com.abelatox.raycraft.capabilities;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -14,7 +11,7 @@ public class ModCapabilities {
 	@CapabilityInject(IPlayerModelCapability.class)
 	public static final Capability<IPlayerModelCapability> PLAYER_MODEL = null;
 
-	public static IPlayerModelCapability get(EntityPlayer player) {
+	public static IPlayerModelCapability get(PlayerEntity player) {
 		LazyOptional<IPlayerModelCapability> props = player.getCapability(ModCapabilities.PLAYER_MODEL, null);
 		return props.orElse(null);
 	}

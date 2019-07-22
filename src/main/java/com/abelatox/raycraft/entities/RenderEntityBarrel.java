@@ -8,8 +8,8 @@ import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.models.ModelBarrel;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,12 +19,12 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
  * Mostly a copy of {@link net.minecraft.client.renderer.entity.RenderTNTPrimed} with some small changes
  */
 @OnlyIn(Dist.CLIENT)
-public class RenderEntityBarrel extends Render<EntityBarrel> {
+public class RenderEntityBarrel extends EntityRenderer<EntityBarrel> {
 
     public static final Factory FACTORY = new RenderEntityBarrel.Factory();
     ModelBarrel barrel;
     
-    public RenderEntityBarrel(RenderManager renderManager, ModelBarrel barrel) {
+    public RenderEntityBarrel(EntityRendererManager renderManager, ModelBarrel barrel) {
         super(renderManager);
         this.barrel = barrel;
         this.shadowSize = 0.5F;
@@ -53,9 +53,10 @@ public class RenderEntityBarrel extends Render<EntityBarrel> {
     }
 
     public static class Factory implements IRenderFactory<EntityBarrel> {
-        @Override
-        public Render<? super EntityBarrel> createRenderFor(RenderManager manager) {
+		@Override
+		public EntityRenderer<? super EntityBarrel> createRenderFor(EntityRendererManager manager) {
+			// TODO Auto-generated method stub
             return new RenderEntityBarrel(manager, new ModelBarrel());
-        }
+		}
     }
 }

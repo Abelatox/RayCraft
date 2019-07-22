@@ -2,20 +2,18 @@ package com.abelatox.raycraft.models;
 
 import org.lwjgl.opengl.GL11;
 
-import com.abelatox.raycraft.entities.EntityFist0;
-
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.Entity;
 
 
-public class ModelFist extends ModelBase {
-	public ModelRenderer fist;
+public class ModelFist extends EntityModel {
+	public RendererModel fist;
 	
 	public ModelFist() {
 		this.textureWidth = 32;
 		this.textureHeight = 32;
-		this.fist = new ModelRenderer(this, 0, 0);
+		this.fist = new RendererModel(this, 0, 0);
 		this.fist.setRotationPoint(0.0F, 0.0F, 0.0F);
 		this.fist.addBox(-2.0F, -2.0F, -2.0F, 4, 4, 4, 0.0F);
 	}
@@ -44,7 +42,7 @@ public class ModelFist extends ModelBase {
 	/**
 	 * This is a helper function from Tabula to set the rotation of model parts
 	 */
-	public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+	public void setRotateAngle(RendererModel modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;
 		modelRenderer.rotateAngleZ = z;

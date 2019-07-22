@@ -1,32 +1,33 @@
 package com.abelatox.raycraft.entities;
 
-import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.items.ModItems;
-import com.abelatox.raycraft.lib.Utils;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-public class EntityBarrel extends EntityThrowable {
+public class EntityBarrel extends ThrowableEntity {
 
-	public EntityBarrel(World world) {
-		super(ModEntities.TYPE_BARREL, world);
+    public EntityBarrel(EntityType<? extends Entity> type, World world) {
+    	super(ModEntities.TYPE_BARREL, world);
 		this.preventEntitySpawning = true;
-		this.isImmuneToFire = true;
-		this.setSize(0.98F, 0.98F);
+		// this.setSize(0.98F, 0.98F);
 	}
 
-	public EntityBarrel(World worldIn, EntityLivingBase throwerIn) {
+	public EntityBarrel(World worldIn, LivingEntity throwerIn) {
 		super(ModEntities.TYPE_BARREL, throwerIn, worldIn);
 		this.preventEntitySpawning = true;
-		this.isImmuneToFire = true;
-		this.setSize(0.98F, 0.98F);
+		// this.setSize(0.98F, 0.98F);
 	}
 
 	@Override
@@ -37,24 +38,28 @@ public class EntityBarrel extends EntityThrowable {
 	@Override
 	protected void onImpact(RayTraceResult result) {
 		if (!world.isRemote) {
-			if (result.entity != null && result.entity instanceof EntityPlayer && result.entity == thrower) {
-				EntityPlayer player = (EntityPlayer) thrower;
-				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
-					player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
-					this.remove();
-					return;
+			if (result.getType() == Type.ENTITY) {
+				EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
+
+				if (entityResult.getEntity() != null && entityResult.getEntity() instanceof PlayerEntity && entityResult.getEntity() == owner) {
+					PlayerEntity player = (PlayerEntity) owner;
+					if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
+						player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
+						this.remove();
+						return;
+					} else {
+						explode();
+					}
 				} else {
 					explode();
 				}
-			} else {
-				explode();
 			}
 		}
 	}
 
 	private void explode() {
 		// System.out.println("Boom");
-		world.createExplosion(this, posX, posY, posZ, 5, false);
+		world.createExplosion(this, posX, posY, posZ, 5, Explosion.Mode.NONE);
 		removeBreakableBlocks();
 		this.remove();
 	}
@@ -71,6 +76,12 @@ public class EntityBarrel extends EntityThrowable {
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void registerData() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

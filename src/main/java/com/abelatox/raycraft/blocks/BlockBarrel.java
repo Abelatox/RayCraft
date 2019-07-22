@@ -3,13 +3,14 @@ package com.abelatox.raycraft.blocks;
 import com.abelatox.raycraft.items.ModItems;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -21,18 +22,18 @@ public class BlockBarrel extends BaseBlock {
 	}
 
 	@Override
-	public VoxelShape getCollisionShape(IBlockState state, IBlockReader world, BlockPos pos) {
+	public VoxelShape getCollisionShape(BlockState p_220071_1_, IBlockReader p_220071_2_, BlockPos p_220071_3_, ISelectionContext p_220071_4_) {
 		return Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
 	}
 
 	@Override
-	public void onEntityCollision(IBlockState state, World world, BlockPos pos, Entity entity) {
-		if (entity instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer) entity;
-			if (player.motionX == 0 && player.motionY == 0 && player.motionZ == 0 && player.isSneaking() && player.onGround) {
+	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+		if (entity instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity) entity;
+			if (player.getMotion().x == 0 && player.getMotion().y == 0 && player.getMotion().z == 0 && player.isSneaking() && player.onGround) {
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 					player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
-					world.removeBlock(pos);
+					world.removeBlock(pos, true);
 				}
 			}
 		}
@@ -40,7 +41,7 @@ public class BlockBarrel extends BaseBlock {
 	}
 
 	@Override
-	public void onBlockClicked(IBlockState state, World world, BlockPos pos, EntityPlayer player) {
+	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 		/*
 		 * IPlayerModelCapability props = ModCapabilities.get(player);
 		 * System.out.println("change"); props.setCarrying("barrel");
@@ -49,11 +50,13 @@ public class BlockBarrel extends BaseBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-		/*if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
-			player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
-			world.removeBlock(pos);
-		}*/
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtr) {
+		/*
+		 * if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(),
+		 * ItemStack.EMPTY)) {
+		 * player.inventory.mainInventory.set(player.inventory.currentItem, new
+		 * ItemStack(ModItems.barrel)); world.removeBlock(pos); }
+		 */
 		return false;
 	}
 }

@@ -8,19 +8,19 @@ import com.abelatox.raycraft.models.ModelRoboPirate;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class RenderPirate extends Render<EntityLivingBase> implements IRayCraftRender {
+public class RenderPirate extends EntityRenderer<LivingEntity> implements IRayCraftRender {
 	float scale;
 	private ModelRoboPirate model;
 	private float offset[] = new float[3];
 
-	public RenderPirate(RenderManager renderManager, ModelRoboPirate model, float scale) {
+	public RenderPirate(EntityRendererManager renderManager, ModelRoboPirate model, float scale) {
 		super(renderManager);
 		this.model = model;
 		this.scale = scale;
@@ -28,7 +28,7 @@ public class RenderPirate extends Render<EntityLivingBase> implements IRayCraftR
 	}
 
 	@Override
-	public void doRender(EntityLivingBase entityLiving, double x, double y, double z, float u, float v) {
+	public void doRender(LivingEntity entityLiving, double x, double y, double z, float u, float v) {
 		GL11.glPushMatrix();
 		{
 			GL11.glTranslatef((float) x + this.offset[0], (float) y + 1.5F + this.offset[1], (float) z + this.offset[2]);
@@ -68,7 +68,7 @@ public class RenderPirate extends Render<EntityLivingBase> implements IRayCraftR
 		return lowerLimit + range * f3;
 	}
 
-	protected void rotateCorpse(EntityLivingBase entityLiving, float ageInTicks, float headYawOffset, float v) {
+	protected void rotateCorpse(LivingEntity entityLiving, float ageInTicks, float headYawOffset, float v) {
 		GL11.glRotatef(180.0F + headYawOffset, 0.0F, 1.0F, 0.0F);
 
 		if (entityLiving.deathTime > 0) {
@@ -82,7 +82,7 @@ public class RenderPirate extends Render<EntityLivingBase> implements IRayCraftR
 	}
 
 	@Override
-	public void renderFirstPersonArm(EntityPlayer player) {
+	public void renderFirstPersonArm(PlayerEntity player) {
 		Minecraft mc = Minecraft.getInstance();
 		RenderHelper.enableStandardItemLighting();
 		//Minecraft.getInstance().entityRenderer.enableLightmap();
@@ -95,10 +95,10 @@ public class RenderPirate extends Render<EntityLivingBase> implements IRayCraftR
 
 		GL11.glColor4f(0.6F, 0.6F, 0.6F, 1.0F);
 
-		if (mc.gameSettings.thirdPersonView == 0 && !mc.gameSettings.hideGUI && !player.isPlayerSleeping()) {
+		if (mc.gameSettings.thirdPersonView == 0 && !mc.gameSettings.hideGUI && !player.isSleeping()) {
 			model.swingProgress = 0.0F;
 			model.isSneak = false;
-			model.field_205061_a = 0.0F;
+			model.swimAnimation = 0.0F;
 			model.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
 			model.rightArm.rotateAngleX = 0.0F;
 			model.rightArm.render(0.0625F);
@@ -109,7 +109,7 @@ public class RenderPirate extends Render<EntityLivingBase> implements IRayCraftR
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(EntityLivingBase entity) {
-		return new ResourceLocation(Reference.MODID, "textures/models/" + ModCapabilities.get((EntityPlayer) entity).getPlayerType() + ".png");
+	public ResourceLocation getEntityTexture(LivingEntity entity) {
+		return new ResourceLocation(Reference.MODID, "textures/models/" + ModCapabilities.get((PlayerEntity) entity).getPlayerType() + ".png");
 	}
 }

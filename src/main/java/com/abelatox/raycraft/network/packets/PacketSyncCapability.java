@@ -4,10 +4,8 @@ import java.util.function.Supplier;
 
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-import com.abelatox.raycraft.capabilities.PlayerModelCapability;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkEvent;

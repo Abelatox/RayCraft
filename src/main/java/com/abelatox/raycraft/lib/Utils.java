@@ -27,9 +27,9 @@ import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
 import com.abelatox.raycraft.sounds.ModSounds;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
@@ -49,7 +49,7 @@ public class Utils {
 		return null;
 	}
 
-	public static int getSlotFor(EntityPlayer player, ItemStack stack) {
+	public static int getSlotFor(PlayerEntity player, ItemStack stack) {
 		for (int i = 0; i < player.inventory.mainInventory.size(); ++i) {
 			if (!player.inventory.mainInventory.get(i).isEmpty() && stackEqualExact(stack, player.inventory.mainInventory.get(i))) {
 				return i;
@@ -58,7 +58,7 @@ public class Utils {
 		return -1;
 	}
 
-	public static EntityThrowable getEntityShot(EntityPlayer player, boolean charged) {
+	public static ThrowableEntity getEntityShot(PlayerEntity player, boolean charged) {
 		IPlayerModelCapability props = ModCapabilities.get(player);
 		switch (props.getPlayerType()) {
 		case Strings.ROBO_PIRATE_RED:
@@ -71,7 +71,7 @@ public class Utils {
 		return null;
 	}
 
-	private static EntityBaseFist getRaymanPunchLevel(EntityPlayer player, boolean charged) {
+	private static EntityBaseFist getRaymanPunchLevel(PlayerEntity player, boolean charged) {
 		IPlayerModelCapability props = ModCapabilities.get(player);
 		int level = props.getShotLevel();
 		if (charged && level < 4) {
@@ -187,11 +187,11 @@ public class Utils {
 		return text.replaceAll("\\s+", "").toLowerCase().replaceAll("'", "").replaceAll("-", "").replaceAll(":", "").replaceAll("#", "").replace(",", "");
 	}
 
-	public static void lockSelectedItem(EntityPlayer player, ItemStack stack) {
+	public static void lockSelectedItem(PlayerEntity player, ItemStack stack) {
 		player.inventory.currentItem = Utils.getSlotFor(player, stack);
 	}
 
-	public static BlockPos getAvailablePos(EntityPlayer player) {
+	public static BlockPos getAvailablePos(PlayerEntity player) {
 		// player.world.getHeight(Type.WORLD_SURFACE, player.getPosition().north());
 		if (player.world.getBlockState(player.getPosition().north()).getBlock() == Blocks.AIR) {
 			return player.getPosition().north();
@@ -205,7 +205,7 @@ public class Utils {
 		return null;
 	}
 
-	public static SoundEvent getShootSound(EntityPlayer player, boolean charged) {
+	public static SoundEvent getShootSound(PlayerEntity player, boolean charged) {
 		IPlayerModelCapability props = ModCapabilities.get(player);
 		switch (props.getPlayerType()) {
 		case Strings.RAYMAN:

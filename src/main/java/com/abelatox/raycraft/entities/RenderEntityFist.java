@@ -8,22 +8,22 @@ import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.models.ModelFist;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderEntityFist extends Render<EntityBaseFist> {
+public class RenderEntityFist extends EntityRenderer<EntityBaseFist> {
 
     public static final Factory FACTORY = new RenderEntityFist.Factory();
     ModelFist shot;
     int[] color;
     int test;
     
-    public RenderEntityFist(RenderManager renderManager, ModelFist fist, int[] color) {
+    public RenderEntityFist(EntityRendererManager renderManager, ModelFist fist, int[] color) {
         super(renderManager);
         this.shot = fist;
         this.shadowSize = 0.25F;
@@ -60,8 +60,6 @@ public class RenderEntityFist extends Render<EntityBaseFist> {
 				GL11.glColor4ub((byte)255, (byte)240, (byte)0, (byte)255);
 				GL11.glScaled(4, 4, 4);
 			}
-			//GL11.glColor3ub((byte)color[0], (byte)color[1], (byte)color[2]);
-			//GL11.glColor3d(1,1,1);
 			this.shot.render(entity, 0, 0, 0, 0, 0, 0.0625F);
 			GL11.glColor4ub((byte)255, (byte)255, (byte)255, (byte)255);
 
@@ -78,7 +76,7 @@ public class RenderEntityFist extends Render<EntityBaseFist> {
 
     public static class Factory implements IRenderFactory<EntityBaseFist> {
         @Override
-        public Render<? super EntityBaseFist> createRenderFor(RenderManager manager) {
+        public EntityRenderer<? super EntityBaseFist> createRenderFor(EntityRendererManager manager) {
             return new RenderEntityFist(manager, new ModelFist(), new int[] {200,230,255});
         }
     }

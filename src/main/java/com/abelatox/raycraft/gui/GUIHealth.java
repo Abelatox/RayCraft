@@ -5,18 +5,24 @@ import org.lwjgl.opengl.GL11;
 import com.abelatox.raycraft.lib.Reference;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class GUIHealth extends GuiScreen{
+public class GUIHealth extends Screen{
 
+	public GUIHealth() {
+        super(new TranslationTextComponent(""));
+    }
+
+	
     @SubscribeEvent
     public void onRenderOverlayPost(RenderGameOverlayEvent event) {
         Minecraft mc = Minecraft.getInstance();
-        EntityPlayer player = mc.player;
+        PlayerEntity player = mc.player;
 
         if (event.getType().equals(RenderGameOverlayEvent.ElementType.HEALTH) && event.isCancelable()) {
            event.setCanceled(true);
@@ -37,7 +43,7 @@ public class GUIHealth extends GuiScreen{
                     mc.textureManager.bindTexture(new ResourceLocation(Reference.MODID, "textures/gui/face_normal.png"));
 
                 	GL11.glScaled(0.2, 0.18, 0.2);
-                	drawTexturedModalRect(0, 0, 0, 0, 111, 147);
+                	blit(0, 0, 0, 0, 111, 147);
                 }
                 GL11.glPopMatrix();
                 
@@ -49,7 +55,7 @@ public class GUIHealth extends GuiScreen{
                 	GL11.glColor4d(1, 1, 1, 1);
                 	
                 	for(int i=0;i<player.getMaxHealth()*2;i++)
-                		drawTexturedModalRect(i, 0, 0, 0, 1, 6);
+                		blit(i, 0, 0, 0, 1, 6);
                 }
                 GL11.glPopMatrix();
                 
@@ -58,7 +64,7 @@ public class GUIHealth extends GuiScreen{
                 	GL11.glColor4d(1, 1, 1, 1);
                 	
                 	for(int i=0;i<player.getHealth()*2;i++)
-                		drawTexturedModalRect(i, 0, 1, 0, 1, 6);
+                		blit(i, 0, 1, 0, 1, 6);
                 }
                 GL11.glPopMatrix();
                 

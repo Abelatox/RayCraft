@@ -7,4 +7,7 @@ public interface IPlayerModelCapability {
 	
 	int getShotLevel();
 	void setShotLevel(int level);
+	
+	boolean getCharging();
+	void setCharging(boolean b);
 }

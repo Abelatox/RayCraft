@@ -3,11 +3,11 @@ package com.abelatox.raycraft.blocks;
 import com.abelatox.raycraft.lib.Reference;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 public class BaseBlock extends Block {
@@ -17,9 +17,9 @@ public class BaseBlock extends Block {
 		setRegistryName(Reference.MODID, name);
 	}
 
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		// Minecraft.getInstance().displayGuiScreen(new GUIChooseWeebPower(player));
 
-		return new ActionResult<>(EnumActionResult.PASS, player.getHeldItem(hand));
+		return new ActionResult<>(ActionResultType.PASS, player.getHeldItem(hand));
 	}
 }

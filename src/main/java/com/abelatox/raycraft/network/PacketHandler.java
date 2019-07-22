@@ -7,9 +7,10 @@ import com.abelatox.raycraft.network.packets.PacketRightMouse;
 import com.abelatox.raycraft.network.packets.PacketSetModel;
 import com.abelatox.raycraft.network.packets.PacketSyncCapability;
 import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAll;
+import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAllFromClient;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -23,27 +24,31 @@ public class PacketHandler {
 
 	public static void register() {
 		int packetID = 0;
+		//ServerToClient
 		HANDLER.registerMessage(packetID++, PacketSetModel.class, PacketSetModel::encode, PacketSetModel::decode, PacketSetModel::handle);
 		HANDLER.registerMessage(packetID++, PacketSyncCapability.class, PacketSyncCapability::encode, PacketSyncCapability::decode, PacketSyncCapability::handle);
 		HANDLER.registerMessage(packetID++, PacketSyncCapabilityToAll.class, PacketSyncCapabilityToAll::encode, PacketSyncCapabilityToAll::decode, PacketSyncCapabilityToAll::handle);
+		
+		//ClientToServer
 		HANDLER.registerMessage(packetID++, PacketLeftMouse.class, PacketLeftMouse::encode, PacketLeftMouse::decode, PacketLeftMouse::handle);
 		HANDLER.registerMessage(packetID++, PacketRightMouse.class, PacketRightMouse::encode, PacketRightMouse::decode, PacketRightMouse::handle);
+		HANDLER.registerMessage(packetID++, PacketSyncCapabilityToAllFromClient.class, PacketSyncCapabilityToAllFromClient::encode, PacketSyncCapabilityToAllFromClient::decode, PacketSyncCapabilityToAllFromClient::handle);
 	}
 
 	public static <MSG> void sendToServer(MSG msg) {
 		HANDLER.sendToServer(msg);
 	}
 
-	public static <MSG> void sendTo(MSG msg, EntityPlayerMP player) {
+	public static <MSG> void sendTo(MSG msg, ServerPlayerEntity player) {
 		if (!(player instanceof FakePlayer)) {
 			HANDLER.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
 		}
 	}
 
-	public static void sendToAllAround(EntityPlayer player, IPlayerModelCapability props) {
+	public static void syncToAllAround(PlayerEntity player, IPlayerModelCapability props) {
 		if (!player.world.isRemote) {
-			for (EntityPlayer playerFromList : player.world.playerEntities) {
-				sendTo(new PacketSyncCapabilityToAll(player.getDisplayName().getString(), props), (EntityPlayerMP) playerFromList);
+			for (PlayerEntity playerFromList : player.world.getPlayers()) {
+				sendTo(new PacketSyncCapabilityToAll(player.getDisplayName().getString(), props), (ServerPlayerEntity) playerFromList);
 			}
 		}
 	}

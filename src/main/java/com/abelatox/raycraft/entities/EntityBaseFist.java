@@ -2,17 +2,19 @@ package com.abelatox.raycraft.entities;
 
 import com.abelatox.raycraft.sounds.ModSounds;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.FaceDirection;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.world.Explosion.Mode;
 import net.minecraft.world.World;
 
-public class EntityBaseFist extends EntityThrowable {
+public class EntityBaseFist extends ThrowableEntity {
 
 	int bounces;
 	int maxBounces;
@@ -23,17 +25,15 @@ public class EntityBaseFist extends EntityThrowable {
 	//private static final DataParameter<Boolean> CHARGED = EntityDataManager.createKey(EntityFist.class, DataSerializers.BOOLEAN);
 
 	public EntityBaseFist(World world) {
-		super(ModEntities.TYPE_FIST, world);
+		super(ModEntities.TYPE_FIST_0, world);
 		this.preventEntitySpawning = true;
-		this.isImmuneToFire = true;
-		this.setSize(0.3F, 0.3F);
+		//this.setSize(0.3F, 0.3F);
 	}
 
-	public EntityBaseFist(EntityType<EntityBaseFist> type, World worldIn, EntityLivingBase throwerIn, int lvl) {
+	public EntityBaseFist(EntityType<EntityBaseFist> type, World worldIn, LivingEntity throwerIn, int lvl) {
 		super(type, throwerIn, worldIn);
 		this.preventEntitySpawning = true;
-		this.isImmuneToFire = true;
-		this.setSize(0.3F, 0.3F);
+		//this.setSize(0.3F, 0.3F);
 		this.lvl = lvl;
 		this.maxBounces = 0;
 		this.power = 2;
@@ -54,13 +54,17 @@ public class EntityBaseFist extends EntityThrowable {
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
+	protected void onImpact(RayTraceResult rtRes) {
 		if (!world.isRemote) {
 			if (bounces >= maxBounces) {
 				this.remove();
 			}
-			if (result.entity != null && result.entity instanceof EntityLivingBase) {
-				EntityLivingBase target = (EntityLivingBase) result.entity;
+			EntityRayTraceResult result = null;
+			if(rtRes instanceof EntityRayTraceResult) {
+				result = (EntityRayTraceResult) rtRes;
+			}
+			if (result != null && result.getEntity() != null && result.getEntity() instanceof LivingEntity) {
+				LivingEntity target = (LivingEntity) result.getEntity();
 				target.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), power);
 				//System.out.println(power);
 				if (explosion) { // if is charged && high level do explosion
@@ -69,22 +73,22 @@ public class EntityBaseFist extends EntityThrowable {
 					remove();
 				}
 			} else {
-				if (result.type == Type.BLOCK) {
+				if (result != null && result.getType() == Type.BLOCK) {
 					if (explosion) { // if is charged && high level do explosion
 						explode();
 					} else {
 						world.playSound(null, getPosition(), ModSounds.fistBounce, SoundCategory.MASTER, 1F, 1F);
 
 						bounces++;
-						if (result.sideHit == EnumFacing.NORTH || result.sideHit == EnumFacing.SOUTH) {
+						/*if (result.sideHit == FaceDirection.NORTH || result.sideHit == FaceDirection.SOUTH) {
 							this.motionZ = -this.motionZ;
 						}
-						if (result.sideHit == EnumFacing.EAST || result.sideHit == EnumFacing.WEST) {
+						if (result.sideHit == FaceDirection.EAST || result.sideHit == FaceDirection.WEST) {
 							this.motionX = -this.motionX;
 						}
-						if (result.sideHit == EnumFacing.UP || result.sideHit == EnumFacing.DOWN) {
+						if (result.sideHit == FaceDirection.UP || result.sideHit == FaceDirection.DOWN) {
 							this.motionY = -this.motionY;
-						}
+						}*/
 					}
 				}
 			}
@@ -93,8 +97,14 @@ public class EntityBaseFist extends EntityThrowable {
 
 	private void explode() {
 		//System.out.println("Boom");
-		world.createExplosion(this, posX, posY, posZ, power/4, false);
+		world.createExplosion(this, posX, posY, posZ, power/4, Mode.NONE);
 		this.remove();
+	}
+
+	@Override
+	protected void registerData() {
+		// TODO Auto-generated method stub
+		
 	}
 
 /*	@Override

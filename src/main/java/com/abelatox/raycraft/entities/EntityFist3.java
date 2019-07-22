@@ -1,19 +1,18 @@
 package com.abelatox.raycraft.entities;
 
-import com.abelatox.raycraft.sounds.ModSounds;
-
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Particles;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
 
 public class EntityFist3 extends EntityBaseFist {
 
-	public EntityFist3(World world) {
+	public EntityFist3(EntityType<? extends Entity> type, World world) {
 		super(world);
 	}
 
-	public EntityFist3(World worldIn, EntityLivingBase throwerIn, boolean explosion) {
+	public EntityFist3(World worldIn, LivingEntity throwerIn, boolean explosion) {
 		super(ModEntities.TYPE_FIST_3, worldIn, throwerIn, 3);
 		this.maxBounces = 3;
 		this.power = 16;
@@ -23,7 +22,7 @@ public class EntityFist3 extends EntityBaseFist {
 	
 	@Override
 	public void tick() {
-		world.addParticle(Particles.ENTITY_EFFECT, posX, posY, posZ, 1, 1, 0);
+		world.addParticle(ParticleTypes.ENTITY_EFFECT, posX, posY, posZ, 1, 1, 0);
 		super.tick();
 	}
 

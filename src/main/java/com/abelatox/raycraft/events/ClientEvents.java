@@ -8,13 +8,12 @@ import com.abelatox.raycraft.models.render.IRayCraftRender;
 import com.abelatox.raycraft.network.PacketHandler;
 import com.abelatox.raycraft.network.packets.PacketLeftMouse;
 import com.abelatox.raycraft.network.packets.PacketRightMouse;
-import com.abelatox.raycraft.sounds.ModSounds;
+import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAllFromClient;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
 import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -24,14 +23,14 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public void RenderEntity(RenderPlayerEvent.Pre event) {
-		if (event.getEntityLiving() instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+		if (event.getEntityLiving() instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
 			if (player.inventory.hasItemStack(new ItemStack(ModItems.barrel))) {
 				Utils.lockSelectedItem(player, new ItemStack(ModItems.barrel));
 			}
 
-			IPlayerModelCapability props = ModCapabilities.get((EntityPlayer) player);
+			IPlayerModelCapability props = ModCapabilities.get((PlayerEntity) player);
 			IRayCraftRender render = Utils.getRender(props);
 			if (render != null) {
 				event.setCanceled(true);
@@ -42,7 +41,7 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public void CustomHandRendering(RenderHandEvent event) {
-		EntityPlayer player = Minecraft.getInstance().player;
+		PlayerEntity player = Minecraft.getInstance().player;
 
 		if (player.inventory.hasItemStack(new ItemStack(ModItems.barrel))) {
 			Utils.lockSelectedItem(player, new ItemStack(ModItems.barrel));
@@ -62,22 +61,25 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public void MouseClick(MouseInputEvent event) {
-		EntityPlayerSP player = Minecraft.getInstance().player;
-		if (Minecraft.getInstance().currentScreen == null) {
-			if (event.getAction() == 1) {
-				time = System.currentTimeMillis();
-				// If empty hand should shoot, if not it shouldn't (barrel + fist)
-				shouldShoot = false;
+		ClientPlayerEntity player = Minecraft.getInstance().player;
+		if (player != null) {
+			IPlayerModelCapability props = ModCapabilities.get(player);
 
-				if (player != null && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
-					shouldShoot = true;
-				}
-			}
-			if (event.getAction() == 0) {
-				if (player != null) {
+			if (Minecraft.getInstance().currentScreen == null) {
+				switch(event.getAction()) {
+				case 1:
+					time = System.currentTimeMillis();
+					// If empty hand should shoot, if not it shouldn't (barrel + fist)
+					shouldShoot = false;
 
+					if (player != null && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
+						shouldShoot = true;
+						props.setCharging(true);
+					}
+					break;
+				case 0:
 					boolean charged = false;
-					if (time + 2000 < System.currentTimeMillis()) {
+					if (time + 1000 < System.currentTimeMillis()) {
 						charged = true;
 					}
 
@@ -88,11 +90,15 @@ public class ClientEvents {
 					case 1:
 						if (shouldShoot) {
 							PacketHandler.sendToServer(new PacketRightMouse(charged));
-
+							props.setCharging(false);
 						}
 						break;
 					}
+					break;
 				}
+				
+				//PacketHandler.syncToAllAround(player, props);
+				PacketHandler.sendToServer(new PacketSyncCapabilityToAllFromClient());
 			}
 		}
 	}
