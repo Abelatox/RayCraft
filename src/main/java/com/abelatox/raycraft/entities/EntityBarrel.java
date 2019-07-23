@@ -9,17 +9,20 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityBarrel extends ThrowableEntity {
 
-    public EntityBarrel(EntityType<? extends Entity> type, World world) {
-    	super(ModEntities.TYPE_BARREL, world);
+	public EntityBarrel(EntityType<? extends Entity> type, World world) {
+		super(ModEntities.TYPE_BARREL, world);
 		this.preventEntitySpawning = true;
 		// this.setSize(0.98F, 0.98F);
 	}
@@ -30,9 +33,18 @@ public class EntityBarrel extends ThrowableEntity {
 		// this.setSize(0.98F, 0.98F);
 	}
 
+	public EntityBarrel(World worldIn) {
+		super(ModEntities.TYPE_BARREL, worldIn);
+	}
+
 	@Override
 	protected float getGravityVelocity() {
 		return 0.05F;
+	}
+
+	@Override
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
@@ -53,6 +65,8 @@ public class EntityBarrel extends ThrowableEntity {
 				} else {
 					explode();
 				}
+			} else {
+				explode();
 			}
 		}
 	}

@@ -10,6 +10,10 @@ public class EntityFist1 extends EntityBaseFist {
 	public EntityFist1(EntityType<? extends Entity> type, World world) {
 		super(world);
 	}
+    
+    public EntityFist1(World worldIn) {
+		super(ModEntities.TYPE_FIST_1,worldIn);
+	}
 
 	public EntityFist1(World worldIn, LivingEntity throwerIn) {
 		super(ModEntities.TYPE_FIST_1, worldIn, throwerIn, 1);
@@ -17,5 +21,4 @@ public class EntityFist1 extends EntityBaseFist {
 		this.power = 4;
 		this.maxTicks = 80;
 	}
-
 }

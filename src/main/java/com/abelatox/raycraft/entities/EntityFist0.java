@@ -10,6 +10,10 @@ public class EntityFist0 extends EntityBaseFist {
     public EntityFist0(EntityType<? extends Entity> type, World world) {
 		super(world);
 	}
+    
+    public EntityFist0(World worldIn) {
+		super(worldIn);
+	}
 
 	public EntityFist0(World worldIn, LivingEntity throwerIn) {
 		super(ModEntities.TYPE_FIST_0, worldIn, throwerIn, 0);

@@ -11,6 +11,10 @@ public class EntityFist4 extends EntityBaseFist {
 	public EntityFist4(EntityType<? extends Entity> type, World world) {
 		super(world);
 	}
+    
+    public EntityFist4(World worldIn) {
+		super(ModEntities.TYPE_FIST_4,worldIn);
+	}
 
 	public EntityFist4(World worldIn, LivingEntity throwerIn, boolean explosion) {
 		super(ModEntities.TYPE_FIST_4, worldIn, throwerIn, 4);
