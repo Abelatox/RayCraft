@@ -2,7 +2,6 @@ package com.abelatox.raycraft.entities;
 
 import com.abelatox.raycraft.sounds.ModSounds;
 
-import net.minecraft.client.renderer.FaceDirection;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;

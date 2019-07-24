@@ -1,12 +1,6 @@
 package com.abelatox.raycraft.proxy;
 
-import com.abelatox.raycraft.entities.ModEntities;
-import com.abelatox.raycraft.lib.Reference;
-
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -19,13 +13,4 @@ public class ClientProxy implements IProxy {
         //B3DLoader.INSTANCE.addDomain(Reference.MODID);
 		//ModelLoader.setCustomModelResourceLocation(ModItems.barrel, 0, new ModelResourceLocation(ModItems.barrel.getRegistryName(), "inventory"));
     }
-
-    //Register the entity models
-    @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event) {
-        ModEntities.registerModels();
-		//ModelLoader.setCustomModelResourceLocation(ModItems.kingdomKey, 0, new ModelResourceLocation("", "inventory"));
-
-    }
-
 }

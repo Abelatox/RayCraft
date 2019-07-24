@@ -1,7 +1,6 @@
 package com.abelatox.raycraft.network.packets;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;

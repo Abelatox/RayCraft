@@ -1,7 +1,6 @@
 package com.abelatox.raycraft.entities;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import com.abelatox.raycraft.lib.Reference;
 

@@ -7,9 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.entities.ModEntities;
-import com.abelatox.raycraft.entities.RenderEntityBarrel;
 import com.abelatox.raycraft.events.CapabilityEventsHandler;
 import com.abelatox.raycraft.events.ClientEvents;
 import com.abelatox.raycraft.events.PlayerEventsHandler;
@@ -31,7 +29,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;

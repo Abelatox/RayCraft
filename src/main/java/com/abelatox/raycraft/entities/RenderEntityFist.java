@@ -49,7 +49,7 @@ public class RenderEntityFist extends EntityRenderer<EntityBaseFist> {
 			}
 			if(entity instanceof EntityFist2) {
 				//System.out.println("2- yellow");
-				GL11.glColor4ub((byte)255, (byte)220, (byte)50, (byte)255);
+				GL11.glColor4ub((byte)255, (byte)180, (byte)0, (byte)255);
 			}
 			if(entity instanceof EntityFist3) {
 				//System.out.println("3- Golden");

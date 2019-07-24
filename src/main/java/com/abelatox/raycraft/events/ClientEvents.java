@@ -2,7 +2,6 @@ package com.abelatox.raycraft.events;
 
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-import com.abelatox.raycraft.entities.ModEntities;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
@@ -16,11 +15,9 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ClientEvents {
 
