@@ -7,17 +7,21 @@ import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
 import com.abelatox.raycraft.network.PacketHandler;
 import com.abelatox.raycraft.network.packets.PacketLeftMouse;
+import com.abelatox.raycraft.network.packets.PacketPlaySound;
 import com.abelatox.raycraft.network.packets.PacketRightMouse;
 import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAllFromClient;
+import com.abelatox.raycraft.sounds.ModSounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.network.PacketDispatcher;
 
 public class ClientEvents {
 
@@ -69,7 +73,7 @@ public class ClientEvents {
 
 			if (Minecraft.getInstance().currentScreen == null) {
 				switch (event.getAction()) {
-				case 1:
+				case 1: //Press
 					time = System.currentTimeMillis();
 					// If empty hand should shoot, if not it shouldn't (barrel + fist)
 					shouldShoot = false;
@@ -77,9 +81,11 @@ public class ClientEvents {
 					if (player != null && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 						shouldShoot = true;
 						props.setCharging(true);
+						//PacketHandler.sendToServer(new PacketPlaySound("pirateShot"));
+						//player.world.playSound(player.posX, player.posY, player.posZ, ModSounds.pirateShot2, SoundCategory.PLAYERS, 1F, 1F, false);
 					}
 					break;
-				case 0:
+				case 0: //Release
 					boolean charged = false;
 					if (time + 1000 < System.currentTimeMillis()) {
 						charged = true;

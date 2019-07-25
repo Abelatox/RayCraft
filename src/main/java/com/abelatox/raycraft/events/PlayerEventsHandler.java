@@ -35,31 +35,25 @@ public class PlayerEventsHandler {
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
 					// if (props.getCarrying().equals("barrel")) {
 					if (player.getMotion().y <= 0) {
-						player.setMotion(new Vec3d(player.getMotion().x/2, player.getMotion().y * 2, player.getMotion().z/2));
+						player.setMotion(new Vec3d(player.getMotion().x / 2, player.getMotion().y * 2, player.getMotion().z / 2));
 					} else {
-						player.setMotion(new Vec3d(player.getMotion().x/2, player.getMotion().y, player.getMotion().z/2));
+						player.setMotion(new Vec3d(player.getMotion().x / 2, player.getMotion().y, player.getMotion().z / 2));
 
 					}
-						
 
 					// If sneaking drop the barrel as block
-					/*if (player.isSneaking()) {
-						if (Utils.getAvailablePos(player) == null) {
-							if (!warned) {
-								player.sendMessage(new TextComponentString("You can't drop the barrel here"));
-								warned = true;
-							}
-						} else {
-							player.inventory.removeStackFromSlot(player.inventory.currentItem);
-							// props.setCarrying("null");
-							player.world.setBlockState(Utils.getAvailablePos(player), ModBlocks.barrel.getDefaultState());
-							// PacketHandler.sendToAllAround(player, props);
-						}
-					} else {
-						warned = false;
-
-						// System.out.println("attack");
-					}*/
+					/*
+					 * if (player.isSneaking()) { if (Utils.getAvailablePos(player) == null) { if
+					 * (!warned) { player.sendMessage(new
+					 * TextComponentString("You can't drop the barrel here")); warned = true; } }
+					 * else { player.inventory.removeStackFromSlot(player.inventory.currentItem); //
+					 * props.setCarrying("null");
+					 * player.world.setBlockState(Utils.getAvailablePos(player),
+					 * ModBlocks.barrel.getDefaultState()); // PacketHandler.sendToAllAround(player,
+					 * props); } } else { warned = false;
+					 * 
+					 * // System.out.println("attack"); }
+					 */
 				}
 
 				// Prevent the player from changing item while holding a barrel
@@ -69,13 +63,13 @@ public class PlayerEventsHandler {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onPlayerJump(LivingJumpEvent event) {
-		if(event.getEntityLiving() instanceof PlayerEntity) {
+		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 			int slot = Utils.getSlotFor(player, new ItemStack(ModItems.barrel));
-			if(slot > -1) {
+			if (slot > -1) {
 				player.inventory.removeStackFromSlot(slot);
 				if (!player.world.isRemote) {
 					EntityBarrel barrel = new EntityBarrel(player.world, player);
@@ -85,26 +79,25 @@ public class PlayerEventsHandler {
 					player.inventory.removeStackFromSlot(player.inventory.currentItem);
 				}
 			}
-			
+
 		}
 	}
 
 	@SubscribeEvent
 	public void onPlayerClone(PlayerEvent.Clone event) {
-		updateCap(event.getOriginal(), event.getEntityPlayer());
-
-		/*
-		 * if (event.isWasDeath()) { updateDeath(event.getOriginal(),
-		 * event.getPlayerEntity()); }
-		 */
-
+		if (event.isWasDeath()) {
+			updateCap(event.getOriginal(), event.getEntityPlayer());
+		}
 	}
 
 	private void updateCap(PlayerEntity original, PlayerEntity player) {
-		System.out.println(original + "\n" + player);
-		LazyOptional<IPlayerModelCapability> oProps = original.getCapability(ModCapabilities.PLAYER_MODEL);
-		LazyOptional<IPlayerModelCapability> props = player.getCapability(ModCapabilities.PLAYER_MODEL);
-		System.out.println(oProps + " " + props);
+		//System.out.println(original + "\n" + player);
+		IPlayerModelCapability oProps = ModCapabilities.get(original);
+		IPlayerModelCapability props = ModCapabilities.get(player);
+		props.setPlayerType(oProps.getPlayerType());
+		props.setShotLevel(oProps.getShotLevel());
+		props.setCharging(oProps.getCharging());
+		//System.out.println(oProps + " " + props);
 	}
 
 	@SubscribeEvent

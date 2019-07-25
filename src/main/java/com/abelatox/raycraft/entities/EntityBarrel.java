@@ -1,8 +1,10 @@
 package com.abelatox.raycraft.entities;
 
 import com.abelatox.raycraft.items.ModItems;
+import com.abelatox.raycraft.sounds.ModSounds;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.client.particle.FlameParticle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -10,6 +12,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -48,18 +52,19 @@ public class EntityBarrel extends ThrowableEntity {
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if (!world.isRemote) {
-			if (result.getType() == Type.ENTITY) {
-				EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
+		// world.playSound(this.posX, this.posY, this.posZ, ModSounds.bombExplode,
+		// SoundCategory.PLAYERS, 1F, 1F, false);
 
-				if (entityResult.getEntity() != null && entityResult.getEntity() instanceof PlayerEntity && entityResult.getEntity() == owner) {
-					PlayerEntity player = (PlayerEntity) owner;
-					if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
+		if (result.getType() == Type.ENTITY) {
+			EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
+
+			if (entityResult.getEntity() != null && entityResult.getEntity() instanceof PlayerEntity && entityResult.getEntity() == owner) {
+				PlayerEntity player = (PlayerEntity) owner;
+				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
+					if (!world.isRemote) {
 						player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
 						this.remove();
 						return;
-					} else {
-						explode();
 					}
 				} else {
 					explode();
@@ -67,13 +72,19 @@ public class EntityBarrel extends ThrowableEntity {
 			} else {
 				explode();
 			}
+		} else {
+			explode();
 		}
 	}
 
 	private void explode() {
 		// System.out.println("Boom");
-		world.createExplosion(this, posX, posY, posZ, 5, Explosion.Mode.NONE);
+		//world.createExplosion(this, posX, posY, posZ, 5, Explosion.Mode.NONE);
+		for(int i=0;i<5;i++) {
+			world.addParticle(ParticleTypes.EXPLOSION, posX, posY, posZ, i, i, i);
+		}
 		removeBreakableBlocks();
+		world.playSound(this.posX, this.posY, this.posZ, ModSounds.bombExplode, SoundCategory.PLAYERS, 1F, 1F, false);
 		this.remove();
 	}
 

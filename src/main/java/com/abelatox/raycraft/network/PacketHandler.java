@@ -3,6 +3,7 @@ package com.abelatox.raycraft.network;
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
 import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.network.packets.PacketLeftMouse;
+import com.abelatox.raycraft.network.packets.PacketPlaySound;
 import com.abelatox.raycraft.network.packets.PacketRightMouse;
 import com.abelatox.raycraft.network.packets.PacketSetModel;
 import com.abelatox.raycraft.network.packets.PacketSyncCapability;
@@ -33,6 +34,7 @@ public class PacketHandler {
 		HANDLER.registerMessage(packetID++, PacketLeftMouse.class, PacketLeftMouse::encode, PacketLeftMouse::decode, PacketLeftMouse::handle);
 		HANDLER.registerMessage(packetID++, PacketRightMouse.class, PacketRightMouse::encode, PacketRightMouse::decode, PacketRightMouse::handle);
 		HANDLER.registerMessage(packetID++, PacketSyncCapabilityToAllFromClient.class, PacketSyncCapabilityToAllFromClient::encode, PacketSyncCapabilityToAllFromClient::decode, PacketSyncCapabilityToAllFromClient::handle);
+		HANDLER.registerMessage(packetID++, PacketPlaySound.class, PacketPlaySound::encode, PacketPlaySound::decode, PacketPlaySound::handle);
 	}
 
 	public static <MSG> void sendToServer(MSG msg) {

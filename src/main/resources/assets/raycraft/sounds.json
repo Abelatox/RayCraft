@@ -29,6 +29,12 @@
 			{"name": "raycraft:fist_gold_charged", "stream": false}
 		]
 	},
+	"bomb_explode": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:bomb_explode", "stream": false}
+		]
+	},
 	"pirate_shot1": {
 		"category": "player",
 		"sounds": [
