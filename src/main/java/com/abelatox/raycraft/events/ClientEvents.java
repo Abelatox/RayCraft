@@ -6,9 +6,9 @@ import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
 import com.abelatox.raycraft.network.PacketHandler;
-import com.abelatox.raycraft.network.packets.PacketLeftMouse;
+import com.abelatox.raycraft.network.packets.PacketSecondaryAction;
 import com.abelatox.raycraft.network.packets.PacketPlaySound;
-import com.abelatox.raycraft.network.packets.PacketRightMouse;
+import com.abelatox.raycraft.network.packets.PacketShoot;
 import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAllFromClient;
 import com.abelatox.raycraft.sounds.ModSounds;
 
@@ -92,12 +92,12 @@ public class ClientEvents {
 					}
 
 					switch (event.getButton()) {
-					case 0:
-						PacketHandler.sendToServer(new PacketLeftMouse());
-						break;
 					case 1:
+						PacketHandler.sendToServer(new PacketSecondaryAction());
+						break;
+					case 0:
 						if (shouldShoot) {
-							PacketHandler.sendToServer(new PacketRightMouse(charged));
+							PacketHandler.sendToServer(new PacketShoot(charged));
 							props.setCharging(false);
 						}
 						break;

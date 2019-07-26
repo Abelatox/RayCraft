@@ -9,14 +9,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketLeftMouse {
+public class PacketSecondaryAction {
 
 	//private String model;
 
-	public PacketLeftMouse() {
+	public PacketSecondaryAction() {
 	}
 
-	public PacketLeftMouse(String power) {
+	public PacketSecondaryAction(String power) {
 		//this.model = power;
 	}
 
@@ -25,14 +25,14 @@ public class PacketLeftMouse {
 		//buffer.writeString(this.model);
 	}
 
-	public static PacketLeftMouse decode(PacketBuffer buffer) {
-		PacketLeftMouse msg = new PacketLeftMouse();
+	public static PacketSecondaryAction decode(PacketBuffer buffer) {
+		PacketSecondaryAction msg = new PacketSecondaryAction();
 		//int len = buffer.readInt();
 		//msg.model = buffer.readString(len);
 		return msg;
 	}
 
-	public static void handle(PacketLeftMouse message, final Supplier<NetworkEvent.Context> ctx) {
+	public static void handle(PacketSecondaryAction message, final Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
 			IPlayerModelCapability props = ModCapabilities.get(player);

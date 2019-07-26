@@ -14,14 +14,14 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketRightMouse {
+public class PacketShoot {
 
 	private boolean charged = false;
 
-	public PacketRightMouse() {
+	public PacketShoot() {
 	}
 
-	public PacketRightMouse(boolean charged) {
+	public PacketShoot(boolean charged) {
 		this.charged = charged;
 	}
 
@@ -30,13 +30,13 @@ public class PacketRightMouse {
 		
 	}
 
-	public static PacketRightMouse decode(PacketBuffer buffer) {
-		PacketRightMouse msg = new PacketRightMouse();
+	public static PacketShoot decode(PacketBuffer buffer) {
+		PacketShoot msg = new PacketShoot();
 		msg.charged = buffer.readBoolean();
 		return msg;
 	}
 
-	public static void handle(PacketRightMouse message, final Supplier<NetworkEvent.Context> ctx) {
+	public static void handle(PacketShoot message, final Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
 			IPlayerModelCapability props = ModCapabilities.get(player);

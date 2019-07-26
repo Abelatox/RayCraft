@@ -148,10 +148,14 @@ public class ModelRayman extends BipedModel {
 				this.head.offsetY = 0;
 
 				this.rightLeg.render(f5);
-				this.leftArm.render(f5);
 				this.body.render(f5);
 				this.head.render(f5);
 				this.leftLeg.render(f5);
+				if (ModCapabilities.get(player).getShotLevel() == 3) {
+					GL11.glColor3d(1, 1, 0);
+				}
+				this.leftArm.render(f5);
+		
 				/*if (ModCapabilities.get(player).getCharging()) {
 				//	armRotation += 0.3;
 					this.rightArm.rotateAngleX += 0.3;
@@ -161,6 +165,8 @@ public class ModelRayman extends BipedModel {
 				//this.rightArm.rotateAngleX = armRotation;*/
 
 				this.rightArm.render(f5);
+				GL11.glColor3d(1, 1, 1);
+
 				GL11.glPushMatrix();
 				{
 					GL11.glRotated(90, 0, 1, 0);
@@ -168,7 +174,6 @@ public class ModelRayman extends BipedModel {
 					GL11.glRotated(90, 0, 1, 0);
 					GL11.glTranslated(0.4, 0.2, -0.7);
 					Minecraft.getInstance().gameRenderer.itemRenderer.renderItem((PlayerEntity) entity, ((PlayerEntity) entity).getHeldItemMainhand(), TransformType.THIRD_PERSON_RIGHT_HAND);
-
 				}
 				GL11.glPopMatrix();
 			}

@@ -103,7 +103,12 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 			model.swimAnimation = 0.0F;
 			model.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
 			model.rightArm.rotateAngleX += 1.0F;
+			if (ModCapabilities.get(player).getShotLevel() == 3) {
+				GL11.glColor3d(1, 1, 0);
+			}
 			model.rightArm.render(0.0625F);
+			GL11.glColor3d(1, 1, 1);
+			
 		}
 		//GlStateManager.disableBlend();
 		//Minecraft.getInstance().entityRenderer.disableLightmap();
