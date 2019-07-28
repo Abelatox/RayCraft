@@ -2,6 +2,7 @@ package com.abelatox.raycraft.events;
 
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.gui.GUISelectModel;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
@@ -93,7 +94,8 @@ public class ClientEvents {
 
 					switch (event.getButton()) {
 					case 1:
-						PacketHandler.sendToServer(new PacketSecondaryAction());
+						//PacketHandler.sendToServer(new PacketSecondaryAction());
+						//Minecraft.getInstance().displayGuiScreen(new GUISelectModel());
 						break;
 					case 0:
 						if (shouldShoot) {

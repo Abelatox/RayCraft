@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.client.InputHandler;
 import com.abelatox.raycraft.entities.ModEntities;
 import com.abelatox.raycraft.events.CapabilityEventsHandler;
 import com.abelatox.raycraft.events.ClientEvents;
@@ -29,6 +30,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -64,6 +66,8 @@ public class MainRayCraft {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
 		MinecraftForge.EVENT_BUS.register(this);
+		
+		
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
@@ -73,15 +77,19 @@ public class MainRayCraft {
 		MinecraftForge.EVENT_BUS.register(new PlayerEventsHandler());
 		MinecraftForge.EVENT_BUS.register(new CapabilityEventsHandler());
 
+
 		ModCapabilities.register();
 		DeferredWorkQueue.runLater(() -> {
-			PacketHandler.register(); // NetworkRegistry.createInstance
+			PacketHandler.register();
 		});
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
-		// do something that can only be done on the client
 		LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
+		for (InputHandler.Keybinds key : InputHandler.Keybinds.values())
+			ClientRegistry.registerKeyBinding(key.getKeybind());
+
+		MinecraftForge.EVENT_BUS.register(new InputHandler());
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		MinecraftForge.EVENT_BUS.register(new GUIHealth());
         ModEntities.registerModels();
@@ -89,7 +97,6 @@ public class MainRayCraft {
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {
-		// some example code to dispatch IMC to another mod
 		InterModComms.sendTo(Reference.MODID, "helloworld", () -> {
 			LOGGER.info("Hello world from the MDK");
 			return "Hello world";
@@ -97,20 +104,15 @@ public class MainRayCraft {
 	}
 
 	private void processIMC(final InterModProcessEvent event) {
-		// some example code to receive and process InterModComms from other mods
 		LOGGER.info("Got IMC {}", event.getIMCStream().map(m -> m.getMessageSupplier().get()).collect(Collectors.toList()));
 	}
 
-	// You can use SubscribeEvent and let the Event Bus discover methods to call
 	@SubscribeEvent
 	public void onServerStarting(FMLServerStartingEvent event) {
 		// do something when the server starts
 		LOGGER.info("HELLO from server starting");
 	}
 
-	// You can use EventBusSubscriber to automatically subscribe events on the
-	// contained class (this is subscribing to the MOD
-	// Event bus for receiving Registry Events)
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class RegistryEvents {
 		@SubscribeEvent

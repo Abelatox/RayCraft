@@ -16,13 +16,14 @@ import java.util.Set;
 
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.entities.EntityBaseFist;
 import com.abelatox.raycraft.entities.EntityFist0;
 import com.abelatox.raycraft.entities.EntityFist1;
 import com.abelatox.raycraft.entities.EntityFist2;
 import com.abelatox.raycraft.entities.EntityFist3;
 import com.abelatox.raycraft.entities.EntityFist4;
+import com.abelatox.raycraft.entities.EntityPirateShot;
+import com.abelatox.raycraft.entities.EntityPirateShot2;
 import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
 import com.abelatox.raycraft.sounds.ModSounds;
@@ -62,9 +63,10 @@ public class Utils {
 		IPlayerModelCapability props = ModCapabilities.get(player);
 		switch (props.getPlayerType()) {
 		case Strings.ROBO_PIRATE_RED:
-			return new EntityBarrel(player.world, player);
+			return new EntityPirateShot2(player.world, player);
 		case Strings.ROBO_PIRATE_GREEN:
-			return new EntityBarrel(player.world, player);
+			//return new EntityBarrel(player.world, player);
+			return new EntityPirateShot(player.world, player);
 		case Strings.RAYMAN:
 			return getRaymanPunchLevel(player, charged);
 		}

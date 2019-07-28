@@ -133,7 +133,7 @@ public class PlayerEventsHandler {
 			PlayerEntity player = (PlayerEntity) event.getSource().getImmediateSource();
 			IPlayerModelCapability props = ModCapabilities.get(player);
 
-			if (props.getPlayerType().equals("robopirate")) {
+			/*if (props.getPlayerType().equals("robopirate")) {
 				props.setPlayerType("robopirate2");
 			} else if (props.getPlayerType().equals("robopirate2")) {
 				props.setPlayerType("rayman");
@@ -141,7 +141,7 @@ public class PlayerEventsHandler {
 				props.setPlayerType("robopirate");
 			}
 
-			PacketHandler.syncToAllAround(player, props);
+			PacketHandler.syncToAllAround(player, props);*/
 		}
 	}
 }

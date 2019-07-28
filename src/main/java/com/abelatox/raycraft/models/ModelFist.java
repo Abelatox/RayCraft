@@ -22,18 +22,8 @@ public class ModelFist extends EntityModel {
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		GL11.glPushMatrix();
 		{
-			//RenderHelper.enableStandardItemLighting();
-			//Minecraft.getInstance().entityRenderer.enableLightmap();
-			//GlStateManager.enableBlend();
-
-			
-
 			GL11.glTranslated(0, 0.1,0);
 			this.fist.render(f5);
-			//GlStateManager.disableBlend();
-			//Minecraft.getInstance().entityRenderer.disableLightmap();
-			//RenderHelper.disableStandardItemLighting();
-
 		}
 		GL11.glPopMatrix();
 		

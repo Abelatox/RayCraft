@@ -99,7 +99,7 @@ public class EntityBarrel extends ThrowableEntity {
 		} 
 		
 		removeBreakableBlocks();
-		world.playSound(this.posX, this.posY, this.posZ, ModSounds.bombExplode, SoundCategory.PLAYERS, 1F, 1F, false);
+		world.playSound(this.posX, this.posY, this.posZ, ModSounds.bombExplode, SoundCategory.PLAYERS, 5F, 1F, false);
 		this.remove();
 	}
 

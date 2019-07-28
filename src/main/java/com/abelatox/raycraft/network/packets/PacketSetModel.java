@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.network.PacketHandler;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -16,8 +17,8 @@ public class PacketSetModel {
 	public PacketSetModel() {
 	}
 
-	public PacketSetModel(String power) {
-		this.model = power;
+	public PacketSetModel(String model) {
+		this.model = model;
 	}
 
 	public void encode(PacketBuffer buffer) {
@@ -38,6 +39,7 @@ public class PacketSetModel {
 			IPlayerModelCapability props = ModCapabilities.get(player);
 			props.setPlayerType(message.model);
 			System.out.println(props.getPlayerType());
+			PacketHandler.syncToAllAround(player, props);
 		});
 		ctx.get().setPacketHandled(true);
 	}
