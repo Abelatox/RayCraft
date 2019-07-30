@@ -2,7 +2,7 @@ package com.abelatox.raycraft.network.packets;
 
 import java.util.function.Supplier;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.sounds.ModSounds;
@@ -39,7 +39,7 @@ public class PacketShoot {
 	public static void handle(PacketShoot message, final Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
-			IPlayerModelCapability props = ModCapabilities.get(player);
+			IPlayerCapabilities props = ModCapabilities.get(player);
 			if(props.hasCustomPlayerType() && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 				ThrowableEntity shot = Utils.getEntityShot(player, message.charged);
 				player.world.addEntity(shot);

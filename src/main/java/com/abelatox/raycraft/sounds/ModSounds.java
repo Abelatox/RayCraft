@@ -17,7 +17,10 @@ public class ModSounds {
 		fistGoldCharged = registerSound("fist_gold_charged"),
 		pirateShot1 = registerSound("pirate_shot1"),
 		pirateShot2 = registerSound("pirate_shot2"),
-		bombExplode = registerSound("bomb_explode");
+		bombExplode = registerSound("bomb_explode"),
+		lumYellow = registerSound("lum_yellow"),
+		lumGreen = registerSound("lum_green"),
+		lumRed = registerSound("lum_red");
      
     public static SoundEvent registerSound(String name) {
         final ResourceLocation soundID = new ResourceLocation(Reference.MODID, name);
@@ -29,7 +32,7 @@ public class ModSounds {
     	
 		@SubscribeEvent
 		public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
-			event.getRegistry().registerAll(fistShot0, fistShot1, fistShot2, fistBounce, fistGoldCharged, pirateShot1, pirateShot2, bombExplode);
+			event.getRegistry().registerAll(fistShot0, fistShot1, fistShot2, fistBounce, fistGoldCharged, pirateShot1, pirateShot2, bombExplode, lumYellow, lumGreen, lumRed);
 		}
     }
 }

@@ -1,6 +1,6 @@
 package com.abelatox.raycraft.items;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.network.PacketHandler;
 
@@ -21,7 +21,7 @@ public class ItemPowerUp extends BaseItem {
 
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		// Minecraft.getInstance().displayGuiScreen(new GUIChooseWeebPower(player));
-		IPlayerModelCapability props = ModCapabilities.get(player);
+		IPlayerCapabilities props = ModCapabilities.get(player);
 
 		if (!world.isRemote) {
 			if (props.getShotLevel() < 3) {

@@ -3,7 +3,7 @@ package com.abelatox.raycraft.network.packets;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 
 import net.minecraft.client.Minecraft;
@@ -23,7 +23,7 @@ public class PacketSyncCapabilityToAll {
 	public PacketSyncCapabilityToAll() {
 	}
 
-	public PacketSyncCapabilityToAll(String name, IPlayerModelCapability capability) {
+	public PacketSyncCapabilityToAll(String name, IPlayerCapabilities capability) {
 		this.name = name;
 		this.model = capability.getPlayerType();
 		this.shotLevel = capability.getShotLevel();
@@ -58,7 +58,7 @@ public class PacketSyncCapabilityToAll {
 				}
 			}
 			if (player != null) {
-				LazyOptional<IPlayerModelCapability> props = player.getCapability(ModCapabilities.PLAYER_MODEL);
+				LazyOptional<IPlayerCapabilities> props = player.getCapability(ModCapabilities.PLAYER_CAPABILITIES);
 				props.ifPresent(cap -> cap.setPlayerType(message.model));
 				props.ifPresent(cap -> cap.setShotLevel(message.shotLevel));
 				props.ifPresent(cap -> cap.setCharging(message.charging));

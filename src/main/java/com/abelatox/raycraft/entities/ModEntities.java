@@ -16,14 +16,11 @@ import net.minecraftforge.fml.network.FMLPlayMessages.SpawnEntity;
 
 public class ModEntities {
 	public static EntityType<EntityBarrel> TYPE_BARREL = createEntityType(EntityBarrel.class, EntityBarrel::new, (spawnEntity, world) -> new EntityBarrel(world), EntityClassification.MISC, "entity_barrel", 1, 1F);
-	public static EntityType<EntityBaseFist> TYPE_FIST_0 = createEntityType(EntityFist0.class, EntityFist0::new, (spawnEntity, world) -> new EntityFist0(world), EntityClassification.MISC, "entity_fist0", 1, 1);
-	public static EntityType<EntityBaseFist> TYPE_FIST_1 = createEntityType(EntityFist1.class, EntityFist1::new, (spawnEntity, world) -> new EntityFist1(world), EntityClassification.MISC, "entity_fist1", 1, 1);
-	public static EntityType<EntityBaseFist> TYPE_FIST_2 = createEntityType(EntityFist2.class, EntityFist2::new, (spawnEntity, world) -> new EntityFist2(world), EntityClassification.MISC, "entity_fist2", 1, 1);
-	public static EntityType<EntityBaseFist> TYPE_FIST_3 = createEntityType(EntityFist3.class, EntityFist3::new, (spawnEntity, world) -> new EntityFist3(world), EntityClassification.MISC, "entity_fist3", 1, 1);
-	public static EntityType<EntityBaseFist> TYPE_FIST_4 = createEntityType(EntityFist4.class, EntityFist4::new, (spawnEntity, world) -> new EntityFist4(world), EntityClassification.MISC, "entity_fist4", 1, 1);
+	public static EntityType<EntityFist> TYPE_FIST = createEntityType(EntityFist.class, EntityFist::new, (spawnEntity, world) -> new EntityFist(world), EntityClassification.MISC, "entity_fist", 0.4F, 0.4F);
 	public static EntityType<EntityPirateShot> TYPE_PIRATE_SHOT = createEntityType(EntityPirateShot.class, EntityPirateShot::new, (spawnEntity, world) -> new EntityPirateShot(world), EntityClassification.MISC, "entity_pirate_shot", 1, 1);
 	public static EntityType<EntityPirateShot2> TYPE_PIRATE_SHOT_2 = createEntityType(EntityPirateShot2.class, EntityPirateShot2::new, (spawnEntity, world) -> new EntityPirateShot2(world), EntityClassification.MISC, "entity_pirate_shot2", 1, 1);
-	public static EntityType<EntityYellowLum> TYPE_YELLOW_LUM = createEntityType(EntityYellowLum.class, EntityYellowLum::new, (spawnEntity, world) -> new EntityYellowLum(world), EntityClassification.MISC, "entity_yellow_lum", 1, 1);
+	public static EntityType<EntityLum> TYPE_LUM = createEntityType(EntityLum.class, EntityLum::new, (spawnEntity, world) -> new EntityLum(world), EntityClassification.MISC, "entity_lum", 0.5F, 0.5F);
+	public static EntityType<EntityRunningShell> TYPE_SHELL = createEntityType(EntityRunningShell.class, EntityRunningShell::new, (spawnEntity, world) -> new EntityRunningShell(world), EntityClassification.MISC, "entity_running_shell", 0.5F, 0.5F);
 
 	public static <T extends Entity> EntityType<T> createEntityType(Class<? extends T> entityClassIn, EntityType.IFactory<T> factory, EntityClassification classification, String name, float sizeX, float sizeY) {
 		EntityType<T> type = EntityType.Builder.create(factory, classification).setShouldReceiveVelocityUpdates(true).setUpdateInterval(1).setTrackingRange(128).size(sizeX, sizeY).build(name);
@@ -39,14 +36,11 @@ public class ModEntities {
 
 	public static void registerModels() {
 		RenderingRegistry.registerEntityRenderingHandler(EntityBarrel.class, RenderEntityBarrel.FACTORY);
-		RenderingRegistry.registerEntityRenderingHandler(EntityFist0.class, RenderEntityFist.FACTORY);
-		RenderingRegistry.registerEntityRenderingHandler(EntityFist1.class, RenderEntityFist.FACTORY);
-		RenderingRegistry.registerEntityRenderingHandler(EntityFist2.class, RenderEntityFist.FACTORY);
-		RenderingRegistry.registerEntityRenderingHandler(EntityFist3.class, RenderEntityFist.FACTORY);
-		RenderingRegistry.registerEntityRenderingHandler(EntityFist4.class, RenderEntityFist.FACTORY);
+		RenderingRegistry.registerEntityRenderingHandler(EntityFist.class, RenderEntityFist.FACTORY);
 		RenderingRegistry.registerEntityRenderingHandler(EntityPirateShot.class, RenderEntityPirateShot.FACTORY);
 		RenderingRegistry.registerEntityRenderingHandler(EntityPirateShot2.class, RenderEntityPirateShot2.FACTORY);
-		RenderingRegistry.registerEntityRenderingHandler(EntityYellowLum.class, RenderEntityLum.FACTORY);
+		RenderingRegistry.registerEntityRenderingHandler(EntityLum.class, RenderEntityLum.FACTORY);
+		RenderingRegistry.registerEntityRenderingHandler(EntityRunningShell.class, RenderEntityShell.FACTORY);
 	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -55,14 +49,11 @@ public class ModEntities {
 		@SubscribeEvent
 		public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
 			event.getRegistry().register(TYPE_BARREL);
-			event.getRegistry().register(TYPE_FIST_0);
-			event.getRegistry().register(TYPE_FIST_1);
-			event.getRegistry().register(TYPE_FIST_2);
-			event.getRegistry().register(TYPE_FIST_3);
-			event.getRegistry().register(TYPE_FIST_4);
+			event.getRegistry().register(TYPE_FIST);
 			event.getRegistry().register(TYPE_PIRATE_SHOT);
 			event.getRegistry().register(TYPE_PIRATE_SHOT_2);
-			event.getRegistry().register(TYPE_YELLOW_LUM);
+			event.getRegistry().register(TYPE_LUM);
+			event.getRegistry().register(TYPE_SHELL);
 		}
 	}
 }

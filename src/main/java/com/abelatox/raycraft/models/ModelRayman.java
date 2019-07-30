@@ -2,7 +2,7 @@ package com.abelatox.raycraft.models;
 
 import org.lwjgl.opengl.GL11;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Reference;
@@ -115,7 +115,7 @@ public class ModelRayman extends BipedModel {
 
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
-			IPlayerModelCapability props = ModCapabilities.get(player);
+			IPlayerCapabilities props = ModCapabilities.get(player);
 			if(player instanceof ServerPlayerEntity) { //TODO Other player
 				if(props.getCharging()) {
 					System.out.println("Remote player charging");

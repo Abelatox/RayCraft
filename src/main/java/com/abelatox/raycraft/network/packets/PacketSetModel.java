@@ -2,7 +2,7 @@ package com.abelatox.raycraft.network.packets;
 
 import java.util.function.Supplier;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.network.PacketHandler;
 
@@ -36,7 +36,7 @@ public class PacketSetModel {
 	public static void handle(PacketSetModel message, final Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
-			IPlayerModelCapability props = ModCapabilities.get(player);
+			IPlayerCapabilities props = ModCapabilities.get(player);
 			props.setPlayerType(message.model);
 			System.out.println(props.getPlayerType());
 			PacketHandler.syncToAllAround(player, props);

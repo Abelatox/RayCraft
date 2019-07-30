@@ -2,7 +2,7 @@ package com.abelatox.raycraft.network.packets;
 
 import java.util.function.Supplier;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 
 import net.minecraft.client.Minecraft;
@@ -17,7 +17,7 @@ public class PacketSyncCapability {
 	public PacketSyncCapability() {
 	}
 
-	public PacketSyncCapability(IPlayerModelCapability capability) {
+	public PacketSyncCapability(IPlayerCapabilities capability) {
 		this.model = capability.getPlayerType();
 	}
 
@@ -35,7 +35,7 @@ public class PacketSyncCapability {
 
 	public static void handle(final PacketSyncCapability message, Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
-			LazyOptional<IPlayerModelCapability> props = Minecraft.getInstance().player.getCapability(ModCapabilities.PLAYER_MODEL);
+			LazyOptional<IPlayerCapabilities> props = Minecraft.getInstance().player.getCapability(ModCapabilities.PLAYER_CAPABILITIES);
 			props.ifPresent(cap -> cap.setPlayerType(message.model));
 		});
 		ctx.get().setPacketHandled(true);

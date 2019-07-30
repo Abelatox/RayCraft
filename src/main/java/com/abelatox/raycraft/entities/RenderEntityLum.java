@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderEntityLum extends EntityRenderer<EntityBaseLum> {
+public class RenderEntityLum extends EntityRenderer<EntityLum> {
 
     public static final Factory FACTORY = new RenderEntityLum.Factory();
     ModelFist shot;
@@ -29,7 +29,7 @@ public class RenderEntityLum extends EntityRenderer<EntityBaseLum> {
     }
 
     @Override
-    public void doRender(EntityBaseLum entity, double x, double y, double z, float entityYaw, float partialTicks) {
+    public void doRender(EntityLum entity, double x, double y, double z, float entityYaw, float partialTicks) {
     	/*GL11.glPushMatrix();
 		{
 			Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entity));
@@ -53,13 +53,13 @@ public class RenderEntityLum extends EntityRenderer<EntityBaseLum> {
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(EntityBaseLum entity) {
+    protected ResourceLocation getEntityTexture(EntityLum entity) {
 		return new ResourceLocation(Reference.MODID, "textures/models/pirateshot.png");
     }
 
-    public static class Factory implements IRenderFactory<EntityBaseLum> {
+    public static class Factory implements IRenderFactory<EntityLum> {
         @Override
-        public EntityRenderer<? super EntityBaseLum> createRenderFor(EntityRendererManager manager) {
+        public EntityRenderer<? super EntityLum> createRenderFor(EntityRendererManager manager) {
             return new RenderEntityLum(manager, new ModelFist());
         }
     }

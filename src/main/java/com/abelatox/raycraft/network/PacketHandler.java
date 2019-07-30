@@ -1,6 +1,6 @@
 package com.abelatox.raycraft.network;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.network.packets.PacketSecondaryAction;
 import com.abelatox.raycraft.network.packets.PacketPlaySound;
@@ -47,7 +47,7 @@ public class PacketHandler {
 		}
 	}
 
-	public static void syncToAllAround(PlayerEntity player, IPlayerModelCapability props) {
+	public static void syncToAllAround(PlayerEntity player, IPlayerCapabilities props) {
 		if (!player.world.isRemote) {
 			for (PlayerEntity playerFromList : player.world.getPlayers()) {
 				sendTo(new PacketSyncCapabilityToAll(player.getDisplayName().getString(), props), (ServerPlayerEntity) playerFromList);

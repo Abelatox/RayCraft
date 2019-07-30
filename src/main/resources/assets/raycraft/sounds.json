@@ -46,5 +46,23 @@
 		"sounds": [
 			{"name": "raycraft:pirate_shot2", "stream": false}
 		]
+	},
+	"lum_yellow": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:lum_yellow", "stream": false}
+		]
+	},
+	"lum_green": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:lum_green", "stream": false}
+		]
+	},
+	"lum_red": {
+		"category": "player",
+		"sounds": [
+			{"name": "raycraft:lum_red", "stream": false}
+		]
 	}
 }

@@ -1,6 +1,6 @@
 package com.abelatox.raycraft.capabilities;
 
-public interface IPlayerModelCapability {
+public interface IPlayerCapabilities {
 	String getPlayerType();
 	void setPlayerType(String modelString);
 	boolean hasCustomPlayerType();
@@ -10,4 +10,7 @@ public interface IPlayerModelCapability {
 	
 	boolean getCharging();
 	void setCharging(boolean b);
+	
+	int getLums();
+	void setLums(int lums);
 }

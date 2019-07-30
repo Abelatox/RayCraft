@@ -14,14 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-import com.abelatox.raycraft.entities.EntityBaseFist;
-import com.abelatox.raycraft.entities.EntityFist0;
-import com.abelatox.raycraft.entities.EntityFist1;
-import com.abelatox.raycraft.entities.EntityFist2;
-import com.abelatox.raycraft.entities.EntityFist3;
-import com.abelatox.raycraft.entities.EntityFist4;
+import com.abelatox.raycraft.entities.EntityFist;
 import com.abelatox.raycraft.entities.EntityPirateShot;
 import com.abelatox.raycraft.entities.EntityPirateShot2;
 import com.abelatox.raycraft.models.ModModels;
@@ -38,7 +33,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class Utils {
 
-	public static IRayCraftRender getRender(IPlayerModelCapability props) {
+	public static IRayCraftRender getRender(IPlayerCapabilities props) {
 		if (props != null) {
 			if (props.getPlayerType().equals("robopirate") || props.getPlayerType().equals("robopirate2")) {
 				return ModModels.renderPirate;
@@ -60,12 +55,12 @@ public class Utils {
 	}
 
 	public static ThrowableEntity getEntityShot(PlayerEntity player, boolean charged) {
-		IPlayerModelCapability props = ModCapabilities.get(player);
+		IPlayerCapabilities props = ModCapabilities.get(player);
 		switch (props.getPlayerType()) {
 		case Strings.ROBO_PIRATE_RED:
 			return new EntityPirateShot2(player.world, player);
 		case Strings.ROBO_PIRATE_GREEN:
-			//return new EntityBarrel(player.world, player);
+			// return new EntityBarrel(player.world, player);
 			return new EntityPirateShot(player.world, player);
 		case Strings.RAYMAN:
 			return getRaymanPunchLevel(player, charged);
@@ -73,25 +68,50 @@ public class Utils {
 		return null;
 	}
 
-	private static EntityBaseFist getRaymanPunchLevel(PlayerEntity player, boolean charged) {
-		IPlayerModelCapability props = ModCapabilities.get(player);
+	private static EntityFist getRaymanPunchLevel(PlayerEntity player, boolean charged) {
+		IPlayerCapabilities props = ModCapabilities.get(player);
 		int level = props.getShotLevel();
 		if (charged && level < 4) {
 			level++;
 		}
+		// return new EntityFist(player.world, player);
+		EntityFist projectile = new EntityFist(player.world, player);
 		switch (level) {
 		case 0:
-			return new EntityFist0(player.world, player);
+			projectile.setLvl(0);
+			projectile.setPower(2);
+			projectile.setMaxBounces(0);
+			projectile.setMaxTicks(60);
+			break;
 		case 1:
-			return new EntityFist1(player.world, player);
+			projectile.setLvl(1);
+			projectile.setPower(4);
+			projectile.setMaxBounces(1);
+			projectile.setMaxTicks(60);
+			break;
 		case 2:
-			return new EntityFist2(player.world, player);
+			projectile.setLvl(2);
+			projectile.setPower(8);
+			projectile.setMaxBounces(2);
+			projectile.setMaxTicks(60);
+			break;
 		case 3:
-			return new EntityFist3(player.world, player, charged);
+			projectile.setLvl(3);
+			projectile.setPower(16);
+			projectile.setMaxBounces(3);
+			projectile.setMaxTicks(60);
+			projectile.setExplosion(charged);
+			break;
 		case 4:
-			return new EntityFist4(player.world, player, charged);
+			projectile.setLvl(4);
+			projectile.setPower(32);
+			projectile.setMaxBounces(4);
+			projectile.setMaxTicks(120);
+			projectile.setExplosion(charged);
+			break;
 		}
-		return null;
+		System.out.println(projectile.getLvl());
+		return projectile;
 
 	}
 
@@ -208,20 +228,20 @@ public class Utils {
 	}
 
 	public static SoundEvent getShootSound(PlayerEntity player, boolean charged) {
-		IPlayerModelCapability props = ModCapabilities.get(player);
+		IPlayerCapabilities props = ModCapabilities.get(player);
 		switch (props.getPlayerType()) {
 		case Strings.RAYMAN:
 			switch (props.getShotLevel()) {
 			case 0:
-				
+
 			case 1:
 				return ModSounds.fistShot1;
 			case 2:
-				if(charged)
+				if (charged)
 					return ModSounds.fistShot2;
 				return ModSounds.fistShot1;
 			case 3:
-				if(charged)
+				if (charged)
 					return ModSounds.fistGoldCharged;
 				return ModSounds.fistShot2;
 			}

@@ -1,6 +1,6 @@
 package com.abelatox.raycraft.events;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.gui.GUISelectModel;
 import com.abelatox.raycraft.items.ModItems;
@@ -37,7 +37,7 @@ public class ClientEvents {
 				Utils.lockSelectedItem(player, new ItemStack(ModItems.barrel));
 			}
 
-			IPlayerModelCapability props = ModCapabilities.get((PlayerEntity) player);
+			IPlayerCapabilities props = ModCapabilities.get((PlayerEntity) player);
 			IRayCraftRender render = Utils.getRender(props);
 			if (render != null) {
 				event.setCanceled(true);
@@ -54,7 +54,7 @@ public class ClientEvents {
 			Utils.lockSelectedItem(player, new ItemStack(ModItems.barrel));
 		}
 
-		IPlayerModelCapability props = ModCapabilities.get(player);
+		IPlayerCapabilities props = ModCapabilities.get(player);
 		IRayCraftRender render = Utils.getRender(props);
 
 		if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY) && render != null) {
@@ -70,7 +70,7 @@ public class ClientEvents {
 	public void MouseClick(MouseInputEvent event) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player != null) {
-			IPlayerModelCapability props = ModCapabilities.get(player);
+			IPlayerCapabilities props = ModCapabilities.get(player);
 
 			if (Minecraft.getInstance().currentScreen == null) {
 				switch (event.getAction()) {

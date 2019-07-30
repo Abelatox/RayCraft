@@ -1,7 +1,7 @@
 package com.abelatox.raycraft.events;
 
 import com.abelatox.raycraft.blocks.ModBlocks;
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.items.ModItems;
@@ -29,7 +29,7 @@ public class PlayerEventsHandler {
 	public void updatePlayerEvent(LivingUpdateEvent event) {
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-			IPlayerModelCapability props = ModCapabilities.get(player);
+			IPlayerCapabilities props = ModCapabilities.get(player);
 			if (props != null) {
 				// Slow down the player while holding a barrel
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
@@ -92,11 +92,13 @@ public class PlayerEventsHandler {
 
 	private void updateCap(PlayerEntity original, PlayerEntity player) {
 		//System.out.println(original + "\n" + player);
-		IPlayerModelCapability oProps = ModCapabilities.get(original);
-		IPlayerModelCapability props = ModCapabilities.get(player);
+		IPlayerCapabilities oProps = ModCapabilities.get(original);
+		IPlayerCapabilities props = ModCapabilities.get(player);
 		props.setPlayerType(oProps.getPlayerType());
 		props.setShotLevel(oProps.getShotLevel());
 		props.setCharging(oProps.getCharging());
+		props.setLums(oProps.getLums());
+
 		//System.out.println(oProps + " " + props);
 	}
 
@@ -122,7 +124,7 @@ public class PlayerEventsHandler {
 	public void playerStartedTracking(PlayerEvent.StartTracking e) {
 		if (e.getTarget() instanceof PlayerEntity) {
 			PlayerEntity targetPlayer = (PlayerEntity) e.getTarget();
-			IPlayerModelCapability props = ModCapabilities.get(targetPlayer);
+			IPlayerCapabilities props = ModCapabilities.get(targetPlayer);
 			PacketHandler.syncToAllAround(targetPlayer, props);
 		}
 	}
@@ -131,7 +133,7 @@ public class PlayerEventsHandler {
 	public void EntityAttack(LivingAttackEvent event) {
 		if (event.getSource().getImmediateSource() != null && event.getSource().getImmediateSource() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getSource().getImmediateSource();
-			IPlayerModelCapability props = ModCapabilities.get(player);
+			IPlayerCapabilities props = ModCapabilities.get(player);
 
 			/*if (props.getPlayerType().equals("robopirate")) {
 				props.setPlayerType("robopirate2");

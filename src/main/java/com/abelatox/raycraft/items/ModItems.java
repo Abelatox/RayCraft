@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModItems {
-	public static Item barrel, powerUp;
+	public static Item barrel, powerUp, lumSpawner;
 
 	@SubscribeEvent
 	public static void registerItems(final RegistryEvent.Register<Item> event) {
@@ -21,7 +21,8 @@ public class ModItems {
 		// Register and set item references here, no array needed here as only 1 thing needs to be registered
 		event.getRegistry().registerAll(
 			barrel = new ItemBarrel(new Properties().maxStackSize(1).group(MainRayCraft.rayCraftGroup)).setRegistryName(Reference.MODID, "barrel"),
-			powerUp = new ItemPowerUp(new Properties().maxStackSize(1).group(MainRayCraft.rayCraftGroup)).setRegistryName(Reference.MODID, "power_up")
+			powerUp = new ItemPowerUp(new Properties().maxStackSize(1).group(MainRayCraft.rayCraftGroup)).setRegistryName(Reference.MODID, "power_up"),
+			lumSpawner = new ItemSummonLum(new Properties().maxStackSize(1).group(MainRayCraft.rayCraftGroup)).setRegistryName(Reference.MODID, "lum_spawner")
 		);
 	}
 

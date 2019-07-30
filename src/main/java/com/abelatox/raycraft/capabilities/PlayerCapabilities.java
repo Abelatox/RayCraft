@@ -6,30 +6,33 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 
-public class PlayerModelCapability implements IPlayerModelCapability {
+public class PlayerCapabilities implements IPlayerCapabilities {
 
-	public static class Storage implements IStorage<IPlayerModelCapability> {
+	public static class Storage implements IStorage<IPlayerCapabilities> {
 		@Override
-		public INBT writeNBT(Capability<IPlayerModelCapability> capability, IPlayerModelCapability instance, Direction side) {
+		public INBT writeNBT(Capability<IPlayerCapabilities> capability, IPlayerCapabilities instance, Direction side) {
 			CompoundNBT props = new CompoundNBT();
 			props.putString("PlayerModel", instance.getPlayerType());
 			props.putInt("ShotLevel", instance.getShotLevel());
 			props.putBoolean("Charging", instance.getCharging());
+			props.putInt("Lums", instance.getLums());
 			return props;
 		}
 
 		@Override
-		public void readNBT(Capability<IPlayerModelCapability> capability, IPlayerModelCapability instance, Direction side, INBT nbt) {
+		public void readNBT(Capability<IPlayerCapabilities> capability, IPlayerCapabilities instance, Direction side, INBT nbt) {
 			CompoundNBT properties = (CompoundNBT) nbt;
 			instance.setPlayerType(properties.getString("PlayerModel"));
 			instance.setShotLevel(properties.getInt("ShotLevel"));
 			instance.setCharging(properties.getBoolean("Charging"));
+			instance.setLums(properties.getInt("Lums"));
 		}
 	}
 
 	private String playerModel = "";
 	private int shotLevel = 0;
 	private boolean charging = false;
+	private int lums = 0;
 	
 	public String getPlayerType() {
 		return playerModel;
@@ -62,5 +65,15 @@ public class PlayerModelCapability implements IPlayerModelCapability {
 	@Override
 	public void setCharging(boolean b) {
 		this.charging = b;
+	}
+
+	@Override
+	public int getLums() {
+		return lums;
+	}
+
+	@Override
+	public void setLums(int lums) {
+		this.lums = lums;
 	}	
 }

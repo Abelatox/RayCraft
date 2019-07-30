@@ -2,7 +2,7 @@ package com.abelatox.raycraft.network.packets;
 
 import java.util.function.Supplier;
 
-import com.abelatox.raycraft.capabilities.IPlayerModelCapability;
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.sounds.ModSounds;
 
