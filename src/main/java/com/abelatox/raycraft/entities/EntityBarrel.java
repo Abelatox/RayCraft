@@ -57,27 +57,22 @@ public class EntityBarrel extends ThrowableEntity {
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		// world.playSound(this.posX, this.posY, this.posZ, ModSounds.bombExplode,
-		// SoundCategory.PLAYERS, 1F, 1F, false);
-
 		if (result.getType() == Type.ENTITY) {
 			EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
 
-			if (entityResult.getEntity() != null && entityResult.getEntity() instanceof PlayerEntity && entityResult.getEntity() == owner) {
+			if (entityResult.getEntity() != null && entityResult.getEntity() instanceof PlayerEntity && entityResult.getEntity() == owner && !world.isRemote) {
 				PlayerEntity player = (PlayerEntity) owner;
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
-					if (!world.isRemote) {
-						player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
-						this.remove();
-						return;
-					}
-				} else {
+					player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
+					this.remove();
+					return;
+				} else { // if owner has full hands
 					explode();
 				}
-			} else {
+			} else { // if entity is null or entity is not the owner
 				explode();
 			}
-		} else {
+		} else { // if block
 			explode();
 		}
 	}
@@ -92,12 +87,12 @@ public class EntityBarrel extends ThrowableEntity {
 		List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(16.0D, 10.0D, 16.0D).offset(-8.0D, -5.0D, -8.0D));
 		if (!entities.isEmpty()) {
 			for (Entity entity : entities) {
-				if(owner instanceof PlayerEntity && entity != owner) {
+				if (owner instanceof PlayerEntity && entity != owner) {
 					entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) owner), 1000);
 				}
 			}
-		} 
-		
+		}
+
 		removeBreakableBlocks();
 		world.playSound(this.posX, this.posY, this.posZ, ModSounds.bombExplode, SoundCategory.PLAYERS, 5F, 1F, false);
 		this.remove();

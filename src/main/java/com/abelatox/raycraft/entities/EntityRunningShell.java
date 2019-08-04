@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -26,7 +27,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CSteerBoatPacket;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
@@ -47,7 +47,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityRunningShell extends Entity {
+public class EntityRunningShell extends MobEntity {
 
 	private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(BoatEntity.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> FORWARD_DIRECTION = EntityDataManager.createKey(BoatEntity.class, DataSerializers.VARINT);
@@ -64,13 +64,7 @@ public class EntityRunningShell extends Entity {
 	private double lerpZ;
 	private double lerpYaw;
 	private double lerpPitch;
-	private boolean leftInputDown;
-	private boolean rightInputDown;
-	private boolean forwardInputDown;
-	private boolean backInputDown;
 	private double lastYd;
-	private boolean field_203060_aN;
-	private float rockingIntensity;
 	private float rockingAngle;
 	private float prevRockingAngle;
 
@@ -79,14 +73,14 @@ public class EntityRunningShell extends Entity {
 		this.preventEntitySpawning = true;
 	}
 
-	public EntityRunningShell(EntityType<? extends Entity> type, World world) {
+	public EntityRunningShell(EntityType<? extends MobEntity> type, World world) {
 		super(type, world);
 		this.preventEntitySpawning = true;
 		// this.setSize(0.98F, 0.98F);
 	}
 
 	public EntityRunningShell(World worldIn, double x, double y, double z) {
-		this(EntityType.BOAT, worldIn);
+		this(ModEntities.TYPE_SHELL, worldIn);
 		this.setPosition(x, y, z);
 		this.setMotion(Vec3d.ZERO);
 		this.prevPosX = x;
@@ -562,30 +556,7 @@ public class EntityRunningShell extends Entity {
 		entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
 	}
 
-	/**
-	 * Applies this entity's orientation (pitch/yaw) to another entity. Used to
-	 * update passenger orientation.
-	 */
-	@OnlyIn(Dist.CLIENT)
-	public void applyOrientationToEntity(Entity entityToUpdate) {
-		this.applyYawToEntity(entityToUpdate);
-	}
-
-	protected void writeAdditional(CompoundNBT compound) {
-		compound.putString("Type", this.getBoatType().getName());
-	}
-
-	/**
-	 * (abstract) Protected helper method to read subclass entity data from NBT.
-	 */
-	protected void readAdditional(CompoundNBT compound) {
-		if (compound.contains("Type", 8)) {
-			this.setBoatType(BoatEntity.Type.getTypeFromString(compound.getString("Type")));
-		}
-
-	}
-
-	public boolean processInitialInteract(PlayerEntity player, Hand hand) {
+/*	public boolean processInitialInteract(PlayerEntity player, Hand hand) {
 		if (player.isSneaking()) {
 			return false;
 		} else {
@@ -595,7 +566,7 @@ public class EntityRunningShell extends Entity {
 
 			return true;
 		}
-	}
+	}*/
 
 	public boolean getPaddleState(int side) {
 		return this.dataManager.<Boolean>get(side == 0 ? field_199704_e : field_199705_f) && this.getControllingPassenger() != null;
@@ -670,14 +641,6 @@ public class EntityRunningShell extends Entity {
 	public Entity getControllingPassenger() {
 		List<Entity> list = this.getPassengers();
 		return list.isEmpty() ? null : list.get(0);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void updateInputs(boolean p_184442_1_, boolean p_184442_2_, boolean p_184442_3_, boolean p_184442_4_) {
-		this.leftInputDown = p_184442_1_;
-		this.rightInputDown = p_184442_2_;
-		this.forwardInputDown = p_184442_3_;
-		this.backInputDown = p_184442_4_;
 	}
 
 	public IPacket<?> createSpawnPacket() {

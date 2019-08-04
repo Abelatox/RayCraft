@@ -112,6 +112,9 @@ public class ModelRayman extends BipedModel {
 		if (entity.isSneaking()) {
 			GlStateManager.translatef(0.0F, 0.2F, 0.0F);
 		}
+		/*if(entity.swi) {
+			GlStateManager.translatef(0.0F, 0.2F, 0.0F);
+		}*/
 
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
@@ -155,12 +158,12 @@ public class ModelRayman extends BipedModel {
 					GL11.glColor3d(1, 1, 0);
 				}
 				this.leftArm.render(f5);
-		/*
+		
 				if (ModCapabilities.get(player).getCharging()) {
-					armRotation += 0.3;
-					//this.rightArm.rotateAngleX += 0.3;
+					//armRotation += 0.3;
+					this.rightArm.rotateAngleX += 0.3;
 				} else {
-					armRotation = 0;
+					//armRotation = 0;
 				}
 				//this.rightArm.rotateAngleX = armRotation;*/
 
