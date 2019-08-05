@@ -84,11 +84,11 @@ public class EntityBarrel extends ThrowableEntity {
 			world.addParticle(ParticleTypes.EXPLOSION, posX, posY, posZ, i, i, i);
 		}
 
-		List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(16.0D, 10.0D, 16.0D).offset(-8.0D, -5.0D, -8.0D));
+		List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(8.0D, 6.0D, 8.0D).offset(-4.0D, -3.0D, -4.0D));
 		if (!entities.isEmpty()) {
 			for (Entity entity : entities) {
 				if (owner instanceof PlayerEntity && entity != owner) {
-					entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) owner), 1000);
+					entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) owner), 20);
 				}
 			}
 		}

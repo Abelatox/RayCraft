@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -105,11 +106,14 @@ public ModelBarrel barrel;
 		if (entity.isSneaking()) {
 			GlStateManager.translatef(0.0F, 0.2F, 0.0F);
 		}
+		if(entity.getPose() == Pose.SWIMMING) {
+			GlStateManager.translatef(0.0F, 1.3F, 0.0F);
+			GlStateManager.rotated(90,1,0,0);
+		}
 		
 		if(entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
 			if(ItemStack.areItemStacksEqual(player.getHeldItemMainhand(),new ItemStack(ModItems.barrel))){
-			//if(ModCapabilities.get(player).getCarrying().equals("barrel")) {
 				this.rightArm.rotateAngleX = -3;
 				this.leftArm.rotateAngleX = -3;
 				this.head.offsetY=0.1F;
