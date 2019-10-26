@@ -52,7 +52,7 @@ public class PacketSyncCapabilityToAll {
 			PlayerEntity player = null;
 			for (int i = 0; i < list.size(); i++) {
 				String name = list.get(i).getName().getFormattedText();
-				System.out.println(name+" "+message.name);
+			//	System.out.println(name+" "+message.name);
 				if (name.equals(message.name)) {
 					player = list.get(i);
 				}

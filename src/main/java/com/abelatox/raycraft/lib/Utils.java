@@ -110,7 +110,7 @@ public class Utils {
 			projectile.setExplosion(charged);
 			break;
 		}
-		System.out.println(projectile.getLvl());
+		//System.out.println(projectile.getLvl());
 		return projectile;
 
 	}

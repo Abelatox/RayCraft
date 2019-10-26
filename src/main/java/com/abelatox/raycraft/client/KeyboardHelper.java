@@ -1,4 +1,4 @@
-package com.abelatox.raycraft.handler;
+package com.abelatox.raycraft.client;
 
 import org.lwjgl.glfw.GLFW;
 

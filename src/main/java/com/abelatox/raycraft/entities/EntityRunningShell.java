@@ -351,43 +351,7 @@ public class EntityRunningShell extends MobEntity {
 		return this.getPaddleState(side) ? (float) MathHelper.clampedLerp((double) this.paddlePositions[side] - (double) ((float) Math.PI / 8F), (double) this.paddlePositions[side], (double) limbSwing) : 0.0F;
 	}
 
-	public float getWaterLevelAbove() {
-		AxisAlignedBB axisalignedbb = this.getBoundingBox();
-		int i = MathHelper.floor(axisalignedbb.minX);
-		int j = MathHelper.ceil(axisalignedbb.maxX);
-		int k = MathHelper.floor(axisalignedbb.maxY);
-		int l = MathHelper.ceil(axisalignedbb.maxY - this.lastYd);
-		int i1 = MathHelper.floor(axisalignedbb.minZ);
-		int j1 = MathHelper.ceil(axisalignedbb.maxZ);
-
-		try (BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain()) {
-			label161: for (int k1 = k; k1 < l; ++k1) {
-				float f = 0.0F;
-
-				for (int l1 = i; l1 < j; ++l1) {
-					for (int i2 = i1; i2 < j1; ++i2) {
-						blockpos$pooledmutableblockpos.setPos(l1, k1, i2);
-						IFluidState ifluidstate = this.world.getFluidState(blockpos$pooledmutableblockpos);
-						if (ifluidstate.isTagged(FluidTags.WATER)) {
-							f = Math.max(f, ifluidstate.func_215679_a(this.world, blockpos$pooledmutableblockpos));
-						}
-
-						if (f >= 1.0F) {
-							continue label161;
-						}
-					}
-				}
-
-				if (f < 1.0F) {
-					float f2 = (float) blockpos$pooledmutableblockpos.getY() + f;
-					return f2;
-				}
-			}
-
-			float f1 = (float) (l + 1);
-			return f1;
-		}
-	}
+	
 
 	/**
 	 * Decides how much the boat should be gliding on the land (based on any

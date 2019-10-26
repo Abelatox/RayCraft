@@ -37,7 +37,7 @@ public class PacketSyncCapabilityToAllFromClient {
 	public static void handle(final PacketSyncCapabilityToAllFromClient message, Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
-			System.out.println(player+" "+ModCapabilities.get(player).getCharging());
+		//	System.out.println(player+" "+ModCapabilities.get(player).getCharging());
 			PacketHandler.syncToAllAround(player, ModCapabilities.get(player));
 		});
 		ctx.get().setPacketHandled(true);
