@@ -66,8 +66,6 @@ public class MainRayCraft {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
 		MinecraftForge.EVENT_BUS.register(this);
-		
-		
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {

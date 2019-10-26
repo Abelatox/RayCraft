@@ -1,7 +1,13 @@
 package com.abelatox.raycraft.proxy;
 
+import com.abelatox.raycraft.handler.InputHandler;
+
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -12,5 +18,14 @@ public class ClientProxy implements IProxy {
         //OBJLoader.INSTANCE.addDomain(Reference.MODID);
         //B3DLoader.INSTANCE.addDomain(Reference.MODID);
 		//ModelLoader.setCustomModelResourceLocation(ModItems.barrel, 0, new ModelResourceLocation(ModItems.barrel.getRegistryName(), "inventory"));
+    }
+    
+    @SubscribeEvent
+    public static void setupClient(FMLClientSetupEvent event) {
+        for (InputHandler.Keybinds key : InputHandler.Keybinds.values())
+            ClientRegistry.registerKeyBinding(key.getKeybind());
+        
+		//MinecraftForge.EVENT_BUS.register(new GuiOverlay());
+
     }
 }

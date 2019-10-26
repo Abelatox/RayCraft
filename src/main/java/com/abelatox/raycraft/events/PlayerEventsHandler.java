@@ -8,6 +8,7 @@ import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.network.PacketHandler;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
@@ -29,6 +30,12 @@ public class PlayerEventsHandler {
 	public void updatePlayerEvent(LivingUpdateEvent event) {
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+			if(!player.onGround && player.getMotion().y < 0) {
+				System.out.println(event.getEntity().world.isRemote);
+			//	if(player.world.isRemote && Minecraft.getInstance().) {
+					player.setMotion(player.getMotion().x, -0.1, player.getMotion().z);
+				//}
+			}
 			IPlayerCapabilities props = ModCapabilities.get(player);
 			if (props != null) {
 				// Slow down the player while holding a barrel
@@ -41,19 +48,7 @@ public class PlayerEventsHandler {
 
 					}
 
-					// If sneaking drop the barrel as block
-					/*
-					 * if (player.isSneaking()) { if (Utils.getAvailablePos(player) == null) { if
-					 * (!warned) { player.sendMessage(new
-					 * TextComponentString("You can't drop the barrel here")); warned = true; } }
-					 * else { player.inventory.removeStackFromSlot(player.inventory.currentItem); //
-					 * props.setCarrying("null");
-					 * player.world.setBlockState(Utils.getAvailablePos(player),
-					 * ModBlocks.barrel.getDefaultState()); // PacketHandler.sendToAllAround(player,
-					 * props); } } else { warned = false;
-					 * 
-					 * // System.out.println("attack"); }
-					 */
+					
 				}
 
 				// Prevent the player from changing item while holding a barrel
@@ -129,21 +124,11 @@ public class PlayerEventsHandler {
 		}
 	}
 
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void EntityAttack(LivingAttackEvent event) {
 		if (event.getSource().getImmediateSource() != null && event.getSource().getImmediateSource() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getSource().getImmediateSource();
 			IPlayerCapabilities props = ModCapabilities.get(player);
-
-			/*if (props.getPlayerType().equals("robopirate")) {
-				props.setPlayerType("robopirate2");
-			} else if (props.getPlayerType().equals("robopirate2")) {
-				props.setPlayerType("rayman");
-			} else {
-				props.setPlayerType("robopirate");
-			}
-
-			PacketHandler.syncToAllAround(player, props);*/
 		}
-	}
+	}*/
 }
