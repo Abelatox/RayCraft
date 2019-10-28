@@ -7,10 +7,10 @@ import org.apache.logging.log4j.Logger;
 
 import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.client.ClientEvents;
 import com.abelatox.raycraft.client.InputHandler;
 import com.abelatox.raycraft.entities.ModEntities;
 import com.abelatox.raycraft.events.CapabilityEventsHandler;
-import com.abelatox.raycraft.events.ClientEvents;
 import com.abelatox.raycraft.events.PlayerEventsHandler;
 import com.abelatox.raycraft.gui.GUIHealth;
 import com.abelatox.raycraft.lib.Reference;

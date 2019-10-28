@@ -1,4 +1,4 @@
-package com.abelatox.raycraft.events;
+package com.abelatox.raycraft.client;
 
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
@@ -66,13 +66,13 @@ public class ClientEvents {
 	long time = 0;
 	boolean shouldShoot = false;
 
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void MouseClick(MouseInputEvent event) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player != null) {
 			IPlayerCapabilities props = ModCapabilities.get(player);
 
-			if (Minecraft.getInstance().currentScreen == null) {
+			/*if (Minecraft.getInstance().currentScreen == null) {
 				switch (event.getAction()) {
 				case 1: //Press
 					time = System.currentTimeMillis();
@@ -111,5 +111,5 @@ public class ClientEvents {
 				PacketHandler.sendToServer(new PacketSyncCapabilityToAllFromClient());
 			}
 		}
-	}
+	}*/
 }

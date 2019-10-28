@@ -1,8 +1,11 @@
 package com.abelatox.raycraft.events;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.client.KeyboardHelper;
 import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
@@ -30,7 +33,7 @@ public class PlayerEventsHandler {
 	public void updatePlayerEvent(LivingUpdateEvent event) {
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-			if(!player.onGround && player.getMotion().y < 0) {
+			if(!player.onGround && player.getMotion().y < 0 && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
 				System.out.println(event.getEntity().world.isRemote);
 			//	if(player.world.isRemote && Minecraft.getInstance().) {
 					player.setMotion(player.getMotion().x, -0.1, player.getMotion().z);
@@ -70,7 +73,7 @@ public class PlayerEventsHandler {
 					EntityBarrel barrel = new EntityBarrel(player.world, player);
 					player.world.addEntity(barrel);
 					barrel.shoot(player, -90, player.rotationYaw, 0, 1f, 0);
-					System.out.println("throwing up barrelino");
+					//System.out.println("throwing up barrelino");
 					player.inventory.removeStackFromSlot(player.inventory.currentItem);
 				}
 			}

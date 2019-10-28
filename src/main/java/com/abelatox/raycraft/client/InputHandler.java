@@ -4,14 +4,21 @@ import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
+import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.gui.GUISelectModel;
 import com.abelatox.raycraft.lib.Constants;
+import com.abelatox.raycraft.network.PacketHandler;
+import com.abelatox.raycraft.network.packets.PacketShoot;
+import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAllFromClient;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -24,8 +31,7 @@ public class InputHandler {
 	public static LivingEntity lockOn = null;
 
 	public enum Keybinds {
-		SELECT("key.raycraft.select", GLFW.GLFW_KEY_P),
-		LOCK_ON("key.raycraft.lockon", GLFW.GLFW_KEY_LEFT_CONTROL);
+		SELECT("key.raycraft.select", GLFW.GLFW_KEY_P), LOCK_ON("key.raycraft.lockon", GLFW.GLFW_KEY_LEFT_CONTROL);
 
 		private final KeyBinding keybinding;
 
@@ -54,7 +60,7 @@ public class InputHandler {
 			case SELECT:
 				mc.displayGuiScreen(new GUISelectModel());
 				break;
-				
+
 			case LOCK_ON:
 				if (lockOn == null) {
 					RayTraceResult rtr = getMouseOverExtended(100);
@@ -66,7 +72,7 @@ public class InputHandler {
 							if (reachSq >= distanceSq) {
 								if (ert.getEntity() instanceof LivingEntity) {
 									lockOn = (LivingEntity) ert.getEntity();
-									//LockOn.target = (LivingEntity) ert.getEntity();
+									// LockOn.target = (LivingEntity) ert.getEntity();
 									// player.world.playSound((PlayerEntity) player, player.getPosition(),
 									// ModSounds.lockon, SoundCategory.MASTER, 1.0f, 1.0f);
 								}
@@ -77,82 +83,113 @@ public class InputHandler {
 					lockOn = null;
 				}
 				break;
-			
+
 			}
 		}
 	}
-	
+
+	long time = 0;
+	boolean shouldShoot = false;
+
 	@SubscribeEvent
 	public void handleMouseInputEvent(InputEvent.MouseInputEvent event) {
-		/*
-		 * if (player.getCapability(ModCapabilities.DRIVE_STATE, null).getInDrive()) {
-		 * if (player.getCapability(ModCapabilities.DRIVE_STATE,
-		 * null).getActiveDriveName().equals(Strings.Form_Wisdom)) {
-		 * event.setCanceled(true); } else { event.setCanceled(false); } }
-		 */
-System.out.println("F");
+
+		ClientPlayerEntity player = Minecraft.getInstance().player;
+		if (player != null) {
+			IPlayerCapabilities props = ModCapabilities.get(player);
+
+			System.out.println("F");
+
+			if (Minecraft.getInstance().currentScreen == null) {
+				switch (event.getAction()) { // Check if press / release
+				case 1: // Press
+					time = System.currentTimeMillis();
+					// If empty hand should shoot, if not it shouldn't (barrel + fist)
+					shouldShoot = false;
+
+					if (player != null && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY) && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
+						shouldShoot = true;
+						props.setCharging(true);
+					}
+					break;
+				case 0: // Release
+					boolean charged = false;
+					if (time + 1000 < System.currentTimeMillis()) {
+						charged = true;
+					}
+
+					switch (event.getButton()) {
+					case Constants.RIGHT_MOUSE:
+						break;
+					case Constants.LEFT_MOUSE:
+						if (shouldShoot && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
+							PacketHandler.sendToServer(new PacketShoot(charged));
+							props.setCharging(false);
+						}
+						break;
+					}
+					break;
+				}
+				PacketHandler.sendToServer(new PacketSyncCapabilityToAllFromClient());
+			}
+		}
+
 		if (event.getButton() == Constants.LEFT_MOUSE && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
 			System.out.println("aa");
 			// event.setCanceled(true);
 		}
 	}
 
-	 private Keybinds getPressedKey() {
-        for (Keybinds key : Keybinds.values())
-            if (key.isPressed())
-                return key;
-        return null;
-    }
-	 
-	 public static RayTraceResult getMouseOverExtended(float dist) {
-			Minecraft mc = Minecraft.getInstance();
-			Entity theRenderViewEntity = mc.getRenderViewEntity();
-			AxisAlignedBB theViewBoundingBox = new AxisAlignedBB(theRenderViewEntity.posX - 0.5D, theRenderViewEntity.posY - 0.0D, theRenderViewEntity.posZ - 0.5D, theRenderViewEntity.posX + 0.5D, theRenderViewEntity.posY + 1.5D, theRenderViewEntity.posZ + 0.5D);
-			RayTraceResult returnMOP = null;
-			if (mc.world != null) {
-				double var2 = dist;
-				returnMOP = theRenderViewEntity.func_213324_a(var2, 0, true);
-				double calcdist = var2;
-				Vec3d pos = theRenderViewEntity.getEyePosition(0);
-				var2 = calcdist;
-				if (returnMOP != null) {
-					calcdist = returnMOP.getHitVec().distanceTo(pos);
-				}
+	private Keybinds getPressedKey() {
+		for (Keybinds key : Keybinds.values())
+			if (key.isPressed())
+				return key;
+		return null;
+	}
 
-				Vec3d lookvec = theRenderViewEntity.getLook(0);
-				Vec3d var8 = pos.add(lookvec.x * var2, lookvec.y * var2, lookvec.z * var2);
-				Entity pointedEntity = null;
-				float var9 = 1.0F;
-				List<Entity> list = mc.world.getEntitiesWithinAABBExcludingEntity(theRenderViewEntity, theViewBoundingBox.grow(lookvec.x * var2, lookvec.y * var2, lookvec.z * var2).grow(var9, var9, var9));
-				double d = calcdist;
+	public static RayTraceResult getMouseOverExtended(float dist) {
+		Minecraft mc = Minecraft.getInstance();
+		Entity theRenderViewEntity = mc.getRenderViewEntity();
+		AxisAlignedBB theViewBoundingBox = new AxisAlignedBB(theRenderViewEntity.posX - 0.5D, theRenderViewEntity.posY - 0.0D, theRenderViewEntity.posZ - 0.5D, theRenderViewEntity.posX + 0.5D, theRenderViewEntity.posY + 1.5D, theRenderViewEntity.posZ + 0.5D);
+		RayTraceResult returnMOP = null;
+		if (mc.world != null) {
+			double var2 = dist;
+			returnMOP = theRenderViewEntity.func_213324_a(var2, 0, true);
+			double calcdist = var2;
+			Vec3d pos = theRenderViewEntity.getEyePosition(0);
+			var2 = calcdist;
+			if (returnMOP != null) {
+				calcdist = returnMOP.getHitVec().distanceTo(pos);
+			}
 
-				for (Entity entity : list) {
-					if (entity.canBeCollidedWith()) {
-						float bordersize = entity.getCollisionBorderSize();
-						AxisAlignedBB aabb = new AxisAlignedBB(entity.posX - entity.getWidth() / 2, entity.posY, entity.posZ - entity.getWidth() / 2, entity.posX + entity.getWidth() / 2, entity.posY + entity.getHeight(), entity.posZ + entity.getWidth() / 2);
-						aabb.grow(bordersize, bordersize, bordersize);
-						RayTraceResult mop0 = aabb.calculateIntercept(pos, var8);
+			Vec3d lookvec = theRenderViewEntity.getLook(0);
+			Vec3d var8 = pos.add(lookvec.x * var2, lookvec.y * var2, lookvec.z * var2);
+			Entity pointedEntity = null;
+			float var9 = 1.0F;
+			List<Entity> list = mc.world.getEntitiesWithinAABBExcludingEntity(theRenderViewEntity, theViewBoundingBox.grow(lookvec.x * var2, lookvec.y * var2, lookvec.z * var2).grow(var9, var9, var9));
+			double d = calcdist;
 
-						if (aabb.contains(pos)) {
-							if (0.0D < d || d == 0.0D) {
-								pointedEntity = entity;
-								d = 0.0D;
-							}
-						} else if (mop0 != null) {
-							double d1 = pos.distanceTo(mop0.getHitVec());
-
-							if (d1 < d || d == 0.0D) {
-								pointedEntity = entity;
-								d = d1;
-							}
-						}
-					}
-				}
-
-				if (pointedEntity != null && (d < calcdist || returnMOP == null)) {
-					returnMOP = new EntityRayTraceResult(pointedEntity);
+			for (Entity entity : list) {
+				if (entity.canBeCollidedWith()) {
+					float bordersize = entity.getCollisionBorderSize();
+					AxisAlignedBB aabb = new AxisAlignedBB(entity.posX - entity.getWidth() / 2, entity.posY, entity.posZ - entity.getWidth() / 2, entity.posX + entity.getWidth() / 2, entity.posY + entity.getHeight(), entity.posZ + entity.getWidth() / 2);
+					aabb.grow(bordersize, bordersize, bordersize);
+					/*
+					 * RayTraceResult mop0 = aabb.calculateIntercept(pos, var8);
+					 * 
+					 * if (aabb.contains(pos)) { if (0.0D < d || d == 0.0D) { pointedEntity =
+					 * entity; d = 0.0D; } } else if (mop0 != null) { double d1 =
+					 * pos.distanceTo(mop0.getHitVec());
+					 * 
+					 * if (d1 < d || d == 0.0D) { pointedEntity = entity; d = d1; } }
+					 */
 				}
 			}
-			return returnMOP;
+
+			if (pointedEntity != null && (d < calcdist || returnMOP == null)) {
+				returnMOP = new EntityRayTraceResult(pointedEntity);
+			}
 		}
+		return returnMOP;
+	}
 }
