@@ -44,7 +44,7 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 
 	@Override
 	public boolean hasCustomPlayerType() {
-		return !playerModel.equals("null");
+		return !playerModel.equals("");
 	}
 
 	@Override

@@ -10,17 +10,17 @@ import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.network.PacketHandler;
+import com.abelatox.raycraft.network.packets.PacketSetTarget;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -30,14 +30,22 @@ public class PlayerEventsHandler {
 	boolean warned = false;
 
 	@SubscribeEvent
+	public void onAttack(LivingHurtEvent event) {
+		if (event.getSource().getTrueSource() instanceof PlayerEntity) {
+			PacketHandler.sendTo(new PacketSetTarget(event.getEntityLiving().getEntityId()), (ServerPlayerEntity)event.getSource().getTrueSource());
+			System.out.println(event.getEntityLiving().world.isRemote + " asd " + event.getSource().getTrueSource());
+		}
+	}
+
+	@SubscribeEvent
 	public void updatePlayerEvent(LivingUpdateEvent event) {
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-			if(!player.onGround && player.getMotion().y < 0 && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
+			if (player.world.isRemote && !player.onGround && player.getMotion().y < 0 && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
 				System.out.println(event.getEntity().world.isRemote);
-			//	if(player.world.isRemote && Minecraft.getInstance().) {
-					player.setMotion(player.getMotion().x, -0.1, player.getMotion().z);
-				//}
+				// if(player.world.isRemote && Minecraft.getInstance().) {
+				player.setMotion(player.getMotion().x, -0.1, player.getMotion().z);
+				// }
 			}
 			IPlayerCapabilities props = ModCapabilities.get(player);
 			if (props != null) {
@@ -51,7 +59,6 @@ public class PlayerEventsHandler {
 
 					}
 
-					
 				}
 
 				// Prevent the player from changing item while holding a barrel
@@ -73,7 +80,7 @@ public class PlayerEventsHandler {
 					EntityBarrel barrel = new EntityBarrel(player.world, player);
 					player.world.addEntity(barrel);
 					barrel.shoot(player, -90, player.rotationYaw, 0, 1f, 0);
-					//System.out.println("throwing up barrelino");
+					// System.out.println("throwing up barrelino");
 					player.inventory.removeStackFromSlot(player.inventory.currentItem);
 				}
 			}
@@ -84,12 +91,12 @@ public class PlayerEventsHandler {
 	@SubscribeEvent
 	public void onPlayerClone(PlayerEvent.Clone event) {
 		if (event.isWasDeath()) {
-			updateCap(event.getOriginal(), event.getEntityPlayer());
+			updateCap(event.getOriginal(), event.getPlayer());
 		}
 	}
 
 	private void updateCap(PlayerEntity original, PlayerEntity player) {
-		//System.out.println(original + "\n" + player);
+		// System.out.println(original + "\n" + player);
 		IPlayerCapabilities oProps = ModCapabilities.get(original);
 		IPlayerCapabilities props = ModCapabilities.get(player);
 		props.setPlayerType(oProps.getPlayerType());
@@ -97,7 +104,7 @@ public class PlayerEventsHandler {
 		props.setCharging(oProps.getCharging());
 		props.setLums(oProps.getLums());
 
-		//System.out.println(oProps + " " + props);
+		// System.out.println(oProps + " " + props);
 	}
 
 	@SubscribeEvent
@@ -127,11 +134,11 @@ public class PlayerEventsHandler {
 		}
 	}
 
-	/*@SubscribeEvent
-	public void EntityAttack(LivingAttackEvent event) {
-		if (event.getSource().getImmediateSource() != null && event.getSource().getImmediateSource() instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) event.getSource().getImmediateSource();
-			IPlayerCapabilities props = ModCapabilities.get(player);
-		}
-	}*/
+	/*
+	 * @SubscribeEvent public void EntityAttack(LivingAttackEvent event) { if
+	 * (event.getSource().getImmediateSource() != null &&
+	 * event.getSource().getImmediateSource() instanceof PlayerEntity) {
+	 * PlayerEntity player = (PlayerEntity) event.getSource().getImmediateSource();
+	 * IPlayerCapabilities props = ModCapabilities.get(player); } }
+	 */
 }

@@ -37,7 +37,9 @@ public class PacketSetModel {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
 			IPlayerCapabilities props = ModCapabilities.get(player);
-			props.setPlayerType(message.model);
+			
+				props.setPlayerType(message.model);
+			
 			System.out.println(props.getPlayerType());
 			PacketHandler.syncToAllAround(player, props);
 		});

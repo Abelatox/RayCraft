@@ -2,10 +2,11 @@ package com.abelatox.raycraft.network;
 
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.lib.Reference;
-import com.abelatox.raycraft.network.packets.PacketSecondaryAction;
 import com.abelatox.raycraft.network.packets.PacketPlaySound;
-import com.abelatox.raycraft.network.packets.PacketShoot;
+import com.abelatox.raycraft.network.packets.PacketSecondaryAction;
 import com.abelatox.raycraft.network.packets.PacketSetModel;
+import com.abelatox.raycraft.network.packets.PacketSetTarget;
+import com.abelatox.raycraft.network.packets.PacketShoot;
 import com.abelatox.raycraft.network.packets.PacketSyncCapability;
 import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAll;
 import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAllFromClient;
@@ -29,6 +30,7 @@ public class PacketHandler {
 		HANDLER.registerMessage(packetID++, PacketSetModel.class, PacketSetModel::encode, PacketSetModel::decode, PacketSetModel::handle);
 		HANDLER.registerMessage(packetID++, PacketSyncCapability.class, PacketSyncCapability::encode, PacketSyncCapability::decode, PacketSyncCapability::handle);
 		HANDLER.registerMessage(packetID++, PacketSyncCapabilityToAll.class, PacketSyncCapabilityToAll::encode, PacketSyncCapabilityToAll::decode, PacketSyncCapabilityToAll::handle);
+		HANDLER.registerMessage(packetID++, PacketSetTarget.class, PacketSetTarget::encode, PacketSetTarget::decode, PacketSetTarget::handle);
 		
 		//ClientToServer
 		HANDLER.registerMessage(packetID++, PacketSecondaryAction.class, PacketSecondaryAction::encode, PacketSecondaryAction::decode, PacketSecondaryAction::handle);
