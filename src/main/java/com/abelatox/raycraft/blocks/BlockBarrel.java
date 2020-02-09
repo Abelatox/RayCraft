@@ -30,7 +30,7 @@ public class BlockBarrel extends BaseBlock {
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
-			if (player.getMotion().x == 0 && player.getMotion().y == 0 && player.getMotion().z == 0 && player.isSneaking() && player.onGround) {
+			if (player.getMotion().x == 0 && player.getMotion().y == 0 && player.getMotion().z == 0 && player.isCrouching() && player.onGround) {
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 					player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
 					world.removeBlock(pos, true);
@@ -39,24 +39,5 @@ public class BlockBarrel extends BaseBlock {
 		}
 
 	}
-
-	@Override
-	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-		/*
-		 * IPlayerModelCapability props = ModCapabilities.get(player);
-		 * System.out.println("change"); props.setCarrying("barrel");
-		 * PacketHandler.sendToAllAround(player, props); world.removeBlock(pos);
-		 */
-	}
-
-	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rtr) {
-		/*
-		 * if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(),
-		 * ItemStack.EMPTY)) {
-		 * player.inventory.mainInventory.set(player.inventory.currentItem, new
-		 * ItemStack(ModItems.barrel)); world.removeBlock(pos); }
-		 */
-		return false;
-	}
+	
 }

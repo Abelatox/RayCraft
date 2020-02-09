@@ -62,7 +62,7 @@ public class InputHandler {
 				break;
 
 			case LOCK_ON:
-				if (lockOn == null) {
+				/*if (lockOn == null) {
 					RayTraceResult rtr = getMouseOverExtended(100);
 					if (rtr != null && rtr instanceof EntityRayTraceResult) {
 						EntityRayTraceResult ert = (EntityRayTraceResult) rtr;
@@ -82,8 +82,7 @@ public class InputHandler {
 				} else {
 					lockOn = null;
 				}
-				break;
-
+				break;*/
 			}
 		}
 	}
@@ -98,7 +97,7 @@ public class InputHandler {
 		if (player != null) {
 			IPlayerCapabilities props = ModCapabilities.get(player);
 
-			System.out.println("F");
+			// System.out.println("F");
 
 			if (Minecraft.getInstance().currentScreen == null) {
 				switch (event.getAction()) { // Check if press / release
@@ -120,12 +119,12 @@ public class InputHandler {
 
 					switch (event.getButton()) {
 					case Constants.RIGHT_MOUSE:
-						break;
-					case Constants.LEFT_MOUSE:
 						if (shouldShoot && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
 							PacketHandler.sendToServer(new PacketShoot(charged));
 							props.setCharging(false);
 						}
+						break;
+					case Constants.LEFT_MOUSE:
 						break;
 					}
 					break;
@@ -135,7 +134,7 @@ public class InputHandler {
 		}
 
 		if (event.getButton() == Constants.LEFT_MOUSE && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
-			System.out.println("aa");
+			// Shoot
 			// event.setCanceled(true);
 		}
 	}
@@ -147,14 +146,14 @@ public class InputHandler {
 		return null;
 	}
 
-	public static RayTraceResult getMouseOverExtended(float dist) {
+	/*public static RayTraceResult getMouseOverExtended(float dist) {
 		Minecraft mc = Minecraft.getInstance();
 		Entity theRenderViewEntity = mc.getRenderViewEntity();
-		AxisAlignedBB theViewBoundingBox = new AxisAlignedBB(theRenderViewEntity.posX - 0.5D, theRenderViewEntity.posY - 0.0D, theRenderViewEntity.posZ - 0.5D, theRenderViewEntity.posX + 0.5D, theRenderViewEntity.posY + 1.5D, theRenderViewEntity.posZ + 0.5D);
+		AxisAlignedBB theViewBoundingBox = new AxisAlignedBB(theRenderViewEntity.getPosX() - 0.5D, theRenderViewEntity.getPosY() - 0.0D, theRenderViewEntity.getPosZ() - 0.5D, theRenderViewEntity.getPosX() + 0.5D, theRenderViewEntity.getPosY() + 1.5D, theRenderViewEntity.getPosZ() + 0.5D);
 		RayTraceResult returnMOP = null;
 		if (mc.world != null) {
 			double var2 = dist;
-			returnMOP = theRenderViewEntity.func_213324_a(var2, 0, true);
+			returnMOP = theRenderViewEntity.pick(var2, 0, true);
 			double calcdist = var2;
 			Vec3d pos = theRenderViewEntity.getEyePosition(0);
 			var2 = calcdist;
@@ -172,17 +171,25 @@ public class InputHandler {
 			for (Entity entity : list) {
 				if (entity.canBeCollidedWith()) {
 					float bordersize = entity.getCollisionBorderSize();
-					AxisAlignedBB aabb = new AxisAlignedBB(entity.posX - entity.getWidth() / 2, entity.posY, entity.posZ - entity.getWidth() / 2, entity.posX + entity.getWidth() / 2, entity.posY + entity.getHeight(), entity.posZ + entity.getWidth() / 2);
+					AxisAlignedBB aabb = new AxisAlignedBB(entity.getPosX() - entity.getWidth() / 2, entity.getPosY(), entity.getPosZ() - entity.getWidth() / 2, entity.getPosX() + entity.getWidth() / 2, entity.getPosY() + entity.getHeight(), entity.getPosZ() + entity.getWidth() / 2);
 					aabb.grow(bordersize, bordersize, bordersize);
-					/*
-					 * RayTraceResult mop0 = aabb.calculateIntercept(pos, var8);
-					 * 
-					 * if (aabb.contains(pos)) { if (0.0D < d || d == 0.0D) { pointedEntity =
-					 * entity; d = 0.0D; } } else if (mop0 != null) { double d1 =
-					 * pos.distanceTo(mop0.getHitVec());
-					 * 
-					 * if (d1 < d || d == 0.0D) { pointedEntity = entity; d = d1; } }
-					 */
+
+					RayTraceResult mop0 = aabb.calculateIntercept(pos, var8);
+
+					if (aabb.contains(pos)) {
+						if (0.0D < d || d == 0.0D) {
+							pointedEntity = entity;
+							d = 0.0D;
+						}
+					} else if (mop0 != null) {
+						double d1 = pos.distanceTo(mop0.getHitVec());
+
+						if (d1 < d || d == 0.0D) {
+							pointedEntity = entity;
+							d = d1;
+						}
+					}
+
 				}
 			}
 
@@ -191,5 +198,5 @@ public class InputHandler {
 			}
 		}
 		return returnMOP;
-	}
+	}*/
 }

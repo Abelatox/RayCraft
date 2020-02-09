@@ -116,7 +116,7 @@ public class EntityPirateShot extends ThrowableEntity {
 
 	private void explode() {
 		// System.out.println("Boom");
-		world.createExplosion(this, posX, posY, posZ, power / 4, Mode.NONE);
+		world.createExplosion(this, getPosX(), getPosY(), getPosZ(), power / 4, Mode.NONE);
 		this.remove();
 	}
 

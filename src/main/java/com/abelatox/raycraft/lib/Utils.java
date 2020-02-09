@@ -16,6 +16,7 @@ import java.util.Set;
 
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.entities.EntityFist;
 import com.abelatox.raycraft.entities.EntityPirateShot;
 import com.abelatox.raycraft.entities.EntityPirateShot2;
@@ -40,6 +41,9 @@ public class Utils {
 			}
 			if (props.getPlayerType().equals("rayman")) {
 				return ModModels.renderRayman;
+			}
+			if(props.getPlayerType().equals("globox")) {
+				return ModModels.renderGlobox;
 			}
 		}
 		return null;

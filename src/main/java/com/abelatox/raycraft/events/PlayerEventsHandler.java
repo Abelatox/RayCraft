@@ -42,7 +42,7 @@ public class PlayerEventsHandler {
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 			if (player.world.isRemote && !player.onGround && player.getMotion().y < 0 && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
-				System.out.println(event.getEntity().world.isRemote);
+			//	System.out.println(event.getEntity().world.isRemote);
 				// if(player.world.isRemote && Minecraft.getInstance().) {
 				player.setMotion(player.getMotion().x, -0.1, player.getMotion().z);
 				// }
@@ -56,7 +56,6 @@ public class PlayerEventsHandler {
 						player.setMotion(new Vec3d(player.getMotion().x / 2, player.getMotion().y * 2, player.getMotion().z / 2));
 					} else {
 						player.setMotion(new Vec3d(player.getMotion().x / 2, player.getMotion().y, player.getMotion().z / 2));
-
 					}
 
 				}

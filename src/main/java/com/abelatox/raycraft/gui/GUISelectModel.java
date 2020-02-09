@@ -24,6 +24,7 @@ public class GUISelectModel extends Screen{
 		addButton(new Button(this.width / 2 - 100, this.height - 80, 200, 20, "Rayman", (e) -> { select("rayman"); }));
 		addButton(new Button(this.width / 2 - 100, this.height - 60, 200, 20, "Red Robopirate", (e) -> { select("robopirate"); }));
 		addButton(new Button(this.width / 2 - 100, this.height - 40, 200, 20, "Green Robopirate", (e) -> { select("robopirate2"); }));
+		addButton(new Button(this.width / 2 - 100, this.height - 20, 200, 20, "Globox", (e) -> { select("globox"); }));
         //buttons.add(ok = new Button(0, 0, 0, 50, 20, "OK", ));
 
 		super.init();

@@ -38,7 +38,7 @@ public class PacketPlaySound {
 	public static void handle(PacketPlaySound message, final Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
-			player.world.playSound(player.posX, player.posY, player.posZ, ModSounds.pirateShot1, SoundCategory.PLAYERS, 1F, 1F, false);
+			player.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.pirateShot1, SoundCategory.PLAYERS, 1F, 1F, false);
 		});
 		ctx.get().setPacketHandled(true);
 	}

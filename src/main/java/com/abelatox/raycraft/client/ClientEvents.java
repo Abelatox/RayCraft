@@ -5,6 +5,7 @@ import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.gui.GUISelectModel;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
+import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
 import com.abelatox.raycraft.network.PacketHandler;
 import com.abelatox.raycraft.network.packets.PacketSecondaryAction;
@@ -15,6 +16,7 @@ import com.abelatox.raycraft.sounds.ModSounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
@@ -41,7 +43,7 @@ public class ClientEvents {
 			IRayCraftRender render = Utils.getRender(props);
 			if (render != null) {
 				event.setCanceled(true);
-				render.doRender(event.getEntityLiving(), event.getX(), event.getY(), event.getZ(), 0F, 0.0625F);
+				render.doRender(event.getEntityLiving(), player.getPosX(), player.getPosY(), player.getPosZ(), 0F, 0.0625F, event.getMatrixStack(), event.getBuffers(), event.getLight(), OverlayTexture.DEFAULT_LIGHT, 1, 1, 1, 1);
 			}
 		}
 	}
@@ -59,7 +61,7 @@ public class ClientEvents {
 
 		if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY) && render != null) {
 			event.setCanceled(true);
-			render.renderFirstPersonArm(player);
+			render.renderFirstPersonArm(player, event.getMatrixStack(), event.getBuffers(), event.getLight());
 		}
 	}
 

@@ -30,8 +30,8 @@ public class GUIHealth extends Screen {
 		if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
 			if (player != null && ModCapabilities.get(player) != null) {
 				String model = ModCapabilities.get(player).getPlayerType();
-				int screenWidth = mc.mainWindow.getScaledWidth();
-				int screenHeight = mc.mainWindow.getScaledHeight();
+				int screenWidth = mc.getMainWindow().getScaledWidth();
+				int screenHeight = mc.getMainWindow().getScaledHeight();
 
 				GL11.glPushMatrix();
 				{

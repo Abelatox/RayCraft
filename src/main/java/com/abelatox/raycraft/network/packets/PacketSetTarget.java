@@ -33,7 +33,7 @@ public class PacketSetTarget {
 	public static void handle(PacketSetTarget message, final Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
-			GUIEnemyHealth.target = (LivingEntity) player.world.getEntityByID(message.id);
+		//	GUIEnemyHealth.target = (LivingEntity) player.world.getEntityByID(message.id);
 		});
 		ctx.get().setPacketHandled(true);
 	}

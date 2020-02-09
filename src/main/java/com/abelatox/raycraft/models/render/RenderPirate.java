@@ -5,11 +5,16 @@ import org.lwjgl.opengl.GL11;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.models.ModelRoboPirate;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -18,24 +23,28 @@ import net.minecraft.util.math.MathHelper;
 public class RenderPirate extends EntityRenderer<LivingEntity> implements IRayCraftRender {
 	float scale;
 	private ModelRoboPirate model;
-	private float offset[] = new float[3];
 
 	public RenderPirate(EntityRendererManager renderManager, ModelRoboPirate model, float scale) {
 		super(renderManager);
 		this.model = model;
 		this.scale = scale;
-		this.offset = new float[] { 0, 0, 0 };
 	}
 
+	/*@Override
+	public void render(LivingEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+		// model.render(matrixStackIn,
+		// bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))),
+		// packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+		System.out.println("Aa");
+		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+	}*/
+	
 	@Override
-	public void doRender(LivingEntity entityLiving, double x, double y, double z, float u, float v) {
+	public void doRender(LivingEntity entityLiving, double x, double y, double z, float u, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		GL11.glPushMatrix();
 		{
-			GL11.glTranslatef((float) x + this.offset[0], (float) y + 1.5F + this.offset[1], (float) z + this.offset[2]);
+			matrixStackIn.push();
 
-			GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
-			GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
-			GL11.glScaled(this.scale, this.scale, this.scale);
 			float ageInTicks = entityLiving.ticksExisted + v;
 
 			float headYawOffset = this.interpolateRotation(entityLiving.prevRenderYawOffset, entityLiving.renderYawOffset, v);
@@ -48,8 +57,12 @@ public class RenderPirate extends EntityRenderer<LivingEntity> implements IRayCr
 			float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
 			float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);
 
-			Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entityLiving));
-			this.model.render(entityLiving, limbSwing, limbSwingAmount, ageInTicks, headYaw - headYawOffset, headPitch, 0.0625F);
+			// Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entityLiving));
+			this.model.render(entityLiving, limbSwing, limbSwingAmount, ageInTicks, headYaw - headYawOffset, headPitch);
+			this.model.render(matrixStackIn, iRenderTypeBuffer.getBuffer(model.getRenderType(getEntityTexture(entityLiving))), packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+			matrixStackIn.pop();
+
 		}
 		GL11.glPopMatrix();
 	}
@@ -82,30 +95,27 @@ public class RenderPirate extends EntityRenderer<LivingEntity> implements IRayCr
 	}
 
 	@Override
-	public void renderFirstPersonArm(PlayerEntity player) {
+	public void renderFirstPersonArm(PlayerEntity player, MatrixStack matrixStackIn, IRenderTypeBuffer buffer, int packedLightIn) {
 		Minecraft mc = Minecraft.getInstance();
 		RenderHelper.enableStandardItemLighting();
-		//Minecraft.getInstance().entityRenderer.enableLightmap();
-		//GlStateManager.enableBlend();
-		mc.getTextureManager().bindTexture(getEntityTexture(player));
-		GL11.glTranslated(1, -1.0, -0.6);
-		GL11.glRotated(-20, 1, 0, 0);
-		GL11.glRotated(150, 0, 1, 0);
-		GL11.glRotated(-50, 0, 0, 1);
+		matrixStackIn.push();
+		{
+			matrixStackIn.translate(1, -1, -0.6);
+			matrixStackIn.rotate(Vector3f.XN.rotationDegrees(20));
+			matrixStackIn.rotate(Vector3f.YP.rotationDegrees(150));
+			matrixStackIn.rotate(Vector3f.ZN.rotationDegrees(50));
 
-		GL11.glColor4f(0.6F, 0.6F, 0.6F, 1.0F);
+			if (mc.gameSettings.thirdPersonView == 0 && !mc.gameSettings.hideGUI && !player.isSleeping()) {
+				model.swingProgress = 0.0F;
+				model.isSneak = false;
+				model.swimAnimation = 0.0F;
+				model.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
+				model.rightArm.rotateAngleX = 0.0F;
 
-		if (mc.gameSettings.thirdPersonView == 0 && !mc.gameSettings.hideGUI && !player.isSleeping()) {
-			model.swingProgress = 0.0F;
-			model.isSneak = false;
-			model.swimAnimation = 0.0F;
-			model.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
-			model.rightArm.rotateAngleX = 0.0F;
-			model.rightArm.render(0.0625F);
+				model.rightArm.render(matrixStackIn, buffer.getBuffer(model.getRenderType(getEntityTexture(player))), packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1, 1, 1, 1);
+			}
 		}
-		//GlStateManager.disableBlend();
-		//Minecraft.getInstance().entityRenderer.disableLightmap();
-		// RenderHelper.disableStandardItemLighting();
+		matrixStackIn.pop();
 	}
 
 	@Override

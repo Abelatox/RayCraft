@@ -81,7 +81,7 @@ public class EntityBarrel extends ThrowableEntity {
 		// System.out.println("Boom");
 		// world.createExplosion(this, posX, posY, posZ, 5, Explosion.Mode.NONE);
 		for (int i = 0; i < 5; i++) {
-			world.addParticle(ParticleTypes.EXPLOSION, posX, posY, posZ, i, i, i);
+			world.addParticle(ParticleTypes.EXPLOSION, getPosX(), getPosY(), getPosZ(), i, i, i);
 		}
 
 		List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(8.0D, 6.0D, 8.0D).offset(-4.0D, -3.0D, -4.0D));
@@ -94,7 +94,7 @@ public class EntityBarrel extends ThrowableEntity {
 		}
 
 		removeBreakableBlocks();
-		world.playSound(this.posX, this.posY, this.posZ, ModSounds.bombExplode, SoundCategory.PLAYERS, 5F, 1F, false);
+		world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.bombExplode, SoundCategory.PLAYERS, 5F, 1F, false);
 		this.remove();
 	}
 
@@ -102,7 +102,7 @@ public class EntityBarrel extends ThrowableEntity {
 		for (int x = 0; x < 3; x++) {
 			for (int y = 0; y < 3; y++) {
 				for (int z = 0; z < 3; z++) {
-					BlockPos pos = new BlockPos(posX + 1 - x, posY + 1 - y, posZ + 1 - z);
+					BlockPos pos = new BlockPos(getPosX() + 1 - x, getPosY() + 1 - y, getPosZ() + 1 - z);
 					if (world.getBlockState(pos).getBlock() == Blocks.IRON_DOOR || world.getBlockState(pos).getBlock() == Blocks.IRON_TRAPDOOR) {
 						System.out.println("Block found");
 						world.setBlockState(pos, Blocks.AIR.getDefaultState());

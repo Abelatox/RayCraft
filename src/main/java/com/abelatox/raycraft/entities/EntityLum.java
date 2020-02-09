@@ -42,16 +42,16 @@ public class EntityLum extends Entity {
 	public void tick() {
 		switch (lumType) {
 		case "yellow":
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, posX, posY, posZ, 1, 1, 0);
+			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 1, 1, 0);
 			break;
 		case "green":
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, posX, posY, posZ, 0, 1, 0);
+			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 0, 1, 0);
 			break;
 		case "red":
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, posX, posY, posZ, 1, 0, 0);
+			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 1, 0, 0);
 			break;
 		case "blue":
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, posX, posY, posZ, 0, 0, 1);
+			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 0, 0, 1);
 			break;
 		default:
 			remove();
@@ -76,7 +76,7 @@ public class EntityLum extends Entity {
 					break;
 				case "green":
 					player.world.playSound(null, player.getPosition(), ModSounds.lumGreen, SoundCategory.MASTER, 1F, 1F);
-					player.setSpawnPoint(this.getPosition(), true, this.dimension);
+					player.setSpawnPoint(this.getPosition(), true, true, this.dimension);
 					System.out.println("Spawn setting");
 					break;
 				case "red":

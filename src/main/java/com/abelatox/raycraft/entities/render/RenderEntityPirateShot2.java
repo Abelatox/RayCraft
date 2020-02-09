@@ -1,16 +1,23 @@
-package com.abelatox.raycraft.entities;
+package com.abelatox.raycraft.entities.render;
 
 import javax.annotation.Nullable;
 
 import org.lwjgl.opengl.GL11;
 
+import com.abelatox.raycraft.entities.EntityFist;
+import com.abelatox.raycraft.entities.EntityPirateShot;
+import com.abelatox.raycraft.entities.EntityPirateShot2;
 import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.models.ModelFist;
 import com.abelatox.raycraft.models.ModelPirateShot;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,8 +34,38 @@ public class RenderEntityPirateShot2 extends EntityRenderer<EntityPirateShot2> {
         this.shadowSize = 0.25F;
         this.shot = fist;
     }
-
+    
     @Override
+	public void render(EntityPirateShot2 entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+		matrixStackIn.push();
+
+		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw)));
+		matrixStackIn.rotate(Vector3f.XN.rotationDegrees(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch)));
+		matrixStackIn.scale(2,2,2);
+		
+		if (entity.ticksExisted > 2) //Prevent entity rendering in your face
+		shot.render(matrixStackIn, bufferIn.getBuffer(shot.getRenderType(getEntityTexture(entity))), packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+		
+		matrixStackIn.pop();
+		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+	}
+
+	@Nullable
+	@Override
+	public ResourceLocation getEntityTexture(EntityPirateShot2 entity) {
+		return new ResourceLocation(Reference.MODID, "textures/models/pirateshot.png");
+	}
+
+	public static class Factory implements IRenderFactory<EntityPirateShot2> {
+		@Override
+		public EntityRenderer<? super EntityPirateShot2> createRenderFor(EntityRendererManager manager) {
+			// TODO Auto-generated method stub
+			return new RenderEntityPirateShot2(manager, new ModelPirateShot());
+		}
+	}
+}
+
+    /*@Override
     public void doRender(EntityPirateShot2 entity, double x, double y, double z, float entityYaw, float partialTicks) {
     	GL11.glPushMatrix();
 		{
@@ -51,17 +88,4 @@ public class RenderEntityPirateShot2 extends EntityRenderer<EntityPirateShot2> {
 		GL11.glPopMatrix();
        // super.doRender(entity, x, y, z, entityYaw, partialTicks);
     }
-
-    @Nullable
-    @Override
-    protected ResourceLocation getEntityTexture(EntityPirateShot2 entity) {
-		return new ResourceLocation(Reference.MODID, "textures/models/pirateshot.png");
-    }
-
-    public static class Factory implements IRenderFactory<EntityPirateShot2> {
-        @Override
-        public EntityRenderer<? super EntityPirateShot2> createRenderFor(EntityRendererManager manager) {
-            return new RenderEntityPirateShot2(manager, new ModelPirateShot());
-        }
-    }
-}
+}*/

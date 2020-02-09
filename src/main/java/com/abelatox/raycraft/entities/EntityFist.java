@@ -73,7 +73,7 @@ public class EntityFist extends ThrowableEntity {
 		}
 
 		if(getLvl() >= 3) {
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, posX, posY, posZ, 1, 1, 0);
+			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 1, 1, 0);
 		}
 		super.tick();
 	}
@@ -129,7 +129,7 @@ public class EntityFist extends ThrowableEntity {
 
 	private void explode() {
 		// System.out.println("Boom");
-		world.createExplosion(this, posX, posY, posZ, power / 4, Mode.NONE);
+		world.createExplosion(this, getPosX(), getPosY(), getPosZ(), power / 4, Mode.NONE);
 		this.remove();
 	}
 
