@@ -14,7 +14,7 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 			CompoundNBT props = new CompoundNBT();
 			props.putString("PlayerModel", instance.getPlayerType());
 			props.putInt("ShotLevel", instance.getShotLevel());
-			props.putBoolean("Charging", instance.getCharging());
+			props.putBoolean("Charging", instance.getIsCharging());
 			props.putInt("Lums", instance.getLums());
 			return props;
 		}
@@ -58,7 +58,7 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 	}
 
 	@Override
-	public boolean getCharging() {
+	public boolean getIsCharging() {
 		return charging;
 	}
 

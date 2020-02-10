@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import org.lwjgl.opengl.GL11;
 
+import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Reference;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -112,6 +113,7 @@ public class ModelRoboPirate extends BipedModel {
 	boolean isHoldingBarrel = false;
 	boolean isSwimming = false;
 	boolean isSleeping = false;
+	boolean isCharging = false;
 
 	float yaw = 0;
 	float pitch = 0;
@@ -122,8 +124,14 @@ public class ModelRoboPirate extends BipedModel {
 		isHoldingBarrel = ItemStack.areItemStacksEqual(entityIn.getHeldItemMainhand(), new ItemStack(ModItems.barrel));
 		isSwimming = entityIn.getPose() == Pose.SWIMMING;
 		isSleeping = entityIn.isSleeping();
-
-		yaw = entityIn.prevRenderYawOffset;
+		isCharging = ModCapabilities.get((PlayerEntity) entityIn).getIsCharging();
+		
+		if(isCharging) {
+			yaw = entityIn.rotationYaw;
+			entityIn.setRotationYawHead(entityIn.prevRenderYawOffset);
+		} else {
+			yaw = entityIn.prevRenderYawOffset;
+		}
 		pitch = headPitch;
 
 		super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
@@ -175,13 +183,36 @@ public class ModelRoboPirate extends BipedModel {
 					barrel.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 				}
 				matrixStackIn.pop();
+				
 			} else {
-				this.rightLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-				this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-				this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 				this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+
+				if (isCharging) {
+					matrixStackIn.push();
+					matrixStackIn.rotate(Vector3f.XN.rotationDegrees(90 - pitch));
+					this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+					matrixStackIn.pop();
+					
+					matrixStackIn.push();
+					//matrixStackIn.translate(0, 0.2, 0.2);
+					matrixStackIn.rotate(Vector3f.XN.rotationDegrees(100 - pitch));
+					matrixStackIn.rotate(Vector3f.ZN.rotationDegrees(45));
+					this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+					matrixStackIn.pop();
+					
+					matrixStackIn.push();
+					matrixStackIn.scale(1.5F, 1, 1.5F);
+					matrixStackIn.pop();
+				} else {
+					
+					this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+					this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+				}
+				this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+
 				this.leftLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-				this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+				this.rightLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+
 				/*
 				 * matrixStackIn.push(); matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90));
 				 * matrixStackIn.rotate(Vector3f.ZN.rotationDegrees(90)); //GL11.glRotated(-90,

@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import org.lwjgl.opengl.GL11;
 
+import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Reference;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -143,6 +144,7 @@ public class ModelGlobox extends BipedModel {
 	boolean isHoldingBarrel = false;
 	boolean isSwimming = false;
 	boolean isSleeping = false;
+	boolean isCharging = false;
 
 	float yaw = 0;
 	float pitch = 0;
@@ -153,7 +155,8 @@ public class ModelGlobox extends BipedModel {
 		isHoldingBarrel = ItemStack.areItemStacksEqual(entityIn.getHeldItemMainhand(), new ItemStack(ModItems.barrel));
 		isSwimming = entityIn.getPose() == Pose.SWIMMING;
 		isSleeping = entityIn.isSleeping();
-
+		isCharging = ModCapabilities.get((PlayerEntity) entityIn).getIsCharging();
+		//System.out.println(isCharging);
 		yaw = entityIn.prevRenderYawOffset;
 		pitch = headPitch;
 
@@ -208,7 +211,7 @@ public class ModelGlobox extends BipedModel {
 			}
 
 			
-			if (true) {
+			if (isCharging) {
 				matrixStackIn.push();
 				matrixStackIn.translate(0.18, 0.1, 0);
 				this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);

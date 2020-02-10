@@ -115,6 +115,8 @@ public class ModelRayman extends BipedModel {
 	boolean isHoldingBarrel = false;
 	boolean isSwimming = false;
 	boolean isSleeping = false;
+	boolean isCharging = false;
+	float armRotation = 0;
 	int punchLevel = 0;
 
 	float yaw = 0;
@@ -126,7 +128,15 @@ public class ModelRayman extends BipedModel {
 		isHoldingBarrel = ItemStack.areItemStacksEqual(entityIn.getHeldItemMainhand(), new ItemStack(ModItems.barrel));
 		isSwimming = entityIn.getPose() == Pose.SWIMMING;
 		isSleeping = entityIn.isSleeping();
+		isCharging = ModCapabilities.get((PlayerEntity) entityIn).getIsCharging();
 		punchLevel = ModCapabilities.get((PlayerEntity) entityIn).getShotLevel();
+
+		if (isCharging) {
+			armRotation -= 5f;
+			armRotation = armRotation % 360;
+		} else {
+			armRotation = 0;
+		}
 
 		yaw = entityIn.prevRenderYawOffset;
 		pitch = headPitch;
@@ -178,13 +188,24 @@ public class ModelRayman extends BipedModel {
 				this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			}
 			
-			if(punchLevel == 3) {
-				this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 0.9F, 0F, 1F);
-				this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 0.9F, 0F, 1F);
-			}else {
-				this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-				this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+			//Punch color
+			float r, g, b;
+			if (punchLevel == 3) {
+				r = 1;
+				g = 0.9F;
+				b = 0;
+			} else {
+				r = 1;
+				g = 1;
+				b = 1;
 			}
+
+			matrixStackIn.push();
+			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(armRotation));
+			this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
+			matrixStackIn.pop();
+			this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
+
 			this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			this.leftLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			this.rightLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);

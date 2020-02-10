@@ -9,6 +9,7 @@ import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.gui.GUISelectModel;
 import com.abelatox.raycraft.lib.Constants;
 import com.abelatox.raycraft.network.PacketHandler;
+import com.abelatox.raycraft.network.packets.PacketSetCharging;
 import com.abelatox.raycraft.network.packets.PacketShoot;
 import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAllFromClient;
 
@@ -31,7 +32,8 @@ public class InputHandler {
 	public static LivingEntity lockOn = null;
 
 	public enum Keybinds {
-		SELECT("key.raycraft.select", GLFW.GLFW_KEY_P), LOCK_ON("key.raycraft.lockon", GLFW.GLFW_KEY_LEFT_CONTROL);
+		SELECT("key.raycraft.select", GLFW.GLFW_KEY_P),
+		LOCK_ON("key.raycraft.lockon", GLFW.GLFW_KEY_LEFT_CONTROL);
 
 		private final KeyBinding keybinding;
 
@@ -97,7 +99,7 @@ public class InputHandler {
 		if (player != null) {
 			IPlayerCapabilities props = ModCapabilities.get(player);
 
-			// System.out.println("F");
+			 System.out.println("F");
 
 			if (Minecraft.getInstance().currentScreen == null) {
 				switch (event.getAction()) { // Check if press / release
@@ -111,6 +113,7 @@ public class InputHandler {
 						props.setCharging(true);
 					}
 					break;
+					
 				case 0: // Release
 					boolean charged = false;
 					if (time + 1000 < System.currentTimeMillis()) {
@@ -121,6 +124,7 @@ public class InputHandler {
 					case Constants.RIGHT_MOUSE:
 						if (shouldShoot && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
 							PacketHandler.sendToServer(new PacketShoot(charged));
+							shouldShoot = false;
 							props.setCharging(false);
 						}
 						break;
@@ -129,7 +133,9 @@ public class InputHandler {
 					}
 					break;
 				}
-				PacketHandler.sendToServer(new PacketSyncCapabilityToAllFromClient());
+				System.out.println("Gonna sync");
+				//Sync from client to server to all clients
+				PacketHandler.sendToServer(new PacketSetCharging(shouldShoot));
 			}
 		}
 

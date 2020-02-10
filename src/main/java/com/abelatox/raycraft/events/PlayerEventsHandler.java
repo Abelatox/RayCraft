@@ -100,7 +100,7 @@ public class PlayerEventsHandler {
 		IPlayerCapabilities props = ModCapabilities.get(player);
 		props.setPlayerType(oProps.getPlayerType());
 		props.setShotLevel(oProps.getShotLevel());
-		props.setCharging(oProps.getCharging());
+		props.setCharging(oProps.getIsCharging());
 		props.setLums(oProps.getLums());
 
 		// System.out.println(oProps + " " + props);

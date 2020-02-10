@@ -27,7 +27,7 @@ public class PacketSyncCapabilityToAll {
 		this.name = name;
 		this.model = capability.getPlayerType();
 		this.shotLevel = capability.getShotLevel();
-		this.charging = capability.getCharging();
+		this.charging = capability.getIsCharging();
 	}
 
 	public void encode(PacketBuffer buffer) {

@@ -8,7 +8,7 @@ public interface IPlayerCapabilities {
 	int getShotLevel();
 	void setShotLevel(int level);
 	
-	boolean getCharging();
+	boolean getIsCharging();
 	void setCharging(boolean b);
 	
 	int getLums();

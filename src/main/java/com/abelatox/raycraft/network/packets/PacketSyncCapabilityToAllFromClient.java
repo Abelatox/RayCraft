@@ -2,6 +2,7 @@ package com.abelatox.raycraft.network.packets;
 
 import java.util.function.Supplier;
 
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.network.PacketHandler;
 
@@ -18,11 +19,11 @@ public class PacketSyncCapabilityToAllFromClient {
 	public PacketSyncCapabilityToAllFromClient() {
 	}
 
-	/*public PacketSyncCapabilityToAllFromClient(String name, IPlayerModelCapability capability) {
+	public PacketSyncCapabilityToAllFromClient(String name, IPlayerCapabilities capability) {
 		this.name = name;
 		this.model = capability.getPlayerType();
 		this.shotLevel = capability.getShotLevel();
-	}*/
+	}
 
 	public void encode(PacketBuffer buffer) {
 		
@@ -37,7 +38,7 @@ public class PacketSyncCapabilityToAllFromClient {
 	public static void handle(final PacketSyncCapabilityToAllFromClient message, Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
-		//	System.out.println(player+" "+ModCapabilities.get(player).getCharging());
+			System.out.println(player+" "+ModCapabilities.get(player).getPlayerType());
 			PacketHandler.syncToAllAround(player, ModCapabilities.get(player));
 		});
 		ctx.get().setPacketHandled(true);
