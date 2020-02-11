@@ -45,6 +45,9 @@ public class Utils {
 			if(props.getPlayerType().equals("globox")) {
 				return ModModels.renderGlobox;
 			}
+			if(props.getPlayerType().equals("hoodlum")) {
+				return ModModels.renderHoodlum;
+			}
 		}
 		return null;
 	}

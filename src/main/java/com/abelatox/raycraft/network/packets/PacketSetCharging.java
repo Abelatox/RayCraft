@@ -35,10 +35,8 @@ public class PacketSetCharging {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
 			IPlayerCapabilities props = ModCapabilities.get(player);
-			
-				props.setCharging(message.charging);
-			
-			System.out.println(props.getPlayerType());
+
+			props.setCharging(message.charging);
 			PacketHandler.syncToAllAround(player, props);
 		});
 		ctx.get().setPacketHandled(true);

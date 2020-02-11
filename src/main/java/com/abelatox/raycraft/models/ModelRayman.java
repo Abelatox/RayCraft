@@ -131,13 +131,6 @@ public class ModelRayman extends BipedModel {
 		isCharging = ModCapabilities.get((PlayerEntity) entityIn).getIsCharging();
 		punchLevel = ModCapabilities.get((PlayerEntity) entityIn).getShotLevel();
 
-		if (isCharging) {
-			armRotation -= 5f;
-			armRotation = armRotation % 360;
-		} else {
-			armRotation = 0;
-		}
-
 		yaw = entityIn.prevRenderYawOffset;
 		pitch = headPitch;
 
@@ -152,9 +145,7 @@ public class ModelRayman extends BipedModel {
 			if (isSwimming) {
 				matrixStackIn.translate(0, 1.3, 0);
 				matrixStackIn.rotate(Vector3f.XP.rotationDegrees(90));
-			}
-
-			if (isSleeping) {
+			} else if (isSleeping) {
 				matrixStackIn.translate(0, 0, -1.5);
 				matrixStackIn.rotate(Vector3f.XN.rotationDegrees(90));
 				matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180));
@@ -165,6 +156,14 @@ public class ModelRayman extends BipedModel {
 			matrixStackIn.translate(0, 1.5, 0);
 			matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180));
 			matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180));
+
+			float r = 1, g = 1, b = 1;
+
+			if (punchLevel == 3) {
+				r = 1;
+				g = 0.9F;
+				b = 0;
+			}
 
 			if (isHoldingBarrel) {
 				this.rightArm.rotateAngleX = -3;
@@ -185,28 +184,52 @@ public class ModelRayman extends BipedModel {
 				}
 				matrixStackIn.pop();
 			} else {
-				this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+				if (isCharging) {
+					matrixStackIn.push();
+					{// izq abajo, derecha atrás
+						matrixStackIn.translate(-0.1, 0, -0.4);
+						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(60));
+						this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
+					}
+					matrixStackIn.pop();
+					matrixStackIn.push();
+					{
+						matrixStackIn.translate(-0.8, 0, -0.2);
+						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(20));
+						this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
+					}
+					matrixStackIn.pop();
+					matrixStackIn.push();
+					{
+						matrixStackIn.translate(0, 0.2, 0);
+						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(20));
+						this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+						matrixStackIn.rotate(Vector3f.XN.rotationDegrees(20));
+						this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+
+					}
+					matrixStackIn.pop();
+
+				} else {
+					matrixStackIn.push();
+					{
+						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(armRotation));
+						this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
+					}
+					matrixStackIn.pop();
+					this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
+					this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+					this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+
+				}
+				
+				
 			}
+
+			// Punch color
+
 			
-			//Punch color
-			float r, g, b;
-			if (punchLevel == 3) {
-				r = 1;
-				g = 0.9F;
-				b = 0;
-			} else {
-				r = 1;
-				g = 1;
-				b = 1;
-			}
 
-			matrixStackIn.push();
-			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(armRotation));
-			this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
-			matrixStackIn.pop();
-			this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
-
-			this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			this.leftLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			this.rightLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 		}

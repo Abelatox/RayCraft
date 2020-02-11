@@ -2,10 +2,10 @@ package com.abelatox.raycraft.models.render;
 
 import org.lwjgl.opengl.GL11;
 
-import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.lib.Reference;
-import com.abelatox.raycraft.models.ModelRayman;
+import com.abelatox.raycraft.models.ModelHoodlum;
+import com.abelatox.raycraft.models.ModelRoboPirate;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
@@ -14,61 +14,57 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 
-public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCraftRender {
-
+public class RenderHoodlum extends EntityRenderer<LivingEntity> implements IRayCraftRender {
 	float scale;
-	private ModelRayman model;
+	private ModelHoodlum model;
 
-	public RenderRayman(EntityRendererManager renderManager, ModelRayman model, float scale) {
+	public RenderHoodlum(EntityRendererManager renderManager, ModelHoodlum model, float scale) {
 		super(renderManager);
 		this.model = model;
 		this.scale = scale;
 	}
 
+	/*@Override
+	public void render(LivingEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+		// model.render(matrixStackIn,
+		// bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))),
+		// packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+		System.out.println("Aa");
+		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+	}*/
+	
 	@Override
 	public void doRender(LivingEntity entityLiving, double x, double y, double z, float u, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		GL11.glPushMatrix();
 		{
 			matrixStackIn.push();
-			{
 
-				float ageInTicks = entityLiving.ticksExisted + v;
+			float ageInTicks = entityLiving.ticksExisted + v;
 
-				float headYawOffset = this.interpolateRotation(entityLiving.prevRenderYawOffset, entityLiving.renderYawOffset, v);
-				float headYaw = this.interpolateRotation(entityLiving.prevRotationYawHead, entityLiving.rotationYawHead, v);
+			float headYawOffset = this.interpolateRotation(entityLiving.prevRenderYawOffset, entityLiving.renderYawOffset, v);
+			float headYaw = this.interpolateRotation(entityLiving.prevRotationYawHead, entityLiving.rotationYawHead, v);
 
-				float headPitch = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * v;
+			float headPitch = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * v;
 
-				this.rotateCorpse(entityLiving, ageInTicks, headYawOffset, v);
+			this.rotateCorpse(entityLiving, ageInTicks, headYawOffset, v);
 
-				float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
-				float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);
+			float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
+			float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);
 
-				matrixStackIn.push();
-				{
-					matrixStackIn.translate(-0.4, 0.6, -0.0);
-					matrixStackIn.rotate(Vector3f.YP.rotationDegrees(entityLiving.prevRotationYaw));
-					
-					Minecraft.getInstance().gameRenderer.itemRenderer.renderItemSide((PlayerEntity) entityLiving, ((PlayerEntity) entityLiving).getHeldItemMainhand(), TransformType.THIRD_PERSON_RIGHT_HAND, true, matrixStackIn, iRenderTypeBuffer, packedLightIn);
-				}
-				matrixStackIn.pop();
+			// Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entityLiving));
+			this.model.render(entityLiving, limbSwing, limbSwingAmount, ageInTicks, headYaw - headYawOffset, headPitch);
+			this.model.render(matrixStackIn, iRenderTypeBuffer.getBuffer(model.getRenderType(getEntityTexture(entityLiving))), packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-				this.model.render(entityLiving, limbSwing, limbSwingAmount, ageInTicks, headYaw - headYawOffset, headPitch);
-				this.model.render(matrixStackIn, iRenderTypeBuffer.getBuffer(model.getRenderType(getEntityTexture(entityLiving))), packedLightIn, packedOverlayIn, red, green, blue, alpha);
-			}
 			matrixStackIn.pop();
 
 		}
 		GL11.glPopMatrix();
-
 	}
 
 	private float interpolateRotation(float lowerLimit, float upperLimit, float range) {
@@ -101,7 +97,7 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 	@Override
 	public void renderFirstPersonArm(PlayerEntity player, MatrixStack matrixStackIn, IRenderTypeBuffer buffer, int packedLightIn) {
 		Minecraft mc = Minecraft.getInstance();
-		//RenderHelper.enableStandardItemLighting();
+		RenderHelper.enableStandardItemLighting();
 		matrixStackIn.push();
 		{
 			matrixStackIn.translate(1, -1, -0.6);
@@ -115,11 +111,8 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 				model.swimAnimation = 0.0F;
 				model.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, player);
 				model.rightArm.rotateAngleX = 0.0F;
-				IPlayerCapabilities props = ModCapabilities.get(player);
-				if(props.getShotLevel() == 3)
-					model.rightArm.render(matrixStackIn, buffer.getBuffer(model.getRenderType(getEntityTexture(player))), packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1, 0.9F, 0, 1);
-				else
-					model.rightArm.render(matrixStackIn, buffer.getBuffer(model.getRenderType(getEntityTexture(player))), packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1, 1, 1, 1);
+
+				model.rightArm.render(matrixStackIn, buffer.getBuffer(model.getRenderType(getEntityTexture(player))), packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1, 1, 1, 1);
 			}
 		}
 		matrixStackIn.pop();
@@ -129,5 +122,4 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 	public ResourceLocation getEntityTexture(LivingEntity entity) {
 		return new ResourceLocation(Reference.MODID, "textures/models/" + ModCapabilities.get((PlayerEntity) entity).getPlayerType() + ".png");
 	}
-
 }
