@@ -1,16 +1,13 @@
 package com.abelatox.raycraft.models;
 
-import org.lwjgl.opengl.GL11;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
-import com.abelatox.raycraft.lib.Reference;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -19,9 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelRayman extends BipedModel {
@@ -121,7 +116,7 @@ public class ModelRayman extends BipedModel {
 
 	float yaw = 0;
 	float pitch = 0;
-
+	
 	@Override
 	public void render(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, 1, entityIn);
@@ -130,6 +125,13 @@ public class ModelRayman extends BipedModel {
 		isSleeping = entityIn.isSleeping();
 		isCharging = ModCapabilities.get((PlayerEntity) entityIn).getIsCharging();
 		punchLevel = ModCapabilities.get((PlayerEntity) entityIn).getShotLevel();
+		armRotation = ModCapabilities.get((PlayerEntity) entityIn).getArmRotation();
+		if(isCharging) {
+			armRotation -= 5;
+			ModCapabilities.get((PlayerEntity) entityIn).setArmRotation(armRotation);
+		} else {
+			armRotation = 0;
+		}
 
 		yaw = entityIn.prevRenderYawOffset;
 		pitch = headPitch;
@@ -187,24 +189,24 @@ public class ModelRayman extends BipedModel {
 				if (isCharging) {
 					matrixStackIn.push();
 					{// izq abajo, derecha atrás
-						matrixStackIn.translate(-0.1, 0, -0.4);
-						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(60));
+						//matrixStackIn.translate(-0.1, 0, -0.4);
+						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(armRotation));
 						this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
 					}
 					matrixStackIn.pop();
 					matrixStackIn.push();
 					{
-						matrixStackIn.translate(-0.8, 0, -0.2);
-						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(20));
+					//	matrixStackIn.translate(-0.8, 0, -0.2);
+					//	matrixStackIn.rotate(Vector3f.XP.rotationDegrees(20));
 						this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
 					}
 					matrixStackIn.pop();
 					matrixStackIn.push();
 					{
-						matrixStackIn.translate(0, 0.2, 0);
-						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(20));
+					//	matrixStackIn.translate(0, 0.2, 0);
+						//matrixStackIn.rotate(Vector3f.XP.rotationDegrees(20));
 						this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-						matrixStackIn.rotate(Vector3f.XN.rotationDegrees(20));
+					//	matrixStackIn.rotate(Vector3f.XN.rotationDegrees(20));
 						this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 
 					}

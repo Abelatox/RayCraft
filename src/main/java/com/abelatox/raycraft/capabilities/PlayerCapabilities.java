@@ -33,6 +33,7 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 	private int shotLevel = 0;
 	private boolean charging = false;
 	private int lums = 0;
+	private float armRotation;
 	
 	public String getPlayerType() {
 		return playerModel;
@@ -75,5 +76,15 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 	@Override
 	public void setLums(int lums) {
 		this.lums = lums;
+	}
+
+	@Override
+	public float getArmRotation() {
+		return armRotation;
+	}
+
+	@Override
+	public void setArmRotation(float val) {
+		this.armRotation = val;
 	}	
 }

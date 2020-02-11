@@ -10,6 +10,8 @@ public interface IPlayerCapabilities {
 	
 	boolean getIsCharging();
 	void setCharging(boolean b);
+	float getArmRotation();
+	void setArmRotation(float val);
 	
 	int getLums();
 	void setLums(int lums);
