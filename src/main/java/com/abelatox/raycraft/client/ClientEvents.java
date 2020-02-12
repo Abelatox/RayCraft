@@ -43,7 +43,7 @@ public class ClientEvents {
 			IRayCraftRender render = Utils.getRender(props);
 			if (render != null) {
 				event.setCanceled(true);
-				render.doRender(event.getEntityLiving(), player.getPosX(), player.getPosY(), player.getPosZ(), 0F, 0.0625F, event.getMatrixStack(), event.getBuffers(), event.getLight(), OverlayTexture.DEFAULT_LIGHT, 1, 1, 1, 1);
+				render.doRender(event.getEntityLiving(), 0.0625F, event.getMatrixStack(), event.getBuffers(), event.getLight(), OverlayTexture.DEFAULT_LIGHT, 1, 1, 1, 1);
 			}
 		}
 	}

@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.FMLPlayMessages.SpawnEntity;
 
 public class ModEntities {
-	public static EntityType<EntityBarrel> TYPE_BARREL = createEntityType(EntityBarrel.class, EntityBarrel::new, (spawnEntity, world) -> new EntityBarrel(world), EntityClassification.MISC, "entity_barrel", 1, 1F);
+	public static EntityType<EntityBarrel> TYPE_BARREL = createEntityType(EntityBarrel.class, EntityBarrel::new, (spawnEntity, world) -> new EntityBarrel(world), EntityClassification.MISC, "entity_barrel", 1, 1F); // 1 XSize, 1 YSize
 	public static EntityType<EntityFist> TYPE_FIST = createEntityType(EntityFist.class, EntityFist::new, (spawnEntity, world) -> new EntityFist(world), EntityClassification.MISC, "entity_fist", 0.4F, 0.4F);
 	public static EntityType<EntityPirateShot> TYPE_PIRATE_SHOT = createEntityType(EntityPirateShot.class, EntityPirateShot::new, (spawnEntity, world) -> new EntityPirateShot(world), EntityClassification.MISC, "entity_pirate_shot", 1, 1);
 	public static EntityType<EntityPirateShot2> TYPE_PIRATE_SHOT_2 = createEntityType(EntityPirateShot2.class, EntityPirateShot2::new, (spawnEntity, world) -> new EntityPirateShot2(world), EntityClassification.MISC, "entity_pirate_shot2", 1, 1);

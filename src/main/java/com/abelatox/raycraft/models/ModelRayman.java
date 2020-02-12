@@ -8,6 +8,7 @@ import com.abelatox.raycraft.items.ModItems;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -116,7 +117,7 @@ public class ModelRayman extends BipedModel {
 
 	float yaw = 0;
 	float pitch = 0;
-	
+
 	@Override
 	public void render(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, 1, entityIn);
@@ -126,7 +127,7 @@ public class ModelRayman extends BipedModel {
 		isCharging = ModCapabilities.get((PlayerEntity) entityIn).getIsCharging();
 		punchLevel = ModCapabilities.get((PlayerEntity) entityIn).getShotLevel();
 		armRotation = ModCapabilities.get((PlayerEntity) entityIn).getArmRotation();
-		if(isCharging) {
+		if (isCharging) {
 			armRotation -= 5;
 			ModCapabilities.get((PlayerEntity) entityIn).setArmRotation(armRotation);
 		} else {
@@ -143,7 +144,6 @@ public class ModelRayman extends BipedModel {
 	public void render(MatrixStack matrixStackIn, IVertexBuilder builderIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		matrixStackIn.push();
 		{
-
 			if (isSwimming) {
 				matrixStackIn.translate(0, 1.3, 0);
 				matrixStackIn.rotate(Vector3f.XP.rotationDegrees(90));
@@ -177,61 +177,28 @@ public class ModelRayman extends BipedModel {
 					this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 				}
 				matrixStackIn.pop();
-
-				matrixStackIn.push();
-				{
-					matrixStackIn.scale(1.3F, 1.3F, 1.3F);
-					matrixStackIn.translate(0, -0.7, -0.1);
-					barrel.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-				}
-				matrixStackIn.pop();
 			} else {
 				if (isCharging) {
 					matrixStackIn.push();
-					{// izq abajo, derecha atrás
-						//matrixStackIn.translate(-0.1, 0, -0.4);
-						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(armRotation));
-						this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
-					}
-					matrixStackIn.pop();
-					matrixStackIn.push();
-					{
-					//	matrixStackIn.translate(-0.8, 0, -0.2);
-					//	matrixStackIn.rotate(Vector3f.XP.rotationDegrees(20));
-						this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
-					}
-					matrixStackIn.pop();
-					matrixStackIn.push();
-					{
-					//	matrixStackIn.translate(0, 0.2, 0);
-						//matrixStackIn.rotate(Vector3f.XP.rotationDegrees(20));
-						this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-					//	matrixStackIn.rotate(Vector3f.XN.rotationDegrees(20));
-						this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-
-					}
-					matrixStackIn.pop();
-
-				} else {
-					matrixStackIn.push();
 					{
 						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(armRotation));
 						this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
 					}
 					matrixStackIn.pop();
-					this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
-					this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-					this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 
 				}
-				
-				
+				this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			}
 
-			// Punch color
-
+			matrixStackIn.push();
+			{
+				matrixStackIn.rotate(Vector3f.XP.rotationDegrees(armRotation));
+				this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
+			}			
+			matrixStackIn.pop();
 			
-
+			this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
+			this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			this.leftLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			this.rightLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 		}

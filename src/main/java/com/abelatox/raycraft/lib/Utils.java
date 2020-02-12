@@ -28,6 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 
@@ -49,6 +50,10 @@ public class Utils {
 			}
 		}
 		return null;
+	}
+	
+	public static ResourceLocation getBarrelTexture() {
+		return new ResourceLocation(Reference.MODID, "textures/models/barrel.png");		
 	}
 
 	public static int getSlotFor(PlayerEntity player, ItemStack stack) {
@@ -93,30 +98,29 @@ public class Utils {
 			projectile.setLvl(1);
 			projectile.setPower(4);
 			projectile.setMaxBounces(1);
-			projectile.setMaxTicks(60);
+			projectile.setMaxTicks(75);
 			break;
 		case 2:
 			projectile.setLvl(2);
-			projectile.setPower(8);
+			projectile.setPower(6);
 			projectile.setMaxBounces(2);
-			projectile.setMaxTicks(60);
+			projectile.setMaxTicks(90);
 			break;
 		case 3:
 			projectile.setLvl(3);
-			projectile.setPower(16);
+			projectile.setPower(10);
 			projectile.setMaxBounces(3);
-			projectile.setMaxTicks(60);
+			projectile.setMaxTicks(100);
 			projectile.setExplosion(charged);
 			break;
 		case 4:
 			projectile.setLvl(4);
-			projectile.setPower(32);
+			projectile.setPower(16);
 			projectile.setMaxBounces(4);
 			projectile.setMaxTicks(120);
 			projectile.setExplosion(charged);
 			break;
 		}
-		//System.out.println(projectile.getLvl());
 		return projectile;
 
 	}

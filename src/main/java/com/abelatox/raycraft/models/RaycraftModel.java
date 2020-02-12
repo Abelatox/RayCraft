@@ -26,7 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-public class ModelGlobox extends BipedModel {
+public class RaycraftModel extends BipedModel {
 
 	public ModelBarrel barrel;
 	public ModelRenderer body;
@@ -52,7 +52,7 @@ public class ModelGlobox extends BipedModel {
 	public ModelRenderer rightFinger2;
 	public ModelRenderer rightFinger3;
 
-	public ModelGlobox(float scale) {
+	public RaycraftModel(float scale) {
 		super(scale);
 		this.textureWidth = 128;
 		this.textureHeight = 128;

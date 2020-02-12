@@ -29,19 +29,19 @@ public class PlayerEventsHandler {
 	long timeLastAlert;
 	boolean warned = false;
 
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onAttack(LivingHurtEvent event) {
 		if (event.getSource().getTrueSource() instanceof PlayerEntity) {
 			PacketHandler.sendTo(new PacketSetTarget(event.getEntityLiving().getEntityId()), (ServerPlayerEntity)event.getSource().getTrueSource());
 			System.out.println(event.getEntityLiving().world.isRemote + " asd " + event.getSource().getTrueSource());
 		}
-	}
+	}*/
 
 	@SubscribeEvent
 	public void updatePlayerEvent(LivingUpdateEvent event) {
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-			if (player.world.isRemote && !player.onGround && player.getMotion().y < 0 && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
+			if (player.world.isRemote && !player.onGround && player.getMotion().y < -0.1 && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
 			//	System.out.println(event.getEntity().world.isRemote);
 				// if(player.world.isRemote && Minecraft.getInstance().) {
 				player.setMotion(player.getMotion().x, -0.1, player.getMotion().z);
@@ -95,15 +95,14 @@ public class PlayerEventsHandler {
 	}
 
 	private void updateCap(PlayerEntity original, PlayerEntity player) {
-		// System.out.println(original + "\n" + player);
 		IPlayerCapabilities oProps = ModCapabilities.get(original);
 		IPlayerCapabilities props = ModCapabilities.get(player);
 		props.setPlayerType(oProps.getPlayerType());
 		props.setShotLevel(oProps.getShotLevel());
 		props.setCharging(oProps.getIsCharging());
+		
 		props.setLums(oProps.getLums());
 
-		// System.out.println(oProps + " " + props);
 	}
 
 	@SubscribeEvent

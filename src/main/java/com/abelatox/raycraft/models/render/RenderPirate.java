@@ -3,45 +3,51 @@ package com.abelatox.raycraft.models.render;
 import org.lwjgl.opengl.GL11;
 
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Reference;
+import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.ModelRoboPirate;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class RenderPirate extends EntityRenderer<LivingEntity> implements IRayCraftRender {
+public class RenderPirate extends PlayerRenderer implements IRayCraftRender {
 	float scale;
 	private ModelRoboPirate model;
 
 	public RenderPirate(EntityRendererManager renderManager, ModelRoboPirate model, float scale) {
-		super(renderManager);
+		super(renderManager, false);
 		this.model = model;
 		this.scale = scale;
+		addLayer(new HeldItemLayer<>(this));
 	}
 
-	/*@Override
-	public void render(LivingEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		// model.render(matrixStackIn,
-		// bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))),
-		// packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-		System.out.println("Aa");
-		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-	}*/
-	
+	/*
+	 * @Override public void render(LivingEntity entityIn, float entityYaw, float
+	 * partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int
+	 * packedLightIn) { // model.render(matrixStackIn, //
+	 * bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))), //
+	 * packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+	 * System.out.println("Aa"); super.render(entityIn, entityYaw, partialTicks,
+	 * matrixStackIn, bufferIn, packedLightIn); }
+	 */
+
 	@Override
-	public void doRender(LivingEntity entityLiving, double x, double y, double z, float u, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		GL11.glPushMatrix();
+	public void doRender(LivingEntity entityLiving, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+		RenderSystem.pushMatrix();
 		{
 			matrixStackIn.push();
 
@@ -49,7 +55,6 @@ public class RenderPirate extends EntityRenderer<LivingEntity> implements IRayCr
 
 			float headYawOffset = this.interpolateRotation(entityLiving.prevRenderYawOffset, entityLiving.renderYawOffset, v);
 			float headYaw = this.interpolateRotation(entityLiving.prevRotationYawHead, entityLiving.rotationYawHead, v);
-
 			float headPitch = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * v;
 
 			this.rotateCorpse(entityLiving, ageInTicks, headYawOffset, v);
@@ -57,14 +62,21 @@ public class RenderPirate extends EntityRenderer<LivingEntity> implements IRayCr
 			float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
 			float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);
 
-			// Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entityLiving));
 			this.model.render(entityLiving, limbSwing, limbSwingAmount, ageInTicks, headYaw - headYawOffset, headPitch);
 			this.model.render(matrixStackIn, iRenderTypeBuffer.getBuffer(model.getRenderType(getEntityTexture(entityLiving))), packedLightIn, packedOverlayIn, red, green, blue, alpha);
-
 			matrixStackIn.pop();
 
 		}
-		GL11.glPopMatrix();
+		RenderSystem.popMatrix();
+
+		if (ItemStack.areItemStacksEqual(entityLiving.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
+			matrixStackIn.push();
+			matrixStackIn.scale(1.3F, 1.3F, 1.3F);
+			matrixStackIn.translate(0, 1.28F, 0F);
+			matrixStackIn.rotate(Vector3f.YN.rotationDegrees(entityLiving.prevRenderYawOffset));
+			model.barrel.render(matrixStackIn, Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().getBuffer(model.barrel.getRenderType(Utils.getBarrelTexture())), packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+			matrixStackIn.pop();
+		}
 	}
 
 	private float interpolateRotation(float lowerLimit, float upperLimit, float range) {
@@ -118,7 +130,6 @@ public class RenderPirate extends EntityRenderer<LivingEntity> implements IRayCr
 		matrixStackIn.pop();
 	}
 
-	@Override
 	public ResourceLocation getEntityTexture(LivingEntity entity) {
 		return new ResourceLocation(Reference.MODID, "textures/models/" + ModCapabilities.get((PlayerEntity) entity).getPlayerType() + ".png");
 	}

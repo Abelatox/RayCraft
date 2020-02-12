@@ -1,7 +1,10 @@
 package com.abelatox.raycraft.entities;
 
+import java.util.List;
+
 import com.abelatox.raycraft.sounds.ModSounds;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,15 +45,7 @@ public class EntityFist extends ThrowableEntity {
 	public EntityFist(EntityType<EntityFist> type, World world) {
 		super(type, world);
 		this.preventEntitySpawning = true;
-		// this.setSize(0.3F, 0.3F);
 	}
-
-	/*
-	 * public EntityFist(EntityType<EntityFist> type, World worldIn, LivingEntity
-	 * throwerIn, int lvl) { super(type, throwerIn, worldIn);
-	 * this.preventEntitySpawning = true; // this.setSize(0.3F, 0.3F); this.lvl =
-	 * lvl; this.maxBounces = 0; this.power = 2; }
-	 */
 
 	public EntityFist(World world, PlayerEntity player) {
 		super(ModEntities.TYPE_FIST, player, world);
@@ -65,14 +60,14 @@ public class EntityFist extends ThrowableEntity {
 	protected float getGravityVelocity() {
 		return 0F;
 	}
-	
+
 	@Override
 	public void tick() {
 		if (this.ticksExisted > maxTicks) {
 			this.remove();
 		}
 
-		if(getLvl() >= 3) {
+		if (getLvl() >= 3) {
 			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 1, 1, 0);
 		}
 		super.tick();
@@ -80,10 +75,11 @@ public class EntityFist extends ThrowableEntity {
 
 	@Override
 	protected void onImpact(RayTraceResult rtRes) {
-		if (!world.isRemote) {
+		//if (!world.isRemote) {
 			if (bounces >= maxBounces) {
 				this.remove();
 			}
+
 			EntityRayTraceResult ertResult = null;
 			BlockRayTraceResult brtResult = null;
 
@@ -96,18 +92,22 @@ public class EntityFist extends ThrowableEntity {
 			}
 
 			if (ertResult != null && ertResult.getEntity() != null && ertResult.getEntity() instanceof LivingEntity) {
+
 				LivingEntity target = (LivingEntity) ertResult.getEntity();
-				target.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), power);
-				// System.out.println(power);
-				if (explosion) { // if is charged && high level do explosion
-					explode();
-				} else {
-					remove();
+				if (target != getThrower()) {
+					target.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), power);
+					// System.out.println(power);
+					if (explosion) { // if is charged && high level do explosion
+						explode();
+					} else {
+						remove();
+					}
 				}
 			} else { // Block (not ERTR)
 				if (brtResult != null && rtRes.getType() == Type.BLOCK) {
-					if (explosion) { // if is charged && high level do explosion
+					if (explosion) { // if is charged && high level do explosion						
 						explode();
+						
 					} else {
 						world.playSound(null, getPosition(), ModSounds.fistBounce, SoundCategory.MASTER, 1F, 1F);
 
@@ -124,12 +124,22 @@ public class EntityFist extends ThrowableEntity {
 					remove();
 				}
 			}
-		}
+		//}
 	}
 
 	private void explode() {
-		// System.out.println("Boom");
-		world.createExplosion(this, getPosX(), getPosY(), getPosZ(), power / 4, Mode.NONE);
+
+		world.createExplosion(this, getPosX(), getPosY(), getPosZ(), 0, Mode.NONE);
+
+		List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4.0D, 4.0D, 4.0D).offset(-2.0D, -2.0D, -2.0D));
+		for(Entity e:entities) {
+			if(e instanceof LivingEntity && e != getThrower()) {
+				e.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), power);
+			}
+		}
+		
+		//for()
+
 		this.remove();
 	}
 

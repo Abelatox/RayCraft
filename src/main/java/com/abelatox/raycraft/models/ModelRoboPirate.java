@@ -176,13 +176,13 @@ public class ModelRoboPirate extends BipedModel {
 
 				this.leftLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 				this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-				matrixStackIn.push();
+				/*matrixStackIn.push();
 				{
 					matrixStackIn.scale(1.3F, 1.3F, 1.3F);
 					matrixStackIn.translate(0, -0.7, -0.1);
-					barrel.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+					//barrel.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 				}
-				matrixStackIn.pop();
+				matrixStackIn.pop();*/
 				
 			} else {
 				this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
