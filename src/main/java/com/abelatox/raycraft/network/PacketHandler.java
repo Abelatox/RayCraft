@@ -5,6 +5,7 @@ import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.network.packets.PacketPlaySound;
 import com.abelatox.raycraft.network.packets.PacketSecondaryAction;
 import com.abelatox.raycraft.network.packets.PacketSetCharging;
+import com.abelatox.raycraft.network.packets.PacketSetGliding;
 import com.abelatox.raycraft.network.packets.PacketSetModel;
 import com.abelatox.raycraft.network.packets.PacketSetTarget;
 import com.abelatox.raycraft.network.packets.PacketShoot;
@@ -35,6 +36,7 @@ public class PacketHandler {
 		//ClientToServer
 		HANDLER.registerMessage(packetID++, PacketSetModel.class, PacketSetModel::encode, PacketSetModel::decode, PacketSetModel::handle);
 		HANDLER.registerMessage(packetID++, PacketSetCharging.class, PacketSetCharging::encode, PacketSetCharging::decode, PacketSetCharging::handle);
+		HANDLER.registerMessage(packetID++, PacketSetGliding.class, PacketSetGliding::encode, PacketSetGliding::decode, PacketSetGliding::handle);
 		HANDLER.registerMessage(packetID++, PacketSecondaryAction.class, PacketSecondaryAction::encode, PacketSecondaryAction::decode, PacketSecondaryAction::handle);
 		HANDLER.registerMessage(packetID++, PacketShoot.class, PacketShoot::encode, PacketShoot::decode, PacketShoot::handle);
 		HANDLER.registerMessage(packetID++, PacketSyncCapabilityToAllFromClient.class, PacketSyncCapabilityToAllFromClient::encode, PacketSyncCapabilityToAllFromClient::decode, PacketSyncCapabilityToAllFromClient::handle);

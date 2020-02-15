@@ -3,6 +3,7 @@ package com.abelatox.raycraft.models;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -24,95 +25,106 @@ public class ModelRayman extends BipedModel {
 
 	public ModelBarrel barrel;
 	public ModelRenderer rightArm;
-	public ModelRenderer rightLeg;
-	public ModelRenderer head;
-	public ModelRenderer body;
-	public ModelRenderer leftArm;
-	public ModelRenderer leftLeg;
-	public ModelRenderer rightHand;
-	public ModelRenderer rightFoot;
-	public ModelRenderer nose;
-	public ModelRenderer leftHand;
-	public ModelRenderer leftFoot;
-	public ModelRenderer leftEar1;
-	public ModelRenderer rightEar1;
-	public ModelRenderer leftEar2;
-	public ModelRenderer rightEar2;
-
-	// float armRotation = 0;
+    public ModelRenderer rightLeg;
+    public ModelRenderer head;
+    public ModelRenderer body;
+    public ModelRenderer leftArm;
+    public ModelRenderer leftLeg;
+    public ModelRenderer rightHand;
+    public ModelRenderer rightFoot;
+    public ModelRenderer nose;
+    public ModelRenderer leftEar1;
+    public ModelRenderer rightEar1;
+    public ModelRenderer heli1;
+    public ModelRenderer leftEar2;
+    public ModelRenderer rightEar2;
+    public ModelRenderer heli2;
+    public ModelRenderer leftHand;
+    public ModelRenderer leftFoot;
 
 	public ModelRayman(float size) {
 		super(size);
 		this.textureWidth = 64;
 		this.textureHeight = 64;
 		this.barrel = new ModelBarrel();
-		this.leftEar2 = new ModelRenderer(this, 40, 0);
-		this.leftEar2.setRotationPoint(0.0F, 0.0F, -0.3F);
-		this.leftEar2.addBox(0.0F, -3.0F, 0.0F, 2, 4, 1, 0.0F);
-		this.setRotateAngle(leftEar2, 0.6108652381980153F, 0.0F, 0.0F);
-		this.rightHand = new ModelRenderer(this, 0, 37);
-		this.rightHand.setRotationPoint(-3.0F, 6.0F, -2.0F);
-		this.rightHand.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4, 0.0F);
-		this.nose = new ModelRenderer(this, 18, 32);
-		this.nose.setRotationPoint(-2.5F, -3.0F, -7.0F);
-		this.nose.addBox(0.0F, 0.0F, 0.0F, 5, 3, 3, 0.0F);
-		this.rightArm = new ModelRenderer(this, 40, 16);
-		this.rightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
-		this.rightArm.addBox(-3.0F, -2.0F, -2.0F, 4, 8, 4, 0.0F);
-		this.leftLeg = new ModelRenderer(this, 0, 16);
-		this.leftLeg.mirror = true;
-		this.leftLeg.setRotationPoint(1.9F, 12.0F, 0.1F);
-		this.leftLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 9, 4, 0.0F);
-		this.leftHand = new ModelRenderer(this, 0, 37);
-		this.leftHand.setRotationPoint(-1.0F, 6.0F, -2.0F);
-		this.leftHand.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4, 0.0F);
-		this.rightFoot = new ModelRenderer(this, 0, 29);
-		this.rightFoot.setRotationPoint(-2.0F, 9.0F, -3.0F);
-		this.rightFoot.addBox(0.0F, 0.0F, 0.0F, 4, 3, 5, 0.0F);
-		this.rightEar2 = new ModelRenderer(this, 40, 0);
-		this.rightEar2.setRotationPoint(0.0F, 0.0F, -0.3F);
-		this.rightEar2.addBox(0.0F, -3.0F, 0.0F, 2, 4, 1, 0.0F);
-		this.setRotateAngle(rightEar2, 0.6108652381980153F, 0.0F, 0.0F);
-		this.rightLeg = new ModelRenderer(this, 0, 16);
-		this.rightLeg.setRotationPoint(-1.9F, 12.0F, 0.1F);
-		this.rightLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 9, 4, 0.0F);
-		this.body = new ModelRenderer(this, 16, 16);
-		this.body.setRotationPoint(0.0F, 1.5F, 0.0F);
-		this.body.addBox(-4.0F, 0.0F, -2.0F, 8, 12, 4, 0.0F);
-		this.leftFoot = new ModelRenderer(this, 0, 29);
-		this.leftFoot.setRotationPoint(-2.0F, 9.0F, -3.0F);
-		this.leftFoot.addBox(0.0F, 0.0F, 0.0F, 4, 3, 5, 0.0F);
-		this.leftEar1 = new ModelRenderer(this, 40, 0);
-		this.leftEar1.setRotationPoint(-4.0F, -11.0F, -1.0F);
-		this.leftEar1.addBox(0.0F, 0.0F, 0.0F, 2, 4, 1, 0.0F);
-		this.setRotateAngle(leftEar1, 0.2617993877991494F, 0.0F, -0.2617993877991494F);
-		this.leftArm = new ModelRenderer(this, 40, 16);
-		this.leftArm.mirror = true;
-		this.leftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
-		this.leftArm.addBox(-1.0F, -2.0F, -2.0F, 4, 8, 4, 0.0F);
 		this.head = new ModelRenderer(this, 0, 0);
-		this.head.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.head.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0.0F);
-		this.rightEar1 = new ModelRenderer(this, 40, 0);
-		this.rightEar1.setRotationPoint(2.0F, -11.5F, -1.0F);
-		this.rightEar1.addBox(0.0F, 0.0F, 0.0F, 2, 4, 1, 0.0F);
-		this.setRotateAngle(rightEar1, 0.2617993877991494F, 0.0F, 0.2617993877991494F);
-		this.leftEar1.addChild(this.leftEar2);
-		this.rightArm.addChild(this.rightHand);
-		this.head.addChild(this.nose);
-		this.leftArm.addChild(this.leftHand);
-		this.rightLeg.addChild(this.rightFoot);
-		this.rightEar1.addChild(this.rightEar2);
-		this.leftLeg.addChild(this.leftFoot);
-		this.head.addChild(this.leftEar1);
-		this.head.addChild(this.rightEar1);
+        this.head.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.head.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0.0F);
+        this.leftLeg = new ModelRenderer(this, 0, 16);
+        this.leftLeg.mirror = true;
+        this.leftLeg.setRotationPoint(1.9F, 12.0F, 0.1F);
+        this.leftLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 9, 4, 0.0F);
+        this.rightFoot = new ModelRenderer(this, 0, 29);
+        this.rightFoot.setRotationPoint(-2.0F, 9.0F, -3.0F);
+        this.rightFoot.addBox(0.0F, 0.0F, 0.0F, 4, 3, 5, 0.0F);
+        this.leftFoot = new ModelRenderer(this, 0, 29);
+        this.leftFoot.setRotationPoint(-2.0F, 9.0F, -3.0F);
+        this.leftFoot.addBox(0.0F, 0.0F, 0.0F, 4, 3, 5, 0.0F);
+        this.rightEar1 = new ModelRenderer(this, 40, 0);
+        this.rightEar1.setRotationPoint(2.0F, -11.5F, -1.0F);
+        this.rightEar1.addBox(0.0F, 0.0F, 0.0F, 2, 4, 1, 0.0F);
+        this.setRotateAngle(rightEar1, 0.2617993877991494F, 0.0F, 0.2617993877991494F);
+        this.rightEar2 = new ModelRenderer(this, 40, 0);
+        this.rightEar2.setRotationPoint(0.0F, 0.0F, -0.3F);
+        this.rightEar2.addBox(0.0F, -3.0F, 0.0F, 2, 4, 1, 0.0F);
+        this.setRotateAngle(rightEar2, 0.6108652381980153F, 0.0F, 0.0F);
+        this.heli2 = new ModelRenderer(this, 17, 39);
+        this.heli2.setRotationPoint(0.0F, -1.0F, 0.0F);
+        this.heli2.addBox(-4.0F, 0.0F, -1.0F, 8, 2, 2, 0.0F);
+        this.nose = new ModelRenderer(this, 18, 32);
+        this.nose.setRotationPoint(-2.5F, -3.0F, -7.0F);
+        this.nose.addBox(0.0F, 0.0F, 0.0F, 5, 3, 3, 0.0F);
+        this.body = new ModelRenderer(this, 16, 16);
+        this.body.setRotationPoint(0.0F, 1.5F, 0.0F);
+        this.body.addBox(-4.0F, 0.0F, -2.0F, 8, 12, 4, 0.0F);
+        this.heli1 = new ModelRenderer(this, 0, 0);
+        this.heli1.setRotationPoint(0.0F, -10.0F, 0.0F);
+        this.heli1.addBox(-1.0F, 0.0F, -1.0F, 2, 2, 2, 0.0F);
+        this.rightLeg = new ModelRenderer(this, 0, 16);
+        this.rightLeg.setRotationPoint(-1.9F, 12.0F, 0.1F);
+        this.rightLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 9, 4, 0.0F);
+        this.rightArm = new ModelRenderer(this, 40, 16);
+        this.rightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
+        this.rightArm.addBox(-3.0F, -2.0F, -2.0F, 4, 8, 4, 0.0F);
+        this.rightHand = new ModelRenderer(this, 0, 37);
+        this.rightHand.setRotationPoint(-3.0F, 6.0F, -2.0F);
+        this.rightHand.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4, 0.0F);
+        this.leftHand = new ModelRenderer(this, 0, 37);
+        this.leftHand.setRotationPoint(-1.0F, 6.0F, -2.0F);
+        this.leftHand.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4, 0.0F);
+        this.leftEar2 = new ModelRenderer(this, 40, 0);
+        this.leftEar2.setRotationPoint(0.0F, 0.0F, -0.3F);
+        this.leftEar2.addBox(0.0F, -3.0F, 0.0F, 2, 4, 1, 0.0F);
+        this.setRotateAngle(leftEar2, 0.6108652381980153F, 0.0F, 0.0F);
+        this.leftArm = new ModelRenderer(this, 40, 16);
+        this.leftArm.mirror = true;
+        this.leftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
+        this.leftArm.addBox(-1.0F, -2.0F, -2.0F, 4, 8, 4, 0.0F);
+        this.leftEar1 = new ModelRenderer(this, 40, 0);
+        this.leftEar1.setRotationPoint(-4.0F, -11.0F, -1.0F);
+        this.leftEar1.addBox(0.0F, 0.0F, 0.0F, 2, 4, 1, 0.0F);
+        this.setRotateAngle(leftEar1, 0.2617993877991494F, 0.0F, -0.2617993877991494F);
+        this.rightLeg.addChild(this.rightFoot);
+        this.leftLeg.addChild(this.leftFoot);
+        this.head.addChild(this.rightEar1);
+        this.rightEar1.addChild(this.rightEar2);
+        this.heli1.addChild(this.heli2);
+        this.head.addChild(this.nose);
+        this.head.addChild(this.heli1);
+        this.rightArm.addChild(this.rightHand);
+        this.leftArm.addChild(this.leftHand);
+        this.leftEar1.addChild(this.leftEar2);
+        this.head.addChild(this.leftEar1);
 	}
 
 	boolean isHoldingBarrel = false;
 	boolean isSwimming = false;
 	boolean isSleeping = false;
 	boolean isCharging = false;
+	boolean isGliding = false;
+
 	float armRotation = 0;
+	float hairRotation = 0;
 	int punchLevel = 0;
 
 	float yaw = 0;
@@ -121,17 +133,34 @@ public class ModelRayman extends BipedModel {
 	@Override
 	public void render(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, 1, entityIn);
+		IPlayerCapabilities props = ModCapabilities.get((PlayerEntity) entityIn);
 		isHoldingBarrel = ItemStack.areItemStacksEqual(entityIn.getHeldItemMainhand(), new ItemStack(ModItems.barrel));
 		isSwimming = entityIn.getPose() == Pose.SWIMMING;
 		isSleeping = entityIn.isSleeping();
-		isCharging = ModCapabilities.get((PlayerEntity) entityIn).getIsCharging();
-		punchLevel = ModCapabilities.get((PlayerEntity) entityIn).getShotLevel();
-		armRotation = ModCapabilities.get((PlayerEntity) entityIn).getArmRotation();
+		isCharging = props.getIsCharging();
+		punchLevel = props.getShotLevel();
+		armRotation = props.getArmRotation();
+		isGliding = props.getIsGliding();
+		hairRotation = props.getHairRotation();
+
 		if (isCharging) {
 			armRotation -= 5;
-			ModCapabilities.get((PlayerEntity) entityIn).setArmRotation(armRotation);
+			props.setArmRotation(armRotation);
 		} else {
 			armRotation = 0;
+		}
+
+		if (isGliding) {
+			hairRotation -= 5;
+			props.setHairRotation(hairRotation);
+			leftEar1.showModel = false;
+			rightEar1.showModel = false;
+			heli1.showModel = true;
+		} else {
+			leftEar1.showModel = true;
+			rightEar1.showModel = true;
+			heli1.showModel = false;
+			hairRotation = 0;
 		}
 
 		yaw = entityIn.prevRenderYawOffset;
@@ -185,8 +214,12 @@ public class ModelRayman extends BipedModel {
 						this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
 					}
 					matrixStackIn.pop();
-
 				}
+				
+				
+				this.heli1.rotateAngleY = hairRotation;
+				//this.rightEar1.rotateAngleZ = hairRotation;
+
 				this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			}
 
@@ -194,9 +227,9 @@ public class ModelRayman extends BipedModel {
 			{
 				matrixStackIn.rotate(Vector3f.XP.rotationDegrees(armRotation));
 				this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
-			}			
+			}
 			matrixStackIn.pop();
-			
+
 			this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, r, g, b, 1F);
 			this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
 			this.leftLeg.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);

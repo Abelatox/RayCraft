@@ -15,4 +15,10 @@ public interface IPlayerCapabilities {
 	
 	int getLums();
 	void setLums(int lums);
+	
+	boolean getIsGliding();
+	void setGliding(boolean b);
+	float getHairRotation();
+	void setHairRotation(float val);
+
 }

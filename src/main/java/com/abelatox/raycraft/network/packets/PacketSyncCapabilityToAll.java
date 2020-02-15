@@ -19,6 +19,7 @@ public class PacketSyncCapabilityToAll {
 	private String model;
 	private int shotLevel;
 	private boolean charging;
+	private boolean gliding;
 
 	public PacketSyncCapabilityToAll() {
 	}
@@ -28,6 +29,8 @@ public class PacketSyncCapabilityToAll {
 		this.model = capability.getPlayerType();
 		this.shotLevel = capability.getShotLevel();
 		this.charging = capability.getIsCharging();
+		this.gliding = capability.getIsGliding();
+
 	}
 
 	public void encode(PacketBuffer buffer) {
@@ -35,6 +38,7 @@ public class PacketSyncCapabilityToAll {
 		buffer.writeString(model);
 		buffer.writeInt(shotLevel);
 		buffer.writeBoolean(charging);
+		buffer.writeBoolean(gliding);
 	}
 
 	public static PacketSyncCapabilityToAll decode(PacketBuffer buffer) {
@@ -43,6 +47,7 @@ public class PacketSyncCapabilityToAll {
 		msg.model = buffer.readString(40);
 		msg.shotLevel = buffer.readInt();
 		msg.charging = buffer.readBoolean();
+		msg.gliding = buffer.readBoolean();
 		return msg;
 	}
 
@@ -62,6 +67,7 @@ public class PacketSyncCapabilityToAll {
 				props.ifPresent(cap -> cap.setPlayerType(message.model));
 				props.ifPresent(cap -> cap.setShotLevel(message.shotLevel));
 				props.ifPresent(cap -> cap.setCharging(message.charging));
+				props.ifPresent(cap -> cap.setGliding(message.gliding));
 			}
 		});
 		ctx.get().setPacketHandled(true);

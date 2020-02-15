@@ -10,17 +10,15 @@ import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.network.PacketHandler;
-import com.abelatox.raycraft.network.packets.PacketSetTarget;
+import com.abelatox.raycraft.network.packets.PacketSetGliding;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -29,29 +27,49 @@ public class PlayerEventsHandler {
 	long timeLastAlert;
 	boolean warned = false;
 
-	/*@SubscribeEvent
-	public void onAttack(LivingHurtEvent event) {
-		if (event.getSource().getTrueSource() instanceof PlayerEntity) {
-			PacketHandler.sendTo(new PacketSetTarget(event.getEntityLiving().getEntityId()), (ServerPlayerEntity)event.getSource().getTrueSource());
-			System.out.println(event.getEntityLiving().world.isRemote + " asd " + event.getSource().getTrueSource());
-		}
-	}*/
+	/*
+	 * @SubscribeEvent public void onAttack(LivingHurtEvent event) { if
+	 * (event.getSource().getTrueSource() instanceof PlayerEntity) {
+	 * PacketHandler.sendTo(new
+	 * PacketSetTarget(event.getEntityLiving().getEntityId()),
+	 * (ServerPlayerEntity)event.getSource().getTrueSource());
+	 * System.out.println(event.getEntityLiving().world.isRemote + " asd " +
+	 * event.getSource().getTrueSource()); } }
+	 */
 
 	@SubscribeEvent
 	public void updatePlayerEvent(LivingUpdateEvent event) {
 		if (event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-			if (player.world.isRemote && !player.onGround && player.getMotion().y < -0.1 && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
-			//	System.out.println(event.getEntity().world.isRemote);
-				// if(player.world.isRemote && Minecraft.getInstance().) {
-				player.setMotion(player.getMotion().x, -0.1, player.getMotion().z);
-				// }
-			}
 			IPlayerCapabilities props = ModCapabilities.get(player);
 			if (props != null) {
+				if (player.world.isRemote) {
+					if (!player.onGround && player.getMotion().y < -0.1) {
+						if (KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
+							if(!props.getIsGliding()) {
+								props.setGliding(true);
+								PacketHandler.sendToServer(new PacketSetGliding(true));
+							}
+						} else {
+							if(props.getIsGliding()) {
+								props.setGliding(false);
+								PacketHandler.sendToServer(new PacketSetGliding(false));
+							}
+						}
+					} else {
+						if(props.getIsGliding()) {
+							props.setGliding(false);
+							PacketHandler.sendToServer(new PacketSetGliding(false));
+						}
+					}
+				}
+
+				if (props.getIsGliding()) {
+					player.setMotion(player.getMotion().x, -0.1, player.getMotion().z);
+				}
+
 				// Slow down the player while holding a barrel
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
-					// if (props.getCarrying().equals("barrel")) {
 					if (player.getMotion().y <= 0) {
 						player.setMotion(new Vec3d(player.getMotion().x / 2, player.getMotion().y * 2, player.getMotion().z / 2));
 					} else {
@@ -66,6 +84,7 @@ public class PlayerEventsHandler {
 				}
 			}
 		}
+
 	}
 
 	@SubscribeEvent
@@ -100,7 +119,7 @@ public class PlayerEventsHandler {
 		props.setPlayerType(oProps.getPlayerType());
 		props.setShotLevel(oProps.getShotLevel());
 		props.setCharging(oProps.getIsCharging());
-		
+
 		props.setLums(oProps.getLums());
 
 	}

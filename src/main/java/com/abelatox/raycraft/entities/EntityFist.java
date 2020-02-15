@@ -75,7 +75,7 @@ public class EntityFist extends ThrowableEntity {
 
 	@Override
 	protected void onImpact(RayTraceResult rtRes) {
-		//if (!world.isRemote) {
+		if (!world.isRemote) {
 			if (bounces >= maxBounces) {
 				this.remove();
 			}
@@ -124,7 +124,7 @@ public class EntityFist extends ThrowableEntity {
 					remove();
 				}
 			}
-		//}
+		}
 	}
 
 	private void explode() {

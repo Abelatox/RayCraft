@@ -16,6 +16,7 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 			props.putInt("ShotLevel", instance.getShotLevel());
 			props.putBoolean("Charging", instance.getIsCharging());
 			props.putInt("Lums", instance.getLums());
+			props.putBoolean("Gliding", instance.getIsGliding());
 			return props;
 		}
 
@@ -26,6 +27,7 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 			instance.setShotLevel(properties.getInt("ShotLevel"));
 			instance.setCharging(properties.getBoolean("Charging"));
 			instance.setLums(properties.getInt("Lums"));
+			instance.setGliding(properties.getBoolean("Gliding"));
 		}
 	}
 
@@ -34,6 +36,8 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 	private boolean charging = false;
 	private int lums = 0;
 	private float armRotation;
+	private boolean gliding;
+	private float hairRotation;
 	
 	public String getPlayerType() {
 		return playerModel;
@@ -86,5 +90,26 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 	@Override
 	public void setArmRotation(float val) {
 		this.armRotation = val;
+	}
+
+	@Override
+	public boolean getIsGliding() {
+		return gliding;
+	}
+
+	@Override
+	public void setGliding(boolean b) {
+		this.gliding = b;
+	}
+
+	@Override
+	public float getHairRotation() {
+		return hairRotation;
+	}
+
+	@Override
+	public void setHairRotation(float val) {
+		hairRotation = val;
 	}	
+	
 }
