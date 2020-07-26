@@ -1,12 +1,12 @@
 package com.abelatox.raycraft.models.render;
 
-import org.lwjgl.opengl.GL11;
-
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Reference;
+import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.ModelHoodlum;
-import com.abelatox.raycraft.models.ModelRoboPirate;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -41,7 +42,7 @@ public class RenderHoodlum extends EntityRenderer<LivingEntity> implements IRayC
 	
 	@Override
 	public void doRender(LivingEntity entityLiving, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		GL11.glPushMatrix();
+		RenderSystem.pushMatrix();
 		{
 			matrixStackIn.push();
 
@@ -64,7 +65,16 @@ public class RenderHoodlum extends EntityRenderer<LivingEntity> implements IRayC
 			matrixStackIn.pop();
 
 		}
-		GL11.glPopMatrix();
+		RenderSystem.popMatrix();
+		
+		if (ItemStack.areItemStacksEqual(entityLiving.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
+			matrixStackIn.push();
+			matrixStackIn.scale(1.3F, 1.3F, 1.3F);
+			matrixStackIn.translate(0, 1.28F, 0F);
+			matrixStackIn.rotate(Vector3f.YN.rotationDegrees(entityLiving.prevRenderYawOffset));
+			model.barrel.render(matrixStackIn, Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().getBuffer(model.barrel.getRenderType(Utils.getBarrelTexture())), packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
+			matrixStackIn.pop();
+		}
 	}
 
 	private float interpolateRotation(float lowerLimit, float upperLimit, float range) {
@@ -82,7 +92,7 @@ public class RenderHoodlum extends EntityRenderer<LivingEntity> implements IRayC
 	}
 
 	protected void rotateCorpse(LivingEntity entityLiving, float ageInTicks, float headYawOffset, float v) {
-		GL11.glRotatef(180.0F + headYawOffset, 0.0F, 1.0F, 0.0F);
+		RenderSystem.rotatef(180.0F + headYawOffset, 0.0F, 1.0F, 0.0F);
 
 		if (entityLiving.deathTime > 0) {
 			float f3 = ((float) entityLiving.deathTime + v - 1.0F) / 20.0F * 1.6F;

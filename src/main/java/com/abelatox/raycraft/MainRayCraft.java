@@ -61,8 +61,6 @@ public class MainRayCraft {
 
 	public MainRayCraft() {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
 		MinecraftForge.EVENT_BUS.register(this);
@@ -94,21 +92,10 @@ public class MainRayCraft {
 		ModModels.register();
 	}
 
-	private void enqueueIMC(final InterModEnqueueEvent event) {
-		InterModComms.sendTo(Reference.MODID, "helloworld", () -> {
-			LOGGER.info("Hello world from the MDK");
-			return "Hello world";
-		});
-	}
-
-	private void processIMC(final InterModProcessEvent event) {
-		LOGGER.info("Got IMC {}", event.getIMCStream().map(m -> m.getMessageSupplier().get()).collect(Collectors.toList()));
-	}
-
 	@SubscribeEvent
 	public void onServerStarting(FMLServerStartingEvent event) {
 		// do something when the server starts
-		LOGGER.info("HELLO from server starting");
+		//LOGGER.info("HELLO from server starting");
 	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

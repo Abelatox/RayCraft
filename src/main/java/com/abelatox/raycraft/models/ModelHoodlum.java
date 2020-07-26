@@ -18,6 +18,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class ModelHoodlum extends BipedModel {
 
+	public ModelBarrel barrel;
 	public ModelRenderer body;
     public ModelRenderer leftArm;
     public ModelRenderer head;
@@ -30,6 +31,7 @@ public class ModelHoodlum extends BipedModel {
 		super(size);
 		this.textureWidth = 64;
 		this.textureHeight = 64;
+		this.barrel = new ModelBarrel();
         this.head = new ModelRenderer(this, 0, 0);
         this.head.setRotationPoint(0.0F, -1.0F, 0.0F);
         this.head.addBox(-4.0F, -5.0F, -4.0F, 8, 6, 8, 0.0F);
