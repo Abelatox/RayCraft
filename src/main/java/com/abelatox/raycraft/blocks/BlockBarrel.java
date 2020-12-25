@@ -7,9 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
@@ -30,7 +28,7 @@ public class BlockBarrel extends BaseBlock {
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
-			if (player.getMotion().x == 0 && player.getMotion().y == 0 && player.getMotion().z == 0 && player.isCrouching() && player.onGround) {
+			if (player.getMotion().x == 0 && player.getMotion().y == 0 && player.getMotion().z == 0 && player.isCrouching() && !player.isAirBorne) {
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 					player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
 					world.removeBlock(pos, true);

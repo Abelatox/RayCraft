@@ -44,7 +44,7 @@ public class GUIHealth extends Screen {
 						mc.textureManager.bindTexture(new ResourceLocation(Reference.MODID, "textures/gui/" + model + "_face.png"));
 
 						GL11.glScaled(0.2, 0.18, 0.2);
-						blit(0, 0, 0, 0, 127, 147);
+						blit(event.getMatrixStack(),0, 0, 0, 0, 127, 147);
 					}
 					GL11.glPopMatrix();
 
@@ -56,7 +56,7 @@ public class GUIHealth extends Screen {
 						GL11.glColor4d(1, 1, 1, 1);
 
 						for (int i = 0; i < player.getMaxHealth() * 2; i++)
-							blit(i, 0, 0, 0, 1, 6);
+							blit(event.getMatrixStack(),i, 0, 0, 0, 1, 6);
 					}
 					GL11.glPopMatrix();
 
@@ -65,7 +65,7 @@ public class GUIHealth extends Screen {
 						GL11.glColor4d(1, 1, 1, 1);
 
 						for (int i = 0; i < player.getHealth() * 2; i++)
-							blit(i, 0, 1, 0, 1, 6);
+							blit(event.getMatrixStack(),i, 0, 1, 0, 1, 6);
 					}
 					GL11.glPopMatrix();
 

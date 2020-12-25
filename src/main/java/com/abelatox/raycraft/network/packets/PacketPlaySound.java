@@ -2,14 +2,11 @@ package com.abelatox.raycraft.network.packets;
 
 import java.util.function.Supplier;
 
-import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
-import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.sounds.ModSounds;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketPlaySound {

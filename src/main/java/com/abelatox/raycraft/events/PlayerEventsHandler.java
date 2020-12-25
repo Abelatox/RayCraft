@@ -11,10 +11,12 @@ import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.network.PacketHandler;
 import com.abelatox.raycraft.network.packets.PacketSetGliding;
+import com.sun.javafx.geom.Vec3d;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
@@ -44,7 +46,7 @@ public class PlayerEventsHandler {
 			IPlayerCapabilities props = ModCapabilities.get(player);
 			if (props != null) {
 				if (player.world.isRemote) {
-					if (!player.onGround && player.getMotion().y < -0.1) {
+					if (!player.isOnGround() && player.getMotion().y < -0.1) {
 						if (KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
 							if(!props.getIsGliding()) {
 								props.setGliding(true);
@@ -71,9 +73,9 @@ public class PlayerEventsHandler {
 				// Slow down the player while holding a barrel
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
 					if (player.getMotion().y <= 0) {
-						player.setMotion(new Vec3d(player.getMotion().x / 2, player.getMotion().y * 2, player.getMotion().z / 2));
+						player.setMotion(new Vector3d(player.getMotion().x / 2, player.getMotion().y * 2, player.getMotion().z / 2));
 					} else {
-						player.setMotion(new Vec3d(player.getMotion().x / 2, player.getMotion().y, player.getMotion().z / 2));
+						player.setMotion(new Vector3d(player.getMotion().x / 2, player.getMotion().y, player.getMotion().z / 2));
 					}
 
 				}
@@ -97,9 +99,11 @@ public class PlayerEventsHandler {
 				if (!player.world.isRemote) {
 					EntityBarrel barrel = new EntityBarrel(player.world, player);
 					player.world.addEntity(barrel);
-					barrel.shoot(player, -90, player.rotationYaw, 0, 1f, 0);
+					barrel.setShooter(player);
+					barrel.func_234612_a_(player, -90, player.rotationYaw, 0, 1F, 0);
+					//barrel.shoot(-90, player.rotationYaw, 0, 1f, 0);
 					// System.out.println("throwing up barrelino");
-					player.inventory.removeStackFromSlot(player.inventory.currentItem);
+					//player.inventory.removeStackFromSlot(player.inventory.currentItem);
 				}
 			}
 
@@ -131,7 +135,7 @@ public class PlayerEventsHandler {
 			event.setCanceled(true);
 			if (Utils.getAvailablePos(player) == null) {
 				if (!warned) {
-					player.sendMessage(new TranslationTextComponent("You can't drop the barrel here"));
+					//TODO player.sendMessage(new TranslationTextComponent("You can't drop the barrel here"));
 					warned = true;
 				}
 			} else {

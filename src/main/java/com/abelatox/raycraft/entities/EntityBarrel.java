@@ -9,9 +9,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
@@ -19,7 +16,6 @@ import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -60,8 +56,8 @@ public class EntityBarrel extends ThrowableEntity {
 		if (result.getType() == Type.ENTITY) {
 			EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
 
-			if (entityResult.getEntity() != null && entityResult.getEntity() instanceof PlayerEntity && entityResult.getEntity() == owner && !world.isRemote) {
-				PlayerEntity player = (PlayerEntity) owner;
+			if (entityResult.getEntity() != null && entityResult.getEntity() instanceof PlayerEntity && entityResult.getEntity() == func_234616_v_() && !world.isRemote) {
+				PlayerEntity player = (PlayerEntity) func_234616_v_();
 				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
 					player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
 					this.remove();
@@ -87,8 +83,8 @@ public class EntityBarrel extends ThrowableEntity {
 		List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(8.0D, 6.0D, 8.0D).offset(-4.0D, -3.0D, -4.0D));
 		if (!entities.isEmpty()) {
 			for (Entity entity : entities) {
-				if (owner instanceof PlayerEntity && entity != owner) {
-					entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) owner), 20);
+				if (func_234616_v_() instanceof PlayerEntity && entity != func_234616_v_()) {
+					entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) func_234616_v_()), 20);
 				}
 			}
 		}

@@ -3,10 +3,10 @@ package com.abelatox.raycraft.models;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * ModelFist - Abelatox
@@ -53,7 +53,7 @@ public class ModelPirateShot extends EntityModel {
     }
 
 	@Override
-	public void render(Entity arg0, float arg1, float arg2, float arg3, float arg4, float arg5) {
+	public void setRotationAngles(Entity arg0, float arg1, float arg2, float arg3, float arg4, float arg5) {
       //  this.baseCenter.render(f5);
 		
 	}

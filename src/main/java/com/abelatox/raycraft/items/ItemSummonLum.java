@@ -5,7 +5,6 @@ import com.abelatox.raycraft.entities.EntityLum;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class ItemSummonLum extends BaseItem {
@@ -26,7 +25,7 @@ public class ItemSummonLum extends BaseItem {
 			lum.setLumType(type);
 			lum.setPosition(context.getPos().getX() + 0.5, context.getPos().getY() + 1.5, context.getPos().getZ() + 0.5);
 			world.addEntity(lum);
-			player.sendMessage(new TranslationTextComponent("Summonned: " + type));
+			//player.sendMessage(new TranslationTextComponent("Summonned: " + type));
 		}
 		return super.onItemUse(context);
 	}

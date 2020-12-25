@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketShoot {
@@ -45,7 +46,8 @@ public class PacketShoot {
 				ThrowableEntity shot = Utils.getEntityShot(player, message.charged);
 				if (shot != null) {
 					player.world.addEntity(shot);
-					shot.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1F, 0);
+					shot.setShooter(player);
+					shot.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1F, 0);
 					player.world.playSound(null, player.getPosition(), ModSounds.fistShot0, SoundCategory.MASTER, 1F, 1F);
 					player.world.playSound(null, player.getPosition(), Utils.getShootSound(player, message.charged), SoundCategory.MASTER, 1F, 1F);
 					player.swingArm(Hand.MAIN_HAND);

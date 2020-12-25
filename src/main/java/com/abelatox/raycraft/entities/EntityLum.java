@@ -71,12 +71,12 @@ public class EntityLum extends Entity {
 					props.setLums(props.getLums() + 1);
 					player.world.playSound(null, player.getPosition(), ModSounds.lumYellow, SoundCategory.MASTER, 1F, 1F);
 
-					player.sendMessage(new TranslationTextComponent("Lums: " + props.getLums()));
+					//player.sendMessage(new TranslationTextComponent("Lums: " + props.getLums()));
 					System.out.println("+1 point");
 					break;
 				case "green":
 					player.world.playSound(null, player.getPosition(), ModSounds.lumGreen, SoundCategory.MASTER, 1F, 1F);
-					player.setSpawnPoint(this.getPosition(), true, true, this.dimension);
+					//player.setSpawnPoint(this.getPosition(), true, true, this.dimension);
 					System.out.println("Spawn setting");
 					break;
 				case "red":

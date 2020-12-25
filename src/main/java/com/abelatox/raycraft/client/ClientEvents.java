@@ -2,29 +2,17 @@ package com.abelatox.raycraft.client;
 
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-import com.abelatox.raycraft.gui.GUISelectModel;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
-import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.render.IRayCraftRender;
-import com.abelatox.raycraft.network.PacketHandler;
-import com.abelatox.raycraft.network.packets.PacketSecondaryAction;
-import com.abelatox.raycraft.network.packets.PacketPlaySound;
-import com.abelatox.raycraft.network.packets.PacketShoot;
-import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAllFromClient;
-import com.abelatox.raycraft.sounds.ModSounds;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
-import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.network.PacketDispatcher;
 
 public class ClientEvents {
 
@@ -43,7 +31,7 @@ public class ClientEvents {
 			IRayCraftRender render = Utils.getRender(props);
 			if (render != null) {
 				event.setCanceled(true);
-				render.doRender(event.getEntityLiving(), 0.0625F, event.getMatrixStack(), event.getBuffers(), event.getLight(), OverlayTexture.DEFAULT_LIGHT, 1, 1, 1, 1);
+				render.doRender(event.getEntityLiving(), 0.0625F, event.getMatrixStack(), event.getBuffers(), event.getLight(), OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
 			}
 		}
 	}

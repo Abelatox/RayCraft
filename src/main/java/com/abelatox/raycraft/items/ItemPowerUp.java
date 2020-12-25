@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class ItemPowerUp extends BaseItem {
@@ -29,7 +28,7 @@ public class ItemPowerUp extends BaseItem {
 			} else {
 				props.setShotLevel(0);
 			}
-			player.sendMessage(new TranslationTextComponent("Fist level: " + props.getShotLevel()));
+		//TODO	player.sendMessage(new TranslationTextComponent("Fist level: " + props.getShotLevel()));
 
 		}
 		PacketHandler.syncToAllAround(player, props);

@@ -89,11 +89,11 @@ public class EntityPirateShot2 extends ThrowableEntity {
 
 			if (ertResult != null && ertResult.getEntity() != null && ertResult.getEntity() instanceof LivingEntity) {
 				LivingEntity target = (LivingEntity) ertResult.getEntity();
-				if (this.getThrower() instanceof PlayerEntity) {
+			/*	if (this.getThrower() instanceof PlayerEntity) {
 					target.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) this.getThrower()), power);
 				} else {
 					target.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), power);
-				}
+				}*/
 
 			} else { // Block (not ERTR)
 				if (brtResult != null && rtRes.getType() == Type.BLOCK) {

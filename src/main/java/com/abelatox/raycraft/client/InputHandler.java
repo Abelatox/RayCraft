@@ -1,7 +1,5 @@
 package com.abelatox.raycraft.client;
 
-import java.util.List;
-
 import org.lwjgl.glfw.GLFW;
 
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
@@ -11,20 +9,14 @@ import com.abelatox.raycraft.lib.Constants;
 import com.abelatox.raycraft.network.PacketHandler;
 import com.abelatox.raycraft.network.packets.PacketSetCharging;
 import com.abelatox.raycraft.network.packets.PacketShoot;
-import com.abelatox.raycraft.network.packets.PacketSyncCapabilityToAllFromClient;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

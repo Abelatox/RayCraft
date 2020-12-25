@@ -94,8 +94,8 @@ public class EntityFist extends ThrowableEntity {
 			if (ertResult != null && ertResult.getEntity() != null && ertResult.getEntity() instanceof LivingEntity) {
 
 				LivingEntity target = (LivingEntity) ertResult.getEntity();
-				if (target != getThrower()) {
-					target.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), power);
+				if (target != func_234616_v_()) {
+					target.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), power);
 					// System.out.println(power);
 					if (explosion) { // if is charged && high level do explosion
 						explode();
@@ -133,8 +133,8 @@ public class EntityFist extends ThrowableEntity {
 
 		List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4.0D, 4.0D, 4.0D).offset(-2.0D, -2.0D, -2.0D));
 		for(Entity e:entities) {
-			if(e instanceof LivingEntity && e != getThrower()) {
-				e.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), power);
+			if(e instanceof LivingEntity && e != func_234616_v_()) {
+				e.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), power);
 			}
 		}
 		

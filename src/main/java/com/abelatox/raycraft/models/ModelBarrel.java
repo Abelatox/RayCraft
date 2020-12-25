@@ -88,11 +88,6 @@ public class ModelBarrel extends EntityModel<EntityBarrel>{
 	}
 
 	@Override
-	public void render(EntityBarrel arg0, float arg1, float arg2, float arg3, float arg4, float arg5) {
-		
-	}
-
-	@Override
 	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		matrixStackIn.push();
 		
@@ -101,5 +96,11 @@ public class ModelBarrel extends EntityModel<EntityBarrel>{
 		//rotate(new Vector3f(0,0.707,0.707).rotationDegrees(15)) 
 		shape1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn,red,green,blue,alpha);
 		matrixStackIn.pop();
+	}
+
+	@Override
+	public void setRotationAngles(EntityBarrel arg0, float arg1, float arg2, float arg3, float arg4, float arg5) {
+		// TODO Auto-generated method stub
+		
 	}
 }

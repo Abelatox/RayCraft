@@ -2,24 +2,17 @@ package com.abelatox.raycraft.entities.render;
 
 import javax.annotation.Nullable;
 
-import org.lwjgl.opengl.GL11;
-
-import com.abelatox.raycraft.entities.EntityBarrel;
-import com.abelatox.raycraft.entities.EntityFist;
 import com.abelatox.raycraft.entities.EntityPirateShot;
 import com.abelatox.raycraft.lib.Reference;
-import com.abelatox.raycraft.models.ModelBarrel;
 import com.abelatox.raycraft.models.ModelFist;
-import com.abelatox.raycraft.models.ModelPirateShot;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -47,7 +40,7 @@ public class RenderEntityPirateShot extends EntityRenderer<EntityPirateShot> {
 		matrixStackIn.rotate(Vector3f.XN.rotationDegrees(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch)));
 		
 		if (entity.ticksExisted > 2) //Prevent entity rendering in your face
-			shot.render(matrixStackIn, bufferIn.getBuffer(shot.getRenderType(getEntityTexture(entity))), packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 0.1F, 0.1F, 1F);
+			shot.render(matrixStackIn, bufferIn.getBuffer(shot.getRenderType(getEntityTexture(entity))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 0.1F, 0.1F, 1F);
 		matrixStackIn.pop();
 		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}

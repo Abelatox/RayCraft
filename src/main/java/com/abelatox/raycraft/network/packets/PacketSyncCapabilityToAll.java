@@ -56,7 +56,7 @@ public class PacketSyncCapabilityToAll {
 			List<AbstractClientPlayerEntity> list = Minecraft.getInstance().world.getPlayers();
 			PlayerEntity player = null;
 			for (int i = 0; i < list.size(); i++) {
-				String name = list.get(i).getName().getFormattedText();
+				String name = list.get(i).getName().getUnformattedComponentText();
 			//	System.out.println(name+" "+message.name);
 				if (name.equals(message.name)) {
 					player = list.get(i);

@@ -27,11 +27,7 @@ public class ModelFist extends EntityModel<EntityFist> {
 		modelRenderer.rotateAngleZ = z;
 	}
 
-	@Override
-	public void render(EntityFist entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	
 	@Override
@@ -43,6 +39,12 @@ public class ModelFist extends EntityModel<EntityFist> {
 		//rotate(new Vector3f(0,0.707,0.707).rotationDegrees(15)) 
 		fist.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn,red,green,blue,alpha);
 		matrixStackIn.pop();
+	}
+
+	@Override
+	public void setRotationAngles(EntityFist arg0, float arg1, float arg2, float arg3, float arg4, float arg5) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

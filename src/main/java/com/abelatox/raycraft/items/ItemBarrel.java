@@ -22,8 +22,8 @@ public class ItemBarrel extends BaseItem {
 		if (!world.isRemote) {
 			EntityBarrel barrel = new EntityBarrel(world, player);
 			world.addEntity(barrel);
-			barrel.shoot(player, player.rotationPitch, player.rotationYaw, 0, 0.8f, 0);
-			System.out.println("throwing barrelino");
+			barrel.setShooter(player);
+			barrel.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1F, 0);
 			player.inventory.removeStackFromSlot(player.inventory.currentItem);
 		}
 			return new ActionResult<>(ActionResultType.PASS, player.getHeldItem(hand));
