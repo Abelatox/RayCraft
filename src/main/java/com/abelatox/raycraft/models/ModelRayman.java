@@ -241,9 +241,9 @@ public class ModelRayman extends BipedModel {
 	/*
 	 * @Override public void render(LivingEntity entity, float f, float f1, float
 	 * f2, float f3, float f4, float f5) { setRotationAngles(f, f1, f2, f3, f4, f5,
-	 * entity); if (entity.isCrouching()) { GlStateManager.translatef(0.0F, 0.2F,
+	 * entity); if (entity.isCrouching()) { GlStateManager.translate(0.0F, 0.2F,
 	 * 0.0F); } if(entity.getPose() == Pose.SWIMMING) {
-	 * GlStateManager.translatef(0.0F, 1.3F, 0.0F);
+	 * GlStateManager.translate(0.0F, 1.3F, 0.0F);
 	 * GlStateManager.rotated(90,1,0,0); }
 	 * 
 	 * if (entity instanceof PlayerEntity) { PlayerEntity player = (PlayerEntity)
@@ -260,10 +260,10 @@ public class ModelRayman extends BipedModel {
 	 * 
 	 * this.rightLeg.render(f5); this.leftArm.render(f5); this.body.render(f5);
 	 * this.head.render(f5); this.leftLeg.render(f5); this.rightArm.render(f5);
-	 * GL11.glPushMatrix(); { Minecraft.getInstance().textureManager.bindTexture(new
+	 * GL11.glpush(); { Minecraft.getInstance().textureManager.bindTexture(new
 	 * ResourceLocation(Reference.MODID, "textures/models/barrel.png"));
 	 * GL11.glScaled(1.3, 1.3, 1.3); GL11.glTranslated(0, -0.75, -0.1);
-	 * this.barrel.render(entity, f, f1, f2, f3, f4, f5); } GL11.glPopMatrix(); }
+	 * this.barrel.render(entity, f, f1, f2, f3, f4, f5); } GL11.glpop(); }
 	 * else { this.head.offsetY = 0;
 	 * 
 	 * this.rightLeg.render(f5); this.body.render(f5); this.head.render(f5);
@@ -276,13 +276,13 @@ public class ModelRayman extends BipedModel {
 	 * 
 	 * this.rightArm.render(f5); GL11.glColor3d(1, 1, 1);
 	 * 
-	 * GL11.glPushMatrix();
+	 * GL11.glpush();
 	 * 
 	 * { GL11.glRotated(90, 0, 1, 0); GL11.glRotated(-90, 0, 0, 1);
 	 * GL11.glRotated(90, 0, 1, 0); GL11.glTranslated(0.4, 0.2, -0.7);
 	 * Minecraft.getInstance().gameRenderer.itemRenderer.renderItem((PlayerEntity)
 	 * entity, ((PlayerEntity) entity).getHeldItemMainhand(),
-	 * TransformType.THIRD_PERSON_RIGHT_HAND); } GL11.glPopMatrix(); } }
+	 * TransformType.THIRD_PERSON_RIGHT_HAND); } GL11.glpop(); } }
 	 * 
 	 * }
 	 */
@@ -301,7 +301,7 @@ public class ModelRayman extends BipedModel {
 		super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
 	}
 
-	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch, float scaleFactor, Entity entityIn) {
+	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch, float scaleactor, Entity entityIn) {
 
 		LivingEntity entity = ((LivingEntity) entityIn);
 

@@ -241,7 +241,7 @@ public class RaycraftModel extends BipedModel {
 		super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
 	}
 
-	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch, float scaleFactor, Entity entityIn) {
+	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch, float scaleactor, Entity entityIn) {
 		LivingEntity entity = (LivingEntity) entityIn;
 
 		this.head.rotateAngleY = headYaw / (180F / (float) Math.PI);

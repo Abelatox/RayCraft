@@ -1,9 +1,9 @@
 package com.abelatox.raycraft.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.lib.Reference;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -32,45 +32,45 @@ public class GUIHealth extends Screen {
 				String model = ModCapabilities.get(player).getPlayerType();
 				int screenWidth = mc.getMainWindow().getScaledWidth();
 				int screenHeight = mc.getMainWindow().getScaledHeight();
-
-				GL11.glPushMatrix();
+				MatrixStack ms = event.getMatrixStack();
+				ms.push();
 				{
 
-					GL11.glTranslated(10, 10, 0);
-					GL11.glScaled(1.2, 1.2, 1.2);
+					ms.translate(10, 10, 0);
+					ms.scale(1.2F, 1.2F, 1.2F);
 
-					GL11.glPushMatrix();
+					ms.push();
 					{// Face
 						mc.textureManager.bindTexture(new ResourceLocation(Reference.MODID, "textures/gui/" + model + "_face.png"));
 
-						GL11.glScaled(0.2, 0.18, 0.2);
+						ms.scale(0.2F, 0.18F, 0.2F);
 						blit(event.getMatrixStack(),0, 0, 0, 0, 127, 147);
 					}
-					GL11.glPopMatrix();
+					ms.pop();
 
 					mc.textureManager.bindTexture(new ResourceLocation(Reference.MODID, "textures/gui/hp.png"));
 
-					GL11.glTranslated(30, 10, 0);
-					GL11.glPushMatrix();
+					ms.translate(30, 10, 0);
+					ms.push();
 					{// HP Background
-						GL11.glColor4d(1, 1, 1, 1);
+						RenderSystem.color4f(1, 1, 1, 1);
 
 						for (int i = 0; i < player.getMaxHealth() * 2; i++)
 							blit(event.getMatrixStack(),i, 0, 0, 0, 1, 6);
 					}
-					GL11.glPopMatrix();
+					ms.pop();
 
-					GL11.glPushMatrix();
+					ms.push();
 					{// HP Bar
-						GL11.glColor4d(1, 1, 1, 1);
+						RenderSystem.color4f(1, 1, 1, 1);
 
 						for (int i = 0; i < player.getHealth() * 2; i++)
 							blit(event.getMatrixStack(),i, 0, 1, 0, 1, 6);
 					}
-					GL11.glPopMatrix();
+					ms.pop();
 
 				}
-				GL11.glPopMatrix();
+				ms.pop();
 			}
 		}
 	}

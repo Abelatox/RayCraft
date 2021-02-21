@@ -11,13 +11,10 @@ import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.network.PacketHandler;
 import com.abelatox.raycraft.network.packets.PacketSetGliding;
-import com.sun.javafx.geom.Vec3d;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;

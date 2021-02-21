@@ -1,7 +1,5 @@
 package com.abelatox.raycraft.models.render;
 
-import org.lwjgl.opengl.GL11;
-
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
@@ -9,7 +7,6 @@ import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.ModelRayman;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -37,7 +34,7 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 
 	@Override
 	public void doRender(LivingEntity entityLiving, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		RenderSystem.pushMatrix();
+		matrixStackIn.push();
 		{
 			matrixStackIn.push();
 
@@ -47,7 +44,7 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 			float headYaw = this.interpolateRotation(entityLiving.prevRotationYawHead, entityLiving.rotationYawHead, v);
 			float headPitch = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * v;
 
-			this.rotateCorpse(entityLiving, ageInTicks, headYawOffset, v);
+			//this.rotateCorpse(matrixStackIn,entityLiving, ageInTicks, headYawOffset, v);
 
 			float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
 			float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);
@@ -57,7 +54,7 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 			matrixStackIn.pop();
 
 		}
-		RenderSystem.popMatrix();
+		matrixStackIn.pop();
 		
 		if (ItemStack.areItemStacksEqual(entityLiving.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
 			matrixStackIn.push();
@@ -84,8 +81,8 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 		return lowerLimit + range * f3;
 	}
 
-	protected void rotateCorpse(LivingEntity entityLiving, float ageInTicks, float headYawOffset, float v) {
-		GL11.glRotatef(180.0F + headYawOffset, 0.0F, 1.0F, 0.0F);
+	protected void rotateCorpse(MatrixStack matrixStackIn, LivingEntity entityLiving, float ageInTicks, float headYawOffset, float v) {
+		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180 + headYawOffset));
 
 		if (entityLiving.deathTime > 0) {
 			float f3 = ((float) entityLiving.deathTime + v - 1.0F) / 20.0F * 1.6F;

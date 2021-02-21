@@ -8,7 +8,6 @@ import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.ModelGlobox;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -35,27 +34,23 @@ public class RenderGlobox extends EntityRenderer<LivingEntity> implements IRayCr
 	
 	@Override
 	public void doRender(LivingEntity entityLiving, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		RenderSystem.pushMatrix();
+		matrixStackIn.push();
 		{
-			matrixStackIn.push();
-
 			float ageInTicks = entityLiving.ticksExisted + v;
 
 			float headYawOffset = this.interpolateRotation(entityLiving.prevRenderYawOffset, entityLiving.renderYawOffset, v);
 			float headYaw = this.interpolateRotation(entityLiving.prevRotationYawHead, entityLiving.rotationYawHead, v);
 			float headPitch = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * v;
 
-			this.rotateCorpse(entityLiving, ageInTicks, headYawOffset, v);
+			//this.rotateCorpse(entityLiving, ageInTicks, headYawOffset, v);
 
 			float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
 			float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);
 
 			this.model.setRotationAngles(entityLiving, limbSwing, limbSwingAmount, ageInTicks, headYaw - headYawOffset, headPitch);
 			this.model.render(matrixStackIn, iRenderTypeBuffer.getBuffer(model.getRenderType(getEntityTexture(entityLiving))), packedLightIn, packedOverlayIn, red, green, blue, alpha);
-			matrixStackIn.pop();
-
 		}
-		RenderSystem.popMatrix();
+		matrixStackIn.pop();
 
 		if (ItemStack.areItemStacksEqual(entityLiving.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
 			matrixStackIn.push();

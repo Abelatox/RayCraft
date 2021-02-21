@@ -63,7 +63,7 @@ public class RenderEntityPirateShot extends EntityRenderer<EntityPirateShot> {
 /*
     @Override
     public void doRender(EntityPirateShot entity, double x, double y, double z, float entityYaw, float partialTicks) {
-    	GL11.glPushMatrix();
+    	GL11.glpush();
 		{
 			Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entity));
 			GL11.glTranslated(x, y, z);
@@ -79,7 +79,7 @@ public class RenderEntityPirateShot extends EntityRenderer<EntityPirateShot> {
 			GL11.glColor4ub((byte)255, (byte)255, (byte)255, (byte)255);
 
 		}
-		GL11.glPopMatrix();
+		GL11.glpop();
        // super.doRender(entity, x, y, z, entityYaw, partialTicks);
     }
 
