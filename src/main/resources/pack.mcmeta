@@ -1,7 +1,10 @@
 {
     "pack": {
         "description": "RayCraft resources",
-        "pack_format": 4,
-        "_comment": "A pack_format of 4 requires json lang files. Note: we require v4 pack meta for all mods."
+        "pack_format": 88,
+        "supported_formats": {
+            "min_inclusive": 88,
+            "max_inclusive": 88
+        }
     }
 }

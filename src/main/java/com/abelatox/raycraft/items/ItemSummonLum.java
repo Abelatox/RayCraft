@@ -2,31 +2,29 @@ package com.abelatox.raycraft.items;
 
 import com.abelatox.raycraft.entities.EntityLum;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 
 public class ItemSummonLum extends BaseItem {
 
 	public ItemSummonLum(Properties properties) {
 		super(properties);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
-		PlayerEntity player = context.getPlayer();
-		World world = context.getWorld();
+	public InteractionResult useOn(UseOnContext context) {
+		Player player = context.getPlayer();
+		Level level = context.getLevel();
 
-		if (!world.isRemote) {
+		if (!level.isClientSide()) {
 			String type = "green";
-			EntityLum lum = new EntityLum(world);
+			EntityLum lum = new EntityLum(level);
 			lum.setLumType(type);
-			lum.setPosition(context.getPos().getX() + 0.5, context.getPos().getY() + 1.5, context.getPos().getZ() + 0.5);
-			world.addEntity(lum);
-			//player.sendMessage(new TranslationTextComponent("Summonned: " + type));
+			lum.setPos(context.getClickedPos().getX() + 0.5, context.getClickedPos().getY() + 1.5, context.getClickedPos().getZ() + 0.5);
+			level.addFreshEntity(lum);
 		}
-		return super.onItemUse(context);
+		return super.useOn(context);
 	}
 }

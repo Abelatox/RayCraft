@@ -1,41 +1,33 @@
 package com.abelatox.raycraft.gui;
 
-import com.abelatox.raycraft.network.PacketHandler;
-import com.abelatox.raycraft.network.packets.PacketSetModel;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.abelatox.raycraft.network.payloads.SetModelPayload;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
-public class GUISelectModel extends Screen{
-	
+public class GUISelectModel extends Screen {
+
 	public GUISelectModel() {
-        super(new TranslationTextComponent(""));
-    }
-	
+		super(Component.empty());
+	}
+
 	@Override
 	protected void init() {
-		buttons.clear();
-		int yPos = 120;
-		addButton(new Button(this.width / 2 - 100, this.height - 120, 200, 20, new TranslationTextComponent(Minecraft.getInstance().player.getDisplayName().getString()), (e) -> { select(""); }));
-		addButton(new Button(this.width / 2 - 100, this.height - 100, 200, 20, new TranslationTextComponent("Rayman"), (e) -> { select("rayman"); }));
-		addButton(new Button(this.width / 2 - 100, this.height - 80, 200, 20, new TranslationTextComponent("Red Robopirate"), (e) -> { select("robopirate"); }));
-		addButton(new Button(this.width / 2 - 100, this.height - 60, 200, 20, new TranslationTextComponent("Green Robopirate"), (e) -> { select("robopirate2"); }));
-		addButton(new Button(this.width / 2 - 100, this.height - 40, 200, 20, new TranslationTextComponent("Globox"), (e) -> { select("globox"); }));
-		addButton(new Button(this.width / 2 - 100, this.height - 20, 200, 20, new TranslationTextComponent("Hoodlum"), (e) -> { select("hoodlum"); }));
+		clearWidgets();
+		addRenderableWidget(Button.builder(Component.literal(Minecraft.getInstance().player.getDisplayName().getString()), b -> select("")).bounds(this.width / 2 - 100, this.height - 120, 200, 20).build());
+		addRenderableWidget(Button.builder(Component.literal("Rayman"), b -> select("rayman")).bounds(this.width / 2 - 100, this.height - 100, 200, 20).build());
+		addRenderableWidget(Button.builder(Component.literal("Red Robopirate"), b -> select("robopirate")).bounds(this.width / 2 - 100, this.height - 80, 200, 20).build());
+		addRenderableWidget(Button.builder(Component.literal("Green Robopirate"), b -> select("robopirate2")).bounds(this.width / 2 - 100, this.height - 60, 200, 20).build());
+		addRenderableWidget(Button.builder(Component.literal("Globox"), b -> select("globox")).bounds(this.width / 2 - 100, this.height - 40, 200, 20).build());
+		addRenderableWidget(Button.builder(Component.literal("Hoodlum"), b -> select("hoodlum")).bounds(this.width / 2 - 100, this.height - 20, 200, 20).build());
 
 		super.init();
 	}
-	
-	private void select(String model) {
-		PacketHandler.sendToServer(new PacketSetModel(model));
-	}
 
-	@Override
-	public void render(MatrixStack matrixStack,int mouseX, int mouseY, float partialTicks) {
-        renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
+	private void select(String model) {
+		ClientPacketDistributor.sendToServer(new SetModelPayload(model));
 	}
 }

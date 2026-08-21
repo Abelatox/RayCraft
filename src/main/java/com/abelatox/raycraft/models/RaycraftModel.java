@@ -146,7 +146,7 @@ public class RaycraftModel extends BipedModel {
 		isSwimming = entityIn.getPose() == Pose.SWIMMING;
 		isSleeping = entityIn.isSleeping();
 		isCharging = ModCapabilities.get((PlayerEntity) entityIn).getIsCharging();
-		//System.out.println(isCharging);
+
 		yaw = entityIn.prevRenderYawOffset;
 		pitch = headPitch;
 
@@ -194,18 +194,17 @@ public class RaycraftModel extends BipedModel {
 				this.head.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 			}
 
-			
 			if (isCharging) {
 				matrixStackIn.push();
 				matrixStackIn.translate(0.18, 0.1, 0);
 				this.leftArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 				matrixStackIn.pop();
-				
+
 				matrixStackIn.push();
 				matrixStackIn.translate(-0.18, 0.1, 0);
 				this.rightArm.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 				matrixStackIn.pop();
-				
+
 				matrixStackIn.push();
 				matrixStackIn.scale(1.5F, 1, 1.5F);
 				this.body.render(matrixStackIn, builderIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
@@ -220,8 +219,6 @@ public class RaycraftModel extends BipedModel {
 
 		}
 
-		// super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red,
-		// green, blue, alpha);
 		matrixStackIn.pop();
 
 	}

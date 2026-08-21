@@ -1,62 +1,64 @@
 package com.abelatox.raycraft.entities.render;
 
-import javax.annotation.Nullable;
-
 import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.lib.Reference;
+import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.ModelBarrel;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 
-/**
- * Mostly a copy of {@link net.minecraft.client.renderer.entity.RenderTNTPrimed}
- * with some small changes
- */
-@OnlyIn(Dist.CLIENT)
-public class RenderEntityBarrel extends EntityRenderer<EntityBarrel> {
+public class RenderEntityBarrel extends EntityRenderer<EntityBarrel, RenderEntityBarrel.BarrelRenderState> {
 
-	public static final Factory FACTORY = new RenderEntityBarrel.Factory();
-	ModelBarrel barrel;
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/models/barrel.png");
 
-	public RenderEntityBarrel(EntityRendererManager renderManager, ModelBarrel barrel) {
-		super(renderManager);
-		this.barrel = barrel;
-		this.shadowSize = 0.5F;
+	private final ModelBarrel model;
+
+	public RenderEntityBarrel(EntityRendererProvider.Context context) {
+		super(context);
+		this.shadowRadius = 0.5F;
+		this.model = new ModelBarrel(context.bakeLayer(ModModels.BARREL_LAYER));
 	}
 
 	@Override
-	public void render(EntityBarrel entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		matrixStackIn.push();
-
-		matrixStackIn.scale(1.5F, 1.5F, 1.5F);
-		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw)));
-		matrixStackIn.rotate(Vector3f.XN.rotationDegrees(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch)));
-		
-		barrel.render(matrixStackIn, bufferIn.getBuffer(barrel.getRenderType(getEntityTexture(entity))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
-		matrixStackIn.pop();
-		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+	public BarrelRenderState createRenderState() {
+		return new BarrelRenderState();
 	}
 
-	@Nullable
 	@Override
-	public ResourceLocation getEntityTexture(EntityBarrel entity) {
-		return new ResourceLocation(Reference.MODID, "textures/models/barrel.png");
+	public void extractRenderState(EntityBarrel entity, BarrelRenderState state, float partialTick) {
+		super.extractRenderState(entity, state, partialTick);
+		state.yRot = entity.yRotO + (entity.getYRot() - entity.yRotO) * partialTick;
+		state.xRot = entity.xRotO + (entity.getXRot() - entity.xRotO) * partialTick;
+		state.lightCoords = LightCoordsUtil.getLightCoords(entity.level(), entity.blockPosition());
 	}
 
-	public static class Factory implements IRenderFactory<EntityBarrel> {
-		@Override
-		public EntityRenderer<? super EntityBarrel> createRenderFor(EntityRendererManager manager) {
-			// TODO Auto-generated method stub
-			return new RenderEntityBarrel(manager, new ModelBarrel());
-		}
+	@Override
+	public void submit(BarrelRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
+		super.submit(state, poseStack, collector, cameraState);
+
+		poseStack.pushPose();
+		poseStack.scale(1.5F, 1.5F, 1.5F);
+		poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
+		poseStack.mulPose(Axis.XN.rotationDegrees(state.xRot));
+
+		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, 0, null);
+
+		poseStack.popPose();
+	}
+
+	public static class BarrelRenderState extends EntityRenderState {
+		public float yRot;
+		public float xRot;
+		public int lightCoords;
 	}
 }

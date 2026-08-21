@@ -4,133 +4,100 @@ import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.sounds.ModSounds;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class EntityLum extends Entity {
 
-	private static final DataParameter<String> TYPE = EntityDataManager.createKey(EntityLum.class, DataSerializers.STRING);
-	String lumType;
+	private static final EntityDataAccessor<String> TYPE = SynchedEntityData.defineId(EntityLum.class, EntityDataSerializers.STRING);
 
-	public EntityLum(EntityType<? extends Entity> type, World world, String lumType) {
-		super(type, world);
-		this.preventEntitySpawning = true;
-		this.lumType = lumType;
+	public EntityLum(EntityType<? extends EntityLum> type, Level level) {
+		super(type, level);
 	}
 
-	public EntityLum(World worldIn) {
-		super(ModEntities.TYPE_LUM, worldIn);
-	}
-
-	public EntityLum(EntityType<EntityLum> type, World world) {
-		super(type, world);
-		this.preventEntitySpawning = true;
+	public EntityLum(Level level) {
+		this(ModEntities.LUM.get(), level);
 	}
 
 	@Override
 	public void tick() {
-		switch (lumType) {
-		case "yellow":
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 1, 1, 0);
-			break;
-		case "green":
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 0, 1, 0);
-			break;
-		case "red":
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 1, 0, 0);
-			break;
-		case "blue":
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 0, 0, 1);
-			break;
-		default:
-			remove();
-			break;
+		switch (getLumType()) {
+			case "yellow" -> level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 1F, 1F, 0F), getX(), getY(), getZ(), 0, 0, 0);
+			case "green" -> level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0F, 1F, 0F), getX(), getY(), getZ(), 0, 0, 0);
+			case "red" -> level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 1F, 0F, 0F), getX(), getY(), getZ(), 0, 0, 0);
+			case "blue" -> level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0F, 0F, 1F), getX(), getY(), getZ(), 0, 0, 0);
+			default -> discard();
 		}
 		super.tick();
 	}
 
 	@Override
-	public void onCollideWithPlayer(PlayerEntity player) {
-		if (this.ticksExisted > 20) {
-			if (!world.isRemote) {
-				System.out.println(lumType);
+	public void playerTouch(Player player) {
+		if (this.tickCount > 20) {
+			if (!level().isClientSide()) {
 				IPlayerCapabilities props = ModCapabilities.get(player);
-				switch (lumType) {
-				case "yellow":
-					props.setLums(props.getLums() + 1);
-					player.world.playSound(null, player.getPosition(), ModSounds.lumYellow, SoundCategory.MASTER, 1F, 1F);
+				switch (getLumType()) {
+					case "yellow" -> {
+						props.setLums(props.getLums() + 1);
+						level().playSound(null, player.blockPosition(), ModSounds.LUM_YELLOW.get(), SoundSource.MASTER, 1F, 1F);
+					}
+					case "green" -> {
+						level().playSound(null, player.blockPosition(), ModSounds.LUM_GREEN.get(), SoundSource.MASTER, 1F, 1F);
 
-					//player.sendMessage(new TranslationTextComponent("Lums: " + props.getLums()));
-					System.out.println("+1 point");
-					break;
-				case "green":
-					player.world.playSound(null, player.getPosition(), ModSounds.lumGreen, SoundCategory.MASTER, 1F, 1F);
-					//player.setSpawnPoint(this.getPosition(), true, true, this.dimension);
-					System.out.println("Spawn setting");
-					break;
-				case "red":
-					System.out.println("+2 hp");
-					player.world.playSound(null, player.getPosition(), ModSounds.lumRed, SoundCategory.MASTER, 1F, 1F);
-					player.heal(2);
-					break;
-				case "blue":
-					System.out.println("+1 oxygen");
-					break;
+					}
+					case "red" -> {
+						level().playSound(null, player.blockPosition(), ModSounds.LUM_RED.get(), SoundSource.MASTER, 1F, 1F);
+						player.heal(2);
+					}
+					case "blue" -> {
+
+					}
 				}
 			}
-			remove();
+			discard();
 		}
-		super.onCollideWithPlayer(player);
-	}
-
-	@Override
-	public IPacket<?> createSpawnPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+		super.playerTouch(player);
 	}
 
 	public String getLumType() {
-		return lumType;
+		return this.getEntityData().get(TYPE);
 	}
 
 	public void setLumType(String type) {
-		this.lumType = type;
-		this.dataManager.set(TYPE, type);
+		this.getEntityData().set(TYPE, type);
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		compound.putString("type", this.getLumType());
+	protected void addAdditionalSaveData(ValueOutput output) {
+		output.putString("type", this.getLumType());
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		this.setLumType(compound.getString("type"));
+	protected void readAdditionalSaveData(ValueInput input) {
+		this.setLumType(input.getStringOr("type", "yellow"));
 	}
 
 	@Override
-	public void notifyDataManagerChange(DataParameter<?> key) {
-		if (key.equals(TYPE)) {
-			this.lumType = this.getTypeDataManager();
-		}
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		builder.define(TYPE, "yellow");
 	}
 
 	@Override
-	protected void registerData() {
-		this.dataManager.register(TYPE, "yellow");
-	}
+	public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
 
-	public String getTypeDataManager() {
-		return this.dataManager.get(TYPE);
+		return false;
 	}
 }

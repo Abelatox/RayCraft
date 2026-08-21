@@ -1,22 +1,19 @@
 package com.abelatox.raycraft.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 
 public class BaseItem extends Item {
 
 	public BaseItem(Properties properties) {
 		super(properties);
-		
 	}
 
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		return new ActionResult<>(ActionResultType.PASS, player.getHeldItem(hand));
+	@Override
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		return InteractionResult.PASS;
 	}
-	
 }

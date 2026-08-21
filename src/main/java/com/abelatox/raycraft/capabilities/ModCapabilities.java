@@ -1,24 +1,51 @@
 package com.abelatox.raycraft.capabilities;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.util.LazyOptional;
+import com.abelatox.raycraft.lib.Reference;
+
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.function.Supplier;
 
 public class ModCapabilities {
 
-	@CapabilityInject(IPlayerCapabilities.class)
-	public static final Capability<IPlayerCapabilities> PLAYER_CAPABILITIES = null;
+	public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Reference.MODID);
 
-	public static IPlayerCapabilities get(PlayerEntity player) {
-		LazyOptional<IPlayerCapabilities> props = player.getCapability(ModCapabilities.PLAYER_CAPABILITIES, null);
-		return props.orElse(null);
+	private static final StreamCodec<ByteBuf, PlayerCapabilities> SYNC_STREAM_CODEC = StreamCodec.of(
+			(buf, value) -> {
+				ByteBufCodecs.STRING_UTF8.encode(buf, value.getPlayerType());
+				ByteBufCodecs.VAR_INT.encode(buf, value.getShotLevel());
+				ByteBufCodecs.BOOL.encode(buf, value.getIsCharging());
+				ByteBufCodecs.BOOL.encode(buf, value.getIsGliding());
+			},
+			(buf) -> {
+				PlayerCapabilities data = new PlayerCapabilities();
+				data.setPlayerType(ByteBufCodecs.STRING_UTF8.decode(buf));
+				data.setShotLevel(ByteBufCodecs.VAR_INT.decode(buf));
+				data.setCharging(ByteBufCodecs.BOOL.decode(buf));
+				data.setGliding(ByteBufCodecs.BOOL.decode(buf));
+				return data;
+			}
+	);
+
+	public static final Supplier<AttachmentType<PlayerCapabilities>> PLAYER_DATA = ATTACHMENT_TYPES.register(
+			"player_data",
+			() -> AttachmentType.serializable(PlayerCapabilities::new)
+					.copyOnDeath()
+					.sync(SYNC_STREAM_CODEC)
+					.build()
+	);
+
+	public static IPlayerCapabilities get(Player player) {
+		return player.getData(PLAYER_DATA);
 	}
 
-	public static void register() {
-		CapabilityManager.INSTANCE.register(IPlayerCapabilities.class, new PlayerCapabilities.Storage(), () -> new PlayerCapabilities());
-
+	public static void sync(Player player) {
+		player.setData(PLAYER_DATA, (PlayerCapabilities) get(player));
 	}
-
 }

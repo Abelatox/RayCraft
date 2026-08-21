@@ -1,143 +1,94 @@
 package com.abelatox.raycraft.events;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-import com.abelatox.raycraft.client.KeyboardHelper;
 import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
-import com.abelatox.raycraft.network.PacketHandler;
-import com.abelatox.raycraft.network.packets.PacketSetGliding;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 public class PlayerEventsHandler {
 
-	long timeLastAlert;
 	boolean warned = false;
 
-	/*
-	 * @SubscribeEvent public void onAttack(LivingHurtEvent event) { if
-	 * (event.getSource().getTrueSource() instanceof PlayerEntity) {
-	 * PacketHandler.sendTo(new
-	 * PacketSetTarget(event.getEntityLiving().getEntityId()),
-	 * (ServerPlayerEntity)event.getSource().getTrueSource());
-	 * System.out.println(event.getEntityLiving().world.isRemote + " asd " +
-	 * event.getSource().getTrueSource()); } }
-	 */
-
 	@SubscribeEvent
-	public void updatePlayerEvent(LivingUpdateEvent event) {
-		if (event.getEntityLiving() instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+	public void updatePlayerEvent(EntityTickEvent.Pre event) {
+		if (event.getEntity() instanceof Player player) {
 			IPlayerCapabilities props = ModCapabilities.get(player);
 			if (props != null) {
-				if (player.world.isRemote) {
-					if (!player.isOnGround() && player.getMotion().y < -0.1) {
-						if (KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_SPACE)) {
-							if(!props.getIsGliding()) {
-								props.setGliding(true);
-								PacketHandler.sendToServer(new PacketSetGliding(true));
-							}
-						} else {
-							if(props.getIsGliding()) {
-								props.setGliding(false);
-								PacketHandler.sendToServer(new PacketSetGliding(false));
-							}
-						}
-					} else {
-						if(props.getIsGliding()) {
-							props.setGliding(false);
-							PacketHandler.sendToServer(new PacketSetGliding(false));
-						}
-					}
-				}
-
 				if (props.getIsGliding()) {
-					player.setMotion(player.getMotion().x, -0.1, player.getMotion().z);
+					player.setDeltaMovement(player.getDeltaMovement().x, -0.1, player.getDeltaMovement().z);
 				}
 
-				// Slow down the player while holding a barrel
-				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
-					if (player.getMotion().y <= 0) {
-						player.setMotion(new Vector3d(player.getMotion().x / 2, player.getMotion().y * 2, player.getMotion().z / 2));
+				if (ItemStack.isSameItemSameComponents(player.getMainHandItem(), new ItemStack(ModItems.BARREL.get()))) {
+					if (player.getDeltaMovement().y <= 0) {
+						player.setDeltaMovement(new Vec3(player.getDeltaMovement().x / 2, player.getDeltaMovement().y * 2, player.getDeltaMovement().z / 2));
 					} else {
-						player.setMotion(new Vector3d(player.getMotion().x / 2, player.getMotion().y, player.getMotion().z / 2));
+						player.setDeltaMovement(new Vec3(player.getDeltaMovement().x / 2, player.getDeltaMovement().y, player.getDeltaMovement().z / 2));
 					}
-
 				}
 
-				// Prevent the player from changing item while holding a barrel
-				if (player.inventory.hasItemStack(new ItemStack(ModItems.barrel))) {
-					Utils.lockSelectedItem(player, new ItemStack(ModItems.barrel));
+				if (player.getInventory().contains(new ItemStack(ModItems.BARREL.get()))) {
+					Utils.lockSelectedItem(player, new ItemStack(ModItems.BARREL.get()));
+				}
+			}
+
+			// El barril es casi solido (getCollisionShape 1-15), asi que el jugador nunca
+			// llega a solaparse de verdad con el bloque y BlockBarrel#entityInside no siempre
+			// dispara. Revisamos por proximidad (agacharse "al lado" del barril) en vez de
+			// depender de un solape exacto de hitboxes.
+			if (player.isShiftKeyDown() && player.getMainHandItem().isEmpty() && !player.level().isClientSide()) {
+				BlockPos center = player.blockPosition();
+				for (BlockPos pos : BlockPos.betweenClosed(center.offset(-1, -1, -1), center.offset(1, 1, 1))) {
+					if (player.level().getBlockState(pos).is(ModBlocks.BARREL.get())) {
+						player.getInventory().setItem(player.getInventory().getSelectedSlot(), new ItemStack(ModItems.BARREL.get()));
+						player.level().removeBlock(pos, true);
+						break;
+					}
 				}
 			}
 		}
-
 	}
 
 	@SubscribeEvent
-	public void onPlayerJump(LivingJumpEvent event) {
-		if (event.getEntityLiving() instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-			int slot = Utils.getSlotFor(player, new ItemStack(ModItems.barrel));
+	public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
+		if (event.getEntity() instanceof Player player) {
+			int slot = Utils.getSlotFor(player, new ItemStack(ModItems.BARREL.get()));
 			if (slot > -1) {
-				player.inventory.removeStackFromSlot(slot);
-				if (!player.world.isRemote) {
-					EntityBarrel barrel = new EntityBarrel(player.world, player);
-					player.world.addEntity(barrel);
-					barrel.setShooter(player);
-					barrel.func_234612_a_(player, -90, player.rotationYaw, 0, 1F, 0);
-					//barrel.shoot(-90, player.rotationYaw, 0, 1f, 0);
-					// System.out.println("throwing up barrelino");
-					//player.inventory.removeStackFromSlot(player.inventory.currentItem);
+				player.getInventory().removeItemNoUpdate(slot);
+				if (!player.level().isClientSide()) {
+					EntityBarrel barrel = new EntityBarrel(player.level(), player);
+					player.level().addFreshEntity(barrel);
+					barrel.setOwner(player);
+					barrel.shootFromRotation(player, -90, player.getYRot(), 0, 1F, 0);
 				}
 			}
-
 		}
 	}
 
 	@SubscribeEvent
-	public void onPlayerClone(PlayerEvent.Clone event) {
-		if (event.isWasDeath()) {
-			updateCap(event.getOriginal(), event.getPlayer());
-		}
-	}
-
-	private void updateCap(PlayerEntity original, PlayerEntity player) {
-		IPlayerCapabilities oProps = ModCapabilities.get(original);
-		IPlayerCapabilities props = ModCapabilities.get(player);
-		props.setPlayerType(oProps.getPlayerType());
-		props.setShotLevel(oProps.getShotLevel());
-		props.setCharging(oProps.getIsCharging());
-
-		props.setLums(oProps.getLums());
-
-	}
-
-	@SubscribeEvent
-	public void onItemTossEvent(ItemTossEvent event) { // If tosses the barrel it will try to drop
-		PlayerEntity player = event.getPlayer();
-		if (ItemStack.areItemStacksEqual(event.getEntityItem().getItem(), new ItemStack(ModItems.barrel))) {
+	public void onItemTossEvent(ItemTossEvent event) {
+		Player player = event.getPlayer();
+		if (ItemStack.isSameItemSameComponents(event.getEntity().getItem(), new ItemStack(ModItems.BARREL.get()))) {
 			event.setCanceled(true);
 			if (Utils.getAvailablePos(player) == null) {
 				if (!warned) {
-					//TODO player.sendMessage(new TranslationTextComponent("You can't drop the barrel here"));
+
 					warned = true;
 				}
 			} else {
-				player.inventory.removeStackFromSlot(player.inventory.currentItem);
-				player.world.setBlockState(Utils.getAvailablePos(player), ModBlocks.barrel.getDefaultState());
+				player.getInventory().removeItemNoUpdate(player.getInventory().getSelectedSlot());
+				player.level().setBlockAndUpdate(Utils.getAvailablePos(player), ModBlocks.BARREL.get().defaultBlockState());
 				warned = false;
 			}
 		}
@@ -145,18 +96,8 @@ public class PlayerEventsHandler {
 
 	@SubscribeEvent
 	public void playerStartedTracking(PlayerEvent.StartTracking e) {
-		if (e.getTarget() instanceof PlayerEntity) {
-			PlayerEntity targetPlayer = (PlayerEntity) e.getTarget();
-			IPlayerCapabilities props = ModCapabilities.get(targetPlayer);
-			PacketHandler.syncToAllAround(targetPlayer, props);
+		if (e.getTarget() instanceof Player targetPlayer) {
+			ModCapabilities.sync(targetPlayer);
 		}
 	}
-
-	/*
-	 * @SubscribeEvent public void EntityAttack(LivingAttackEvent event) { if
-	 * (event.getSource().getImmediateSource() != null &&
-	 * event.getSource().getImmediateSource() instanceof PlayerEntity) {
-	 * PlayerEntity player = (PlayerEntity) event.getSource().getImmediateSource();
-	 * IPlayerCapabilities props = ModCapabilities.get(player); } }
-	 */
 }

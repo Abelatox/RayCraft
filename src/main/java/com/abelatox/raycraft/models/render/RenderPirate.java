@@ -33,16 +33,6 @@ public class RenderPirate extends PlayerRenderer implements IRayCraftRender {
 		addLayer(new HeldItemLayer<>(this));
 	}
 
-	/*
-	 * @Override public void render(LivingEntity entityIn, float entityYaw, float
-	 * partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int
-	 * packedLightIn) { // model.render(matrixStackIn, //
-	 * bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))), //
-	 * packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-	 * System.out.println("Aa"); super.render(entityIn, entityYaw, partialTicks,
-	 * matrixStackIn, bufferIn, packedLightIn); }
-	 */
-
 	@Override
 	public void doRender(LivingEntity entityLiving, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		matrixStackIn.push();
@@ -54,8 +44,6 @@ public class RenderPirate extends PlayerRenderer implements IRayCraftRender {
 			float headYawOffset = this.interpolateRotation(entityLiving.prevRenderYawOffset, entityLiving.renderYawOffset, v);
 			float headYaw = this.interpolateRotation(entityLiving.prevRotationYawHead, entityLiving.rotationYawHead, v);
 			float headPitch = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * v;
-
-			//this.rotateCorpse(matrixStackIn,entityLiving, ageInTicks, headYawOffset, v);
 
 			float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
 			float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);

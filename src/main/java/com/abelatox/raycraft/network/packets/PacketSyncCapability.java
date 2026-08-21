@@ -1,14 +1,13 @@
 package com.abelatox.raycraft.network.packets;
 
-import java.util.function.Supplier;
-
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class PacketSyncCapability {
 

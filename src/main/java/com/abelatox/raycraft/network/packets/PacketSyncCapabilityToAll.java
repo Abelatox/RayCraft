@@ -1,17 +1,16 @@
 package com.abelatox.raycraft.network.packets;
 
-import java.util.List;
-import java.util.function.Supplier;
-
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 public class PacketSyncCapabilityToAll {
 
@@ -57,7 +56,7 @@ public class PacketSyncCapabilityToAll {
 			PlayerEntity player = null;
 			for (int i = 0; i < list.size(); i++) {
 				String name = list.get(i).getName().getUnformattedComponentText();
-			//	System.out.println(name+" "+message.name);
+
 				if (name.equals(message.name)) {
 					player = list.get(i);
 				}

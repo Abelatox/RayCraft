@@ -1,14 +1,13 @@
 package com.abelatox.raycraft.network.packets;
 
-import java.util.function.Supplier;
-
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.network.PacketHandler;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class PacketSetModel {
 
@@ -38,7 +37,7 @@ public class PacketSetModel {
 			PlayerEntity player = ctx.get().getSender();
 			IPlayerCapabilities props = ModCapabilities.get(player);
 			props.setPlayerType(message.model);
-			
+
 			System.out.println(props.getPlayerType());
 			PacketHandler.syncToAllAround(player, props);
 		});

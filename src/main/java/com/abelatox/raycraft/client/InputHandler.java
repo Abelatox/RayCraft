@@ -1,72 +1,59 @@
 package com.abelatox.raycraft.client;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.gui.GUISelectModel;
 import com.abelatox.raycraft.lib.Constants;
-import com.abelatox.raycraft.network.PacketHandler;
-import com.abelatox.raycraft.network.packets.PacketSetCharging;
-import com.abelatox.raycraft.network.packets.PacketShoot;
-
+import com.abelatox.raycraft.lib.Reference;
+import com.abelatox.raycraft.network.payloads.SetChargingPayload;
+import com.abelatox.raycraft.network.payloads.ShootPayload;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import org.lwjgl.glfw.GLFW;
 
 public class InputHandler {
 	public static LivingEntity lockOn = null;
 
+	public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(Reference.MODID, Reference.MODID));
+
 	public enum Keybinds {
 		SELECT("key.raycraft.select", GLFW.GLFW_KEY_P), LOCK_ON("key.raycraft.lockon", GLFW.GLFW_KEY_LEFT_CONTROL);
 
-		private final KeyBinding keybinding;
+		private final KeyMapping keybinding;
 
 		Keybinds(String name, int defaultKey) {
-			keybinding = new KeyBinding(name, defaultKey, "key.categories.raycraft");
+			keybinding = new KeyMapping(name, defaultKey, CATEGORY);
 		}
 
-		public KeyBinding getKeybind() {
+		public KeyMapping getKeybind() {
 			return keybinding;
 		}
 
 		public boolean isPressed() {
-			return keybinding.isPressed();
+			return keybinding.consumeClick();
 		}
 	}
 
 	@SubscribeEvent
-	public void handleKeyInputEvent(InputEvent.KeyInputEvent event) {
+	public void handleKeyInputEvent(InputEvent.Key event) {
 		Minecraft mc = Minecraft.getInstance();
-		PlayerEntity player = mc.player;
-		World world = mc.world;
 
 		Keybinds key = getPressedKey();
 		if (key != null) {
 			switch (key) {
-			case SELECT:
-				mc.displayGuiScreen(new GUISelectModel());
-				break;
+				case SELECT:
+					mc.gui.setScreen(new GUISelectModel());
+					break;
 
-			case LOCK_ON:
-				/*
-				 * if (lockOn == null) { RayTraceResult rtr = getMouseOverExtended(100); if (rtr
-				 * != null && rtr instanceof EntityRayTraceResult) { EntityRayTraceResult ert =
-				 * (EntityRayTraceResult) rtr; if (ert.getEntity() != null) { double distanceSq
-				 * = player.getDistanceSq(ert.getEntity()); double reachSq = 100 * 100; if
-				 * (reachSq >= distanceSq) { if (ert.getEntity() instanceof LivingEntity) {
-				 * lockOn = (LivingEntity) ert.getEntity(); // LockOn.target = (LivingEntity)
-				 * ert.getEntity(); // player.world.playSound((PlayerEntity) player,
-				 * player.getPosition(), // ModSounds.lockon, SoundCategory.MASTER, 1.0f, 1.0f);
-				 * } } } } } else { lockOn = null; } break;
-				 */
+				case LOCK_ON:
+					break;
 			}
 		}
 	}
@@ -75,64 +62,42 @@ public class InputHandler {
 	boolean shouldShoot = false;
 
 	@SubscribeEvent
-	public void handleMouseInputEvent(InputEvent.MouseInputEvent event) {
-
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+	public void handleMouseInputEvent(InputEvent.MouseButton.Pre event) {
+		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
 			IPlayerCapabilities props = ModCapabilities.get(player);
 
-			if (Minecraft.getInstance().currentScreen == null) {
-				switch (event.getAction()) { // Check if press / release
-				case 1: // Press
-					switch (event.getButton()) {
-					
-					case Constants.RIGHT_MOUSE:
-						time = System.currentTimeMillis();
-						// If empty hand should shoot, if not it shouldn't (barrel + fist)
-						shouldShoot = false;
-
-						if (player != null && ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY) && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
-							shouldShoot = true;
-							props.setCharging(true);
-							PacketHandler.sendToServer(new PacketSetCharging(shouldShoot));
-						}
-						break;
-						
-					case Constants.LEFT_MOUSE:
-						break;
-					}
-					break;
-
-				case 0: // Release
-					switch (event.getButton()) {
-					
-					case Constants.RIGHT_MOUSE:
-						boolean charged = false;
-						if (time + 1000 < System.currentTimeMillis()) {
-							charged = true;
-						}
-
-						if (shouldShoot && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
-							PacketHandler.sendToServer(new PacketShoot(charged));
+			if (Minecraft.getInstance().gui.screen() == null) {
+				switch (event.getAction()) {
+					case 1 -> {
+						if (event.getButton() == Constants.RIGHT_MOUSE) {
+							time = System.currentTimeMillis();
 							shouldShoot = false;
-							props.setCharging(false);
-							player.swingArm(Hand.MAIN_HAND);
-							PacketHandler.sendToServer(new PacketSetCharging(shouldShoot));
 
+							if (player.getMainHandItem().isEmpty() && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
+								shouldShoot = true;
+								props.setCharging(true);
+								ClientPacketDistributor.sendToServer(new SetChargingPayload(true));
+							}
 						}
-						break;
-						
-					case Constants.LEFT_MOUSE:
-						break;
 					}
-					break;
+					case 0 -> {
+						if (event.getButton() == Constants.RIGHT_MOUSE) {
+							boolean charged = time + 1000 < System.currentTimeMillis();
+
+							if (shouldShoot && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
+								ClientPacketDistributor.sendToServer(new ShootPayload(charged));
+								shouldShoot = false;
+								props.setCharging(false);
+								player.swing(InteractionHand.MAIN_HAND);
+								ClientPacketDistributor.sendToServer(new SetChargingPayload(false));
+							}
+						}
+					}
+					default -> {
+					}
 				}
 			}
-		}
-
-		if (event.getButton() == Constants.LEFT_MOUSE && KeyboardHelper.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) {
-			// Shoot
-			// event.setCanceled(true);
 		}
 	}
 
@@ -142,46 +107,4 @@ public class InputHandler {
 				return key;
 		return null;
 	}
-
-	/*
-	 * public static RayTraceResult getMouseOverExtended(float dist) { Minecraft mc
-	 * = Minecraft.getInstance(); Entity theRenderViewEntity =
-	 * mc.getRenderViewEntity(); AxisAlignedBB theViewBoundingBox = new
-	 * AxisAlignedBB(theRenderViewEntity.getPosX() - 0.5D,
-	 * theRenderViewEntity.getPosY() - 0.0D, theRenderViewEntity.getPosZ() - 0.5D,
-	 * theRenderViewEntity.getPosX() + 0.5D, theRenderViewEntity.getPosY() + 1.5D,
-	 * theRenderViewEntity.getPosZ() + 0.5D); RayTraceResult returnMOP = null; if
-	 * (mc.world != null) { double var2 = dist; returnMOP =
-	 * theRenderViewEntity.pick(var2, 0, true); double calcdist = var2; Vec3d pos =
-	 * theRenderViewEntity.getEyePosition(0); var2 = calcdist; if (returnMOP !=
-	 * null) { calcdist = returnMOP.getHitVec().distanceTo(pos); }
-	 * 
-	 * Vec3d lookvec = theRenderViewEntity.getLook(0); Vec3d var8 =
-	 * pos.add(lookvec.x * var2, lookvec.y * var2, lookvec.z * var2); Entity
-	 * pointedEntity = null; float var9 = 1.0F; List<Entity> list =
-	 * mc.world.getEntitiesWithinAABBExcludingEntity(theRenderViewEntity,
-	 * theViewBoundingBox.grow(lookvec.x * var2, lookvec.y * var2, lookvec.z *
-	 * var2).grow(var9, var9, var9)); double d = calcdist;
-	 * 
-	 * for (Entity entity : list) { if (entity.canBeCollidedWith()) { float
-	 * bordersize = entity.getCollisionBorderSize(); AxisAlignedBB aabb = new
-	 * AxisAlignedBB(entity.getPosX() - entity.getWidth() / 2, entity.getPosY(),
-	 * entity.getPosZ() - entity.getWidth() / 2, entity.getPosX() +
-	 * entity.getWidth() / 2, entity.getPosY() + entity.getHeight(),
-	 * entity.getPosZ() + entity.getWidth() / 2); aabb.grow(bordersize, bordersize,
-	 * bordersize);
-	 * 
-	 * RayTraceResult mop0 = aabb.calculateIntercept(pos, var8);
-	 * 
-	 * if (aabb.contains(pos)) { if (0.0D < d || d == 0.0D) { pointedEntity =
-	 * entity; d = 0.0D; } } else if (mop0 != null) { double d1 =
-	 * pos.distanceTo(mop0.getHitVec());
-	 * 
-	 * if (d1 < d || d == 0.0D) { pointedEntity = entity; d = d1; } }
-	 * 
-	 * } }
-	 * 
-	 * if (pointedEntity != null && (d < calcdist || returnMOP == null)) { returnMOP
-	 * = new EntityRayTraceResult(pointedEntity); } } return returnMOP; }
-	 */
 }

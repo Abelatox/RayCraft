@@ -3,7 +3,7 @@ package com.abelatox.raycraft.lib;
 public class Constants {
 
 	public static final int
-        // Input
+
         LEFT_MOUSE = 0,
         RIGHT_MOUSE = 1,
         MIDDLE_MOUSE = 2,
@@ -14,6 +14,5 @@ public class Constants {
         SCALE_NORMAL = 2,
         SCALE_LARGE = 3,
 
-	    // OTHER
 	    TICKS_PER_SECOND = 20;
 }

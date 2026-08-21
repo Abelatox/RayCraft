@@ -1,14 +1,11 @@
 package com.abelatox.raycraft.models.render;
 
-import org.lwjgl.opengl.GL11;
-
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.ModelGlobox;
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -21,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
+import org.lwjgl.opengl.GL11;
 
 public class RenderGlobox extends EntityRenderer<LivingEntity> implements IRayCraftRender {
 	float scale;
@@ -31,7 +29,7 @@ public class RenderGlobox extends EntityRenderer<LivingEntity> implements IRayCr
 		this.model = model;
 		this.scale = scale;
 	}
-	
+
 	@Override
 	public void doRender(LivingEntity entityLiving, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		matrixStackIn.push();
@@ -41,8 +39,6 @@ public class RenderGlobox extends EntityRenderer<LivingEntity> implements IRayCr
 			float headYawOffset = this.interpolateRotation(entityLiving.prevRenderYawOffset, entityLiving.renderYawOffset, v);
 			float headYaw = this.interpolateRotation(entityLiving.prevRotationYawHead, entityLiving.rotationYawHead, v);
 			float headPitch = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * v;
-
-			//this.rotateCorpse(entityLiving, ageInTicks, headYawOffset, v);
 
 			float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
 			float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);

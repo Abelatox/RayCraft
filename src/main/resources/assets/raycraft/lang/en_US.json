@@ -1,3 +1,19 @@
 {
-	"item.raycraft.bigexplosion": "Big Explosion"
+    "itemGroup.raycraft": "RayCraft",
+
+    "block.raycraft.barrelblock": "Barrel",
+
+    "item.raycraft.barrel": "Barrel",
+    "item.raycraft.power_up": "Power Up",
+    "item.raycraft.lum_spawner": "Lum Spawner",
+
+    "entity.raycraft.entity_barrel": "Barrel",
+    "entity.raycraft.entity_fist": "Fist",
+    "entity.raycraft.entity_pirate_shot": "Pirate Shot",
+    "entity.raycraft.entity_pirate_shot2": "Pirate Shot",
+    "entity.raycraft.entity_lum": "Lum",
+
+    "key.category.raycraft.raycraft": "RayCraft",
+    "key.raycraft.select": "Select Character",
+    "key.raycraft.lockon": "Lock On (unused)"
 }

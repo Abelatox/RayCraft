@@ -1,85 +1,72 @@
 package com.abelatox.raycraft.entities.render;
 
-import javax.annotation.Nullable;
-
 import com.abelatox.raycraft.entities.EntityPirateShot2;
 import com.abelatox.raycraft.lib.Reference;
+import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.ModelPirateShot;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 
-@OnlyIn(Dist.CLIENT)
-public class RenderEntityPirateShot2 extends EntityRenderer<EntityPirateShot2> {
+public class RenderEntityPirateShot2 extends EntityRenderer<EntityPirateShot2, RenderEntityPirateShot2.PirateShot2RenderState> {
 
-    public static final Factory FACTORY = new RenderEntityPirateShot2.Factory();
-    ModelPirateShot shot;
-    
-    public RenderEntityPirateShot2(EntityRendererManager renderManager, ModelPirateShot fist) {
-        super(renderManager);
-        this.shadowSize = 0.25F;
-        this.shot = fist;
-    }
-    
-    @Override
-	public void render(EntityPirateShot2 entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		matrixStackIn.push();
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/models/pirateshot.png");
 
-		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw)));
-		matrixStackIn.rotate(Vector3f.XN.rotationDegrees(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch)));
-		matrixStackIn.scale(2,2,2);
-		
-		if (entity.ticksExisted > 2) //Prevent entity rendering in your face
-		shot.render(matrixStackIn, bufferIn.getBuffer(shot.getRenderType(getEntityTexture(entity))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
-		
-		matrixStackIn.pop();
-		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+	private final ModelPirateShot model;
+
+	public RenderEntityPirateShot2(EntityRendererProvider.Context context) {
+		super(context);
+		this.shadowRadius = 0.25F;
+		this.model = new ModelPirateShot(context.bakeLayer(ModModels.PIRATE_SHOT_LAYER));
 	}
 
-	@Nullable
 	@Override
-	public ResourceLocation getEntityTexture(EntityPirateShot2 entity) {
-		return new ResourceLocation(Reference.MODID, "textures/models/pirateshot.png");
+	public PirateShot2RenderState createRenderState() {
+		return new PirateShot2RenderState();
 	}
 
-	public static class Factory implements IRenderFactory<EntityPirateShot2> {
-		@Override
-		public EntityRenderer<? super EntityPirateShot2> createRenderFor(EntityRendererManager manager) {
-			// TODO Auto-generated method stub
-			return new RenderEntityPirateShot2(manager, new ModelPirateShot());
+	@Override
+	public void extractRenderState(EntityPirateShot2 entity, PirateShot2RenderState state, float partialTick) {
+		super.extractRenderState(entity, state, partialTick);
+		state.yRot = entity.yRotO + (entity.getYRot() - entity.yRotO) * partialTick;
+		state.xRot = entity.xRotO + (entity.getXRot() - entity.xRotO) * partialTick;
+		state.lightCoords = LightCoordsUtil.getLightCoords(entity.level(), entity.blockPosition());
+		state.tickCount = entity.tickCount;
+	}
+
+	@Override
+	public void submit(PirateShot2RenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
+		super.submit(state, poseStack, collector, cameraState);
+
+		if (state.tickCount <= 2) {
+			return;
 		}
+
+		poseStack.pushPose();
+		poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
+		poseStack.mulPose(Axis.XN.rotationDegrees(state.xRot));
+		poseStack.scale(2F, 2F, 2F);
+		poseStack.translate(0, 0.05, 0);
+		poseStack.mulPose(Axis.YP.rotationDegrees(180));
+
+		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, 0, null);
+
+		poseStack.popPose();
+	}
+
+	public static class PirateShot2RenderState extends EntityRenderState {
+		public float yRot;
+		public float xRot;
+		public int lightCoords;
+		public int tickCount;
 	}
 }
-
-    /*@Override
-    public void doRender(EntityPirateShot2 entity, double x, double y, double z, float entityYaw, float partialTicks) {
-    	GL11.glpush();
-		{
-			Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entity));
-			GL11.glTranslated(x, y, z);
-			GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
-			GL11.glRotatef(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks - 90.0F, 0.0F, 1.0F, 0.0F);
-			GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, 1.0F, 0.0F, 0.0F);
-			GL11.glScaled(2,2,2);
-			
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
-
-			this.shot.render(entity, 0, 0, 0, 0, 0, 0.0625F);
-
-			GL11.glDisable(GL11.GL_BLEND);
-
-		}
-		GL11.glpop();
-       // super.doRender(entity, x, y, z, entityYaw, partialTicks);
-    }
-}*/

@@ -2,30 +2,27 @@ package com.abelatox.raycraft.items;
 
 import com.abelatox.raycraft.entities.EntityBarrel;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class ItemBarrel extends BaseItem {
 
 	public ItemBarrel(Properties properties) {
 		super(properties);
-		// TODO Auto-generated constructor stub
 	}
 
-		public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+	@Override
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		if (!level.isClientSide()) {
+			EntityBarrel barrel = new EntityBarrel(level, player);
+			level.addFreshEntity(barrel);
+			barrel.setOwner(player);
 
-		// Minecraft.getInstance().displayGuiScreen(new GUIChooseWeebPower(player));
-		if (!world.isRemote) {
-			EntityBarrel barrel = new EntityBarrel(world, player);
-			world.addEntity(barrel);
-			barrel.setShooter(player);
-			barrel.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 1F, 0);
-			player.inventory.removeStackFromSlot(player.inventory.currentItem);
+			barrel.shootFromRotation(player, player.getXRot(), player.getYRot(), 0F, 1F, 0F);
+			player.getInventory().removeItemNoUpdate(player.getInventory().getSelectedSlot());
 		}
-			return new ActionResult<>(ActionResultType.PASS, player.getHeldItem(hand));
+		return InteractionResult.PASS;
 	}
 }

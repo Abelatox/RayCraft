@@ -1,20 +1,18 @@
 package com.abelatox.raycraft.network.packets;
 
-import java.util.function.Supplier;
-
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.sounds.ModSounds;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class PacketShoot {
 

@@ -1,10 +1,10 @@
 package com.abelatox.raycraft.network.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class PacketSetTarget {
 
@@ -30,7 +30,7 @@ public class PacketSetTarget {
 	public static void handle(PacketSetTarget message, final Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PlayerEntity player = ctx.get().getSender();
-		//	GUIEnemyHealth.target = (LivingEntity) player.world.getEntityByID(message.id);
+
 		});
 		ctx.get().setPacketHandled(true);
 	}

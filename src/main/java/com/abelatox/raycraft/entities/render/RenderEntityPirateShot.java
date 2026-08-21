@@ -1,99 +1,72 @@
 package com.abelatox.raycraft.entities.render;
 
-import javax.annotation.Nullable;
-
 import com.abelatox.raycraft.entities.EntityPirateShot;
 import com.abelatox.raycraft.lib.Reference;
+import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.ModelFist;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 
-@OnlyIn(Dist.CLIENT)
-public class RenderEntityPirateShot extends EntityRenderer<EntityPirateShot> {
+public class RenderEntityPirateShot extends EntityRenderer<EntityPirateShot, RenderEntityPirateShot.PirateShotRenderState> {
 
-    public static final Factory FACTORY = new RenderEntityPirateShot.Factory();
-    ModelFist shot;
-    int test;
-    
-    public RenderEntityPirateShot(EntityRendererManager renderManager, ModelFist fist) {
-        super(renderManager);
-        this.shot = fist;
-        this.shadowSize = 0.25F;
-    }
-    
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/models/fist.png");
+
+	private final ModelFist model;
+
+	public RenderEntityPirateShot(EntityRendererProvider.Context context) {
+		super(context);
+		this.shadowRadius = 0.25F;
+		this.model = new ModelFist(context.bakeLayer(ModModels.FIST_LAYER));
+	}
 
 	@Override
-	public void render(EntityPirateShot entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		matrixStackIn.push();
-
-		matrixStackIn.scale(1.5F, 1.5F, 1.5F);
-		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw)));
-		matrixStackIn.rotate(Vector3f.XN.rotationDegrees(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch)));
-		
-		if (entity.ticksExisted > 2) //Prevent entity rendering in your face
-			shot.render(matrixStackIn, bufferIn.getBuffer(shot.getRenderType(getEntityTexture(entity))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 0.1F, 0.1F, 1F);
-		matrixStackIn.pop();
-		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+	public PirateShotRenderState createRenderState() {
+		return new PirateShotRenderState();
 	}
 
-	@Nullable
 	@Override
-	public ResourceLocation getEntityTexture(EntityPirateShot entity) {
-		return new ResourceLocation(Reference.MODID, "textures/models/fist.png");
+	public void extractRenderState(EntityPirateShot entity, PirateShotRenderState state, float partialTick) {
+		super.extractRenderState(entity, state, partialTick);
+		state.yRot = entity.yRotO + (entity.getYRot() - entity.yRotO) * partialTick;
+		state.xRot = entity.xRotO + (entity.getXRot() - entity.xRotO) * partialTick;
+		state.lightCoords = LightCoordsUtil.getLightCoords(entity.level(), entity.blockPosition());
+		state.tickCount = entity.tickCount;
 	}
 
-	public static class Factory implements IRenderFactory<EntityPirateShot> {
-		@Override
-		public EntityRenderer<? super EntityPirateShot> createRenderFor(EntityRendererManager manager) {
-			// TODO Auto-generated method stub
-			return new RenderEntityPirateShot(manager, new ModelFist());
+	@Override
+	public void submit(PirateShotRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
+		super.submit(state, poseStack, collector, cameraState);
+
+		if (state.tickCount <= 2) {
+			return;
 		}
+
+		poseStack.pushPose();
+		poseStack.scale(1.5F, 1.5F, 1.5F);
+		poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
+		poseStack.mulPose(Axis.XN.rotationDegrees(state.xRot));
+
+		int color = ARGB.colorFromFloat(1F, 1F, 0.1F, 0.1F);
+		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, 0, null);
+
+		poseStack.popPose();
+	}
+
+	public static class PirateShotRenderState extends EntityRenderState {
+		public float yRot;
+		public float xRot;
+		public int lightCoords;
+		public int tickCount;
 	}
 }
-
-/*
-    @Override
-    public void doRender(EntityPirateShot entity, double x, double y, double z, float entityYaw, float partialTicks) {
-    	GL11.glpush();
-		{
-			Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entity));
-			GL11.glTranslated(x, y, z);
-			GL11.glRotatef(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks - 90.0F, 0.0F, 1.0F, 0.0F);
-			GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, 0.0F, 0.0F, 1.0F);
-
-			if(entity instanceof EntityPirateShot) {
-				//System.out.println("0- white");
-				GL11.glColor4ub((byte)255, (byte)30, (byte)30, (byte)255);
-			}
-			
-			this.shot.render(entity, 0, 0, 0, 0, 0, 0.0625F);
-			GL11.glColor4ub((byte)255, (byte)255, (byte)255, (byte)255);
-
-		}
-		GL11.glpop();
-       // super.doRender(entity, x, y, z, entityYaw, partialTicks);
-    }
-
-    @Nullable
-    @Override
-    protected ResourceLocation getEntityTexture(EntityPirateShot entity) {
-		return new ResourceLocation(Reference.MODID, "textures/models/fist.png");
-    }
-
-    public static class Factory implements IRenderFactory<EntityPirateShot> {
-        @Override
-        public EntityRenderer<? super EntityPirateShot> createRenderFor(EntityRendererManager manager) {
-            return new RenderEntityPirateShot(manager, new ModelFist(), new int[] {200,230,255});
-        }
-    }
-}
-*/

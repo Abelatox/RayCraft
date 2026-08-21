@@ -1,41 +1,38 @@
 package com.abelatox.raycraft.blocks;
 
 import com.abelatox.raycraft.items.ModItems;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BlockBarrel extends BaseBlock {
 
-	public BlockBarrel(String name, Properties properties) {
-		super(name, properties);
+	public BlockBarrel(BlockBehaviour.Properties properties) {
+		super(properties);
 	}
 
 	@Override
-	public VoxelShape getCollisionShape(BlockState p_220071_1_, IBlockReader p_220071_2_, BlockPos p_220071_3_, ISelectionContext p_220071_4_) {
-		return Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		return Block.box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
 	}
 
 	@Override
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (entity instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) entity;
-			if (player.getMotion().x == 0 && player.getMotion().y == 0 && player.getMotion().z == 0 && player.isCrouching() && !player.isAirBorne) {
-				if (ItemStack.areItemStacksEqual(player.getHeldItemMainhand(), ItemStack.EMPTY)) {
-					player.inventory.mainInventory.set(player.inventory.currentItem, new ItemStack(ModItems.barrel));
-					world.removeBlock(pos, true);
-				}
+	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean intersects) {
+		if (entity instanceof Player player) {
+			boolean notMoving = player.getDeltaMovement().x == 0 && player.getDeltaMovement().y == 0 && player.getDeltaMovement().z == 0;
+			if (notMoving && player.isShiftKeyDown() && player.getMainHandItem().isEmpty()) {
+				player.getInventory().setItem(player.getInventory().getSelectedSlot(), new ItemStack(ModItems.BARREL.get()));
+				level.removeBlock(pos, true);
 			}
 		}
-
 	}
-	
 }

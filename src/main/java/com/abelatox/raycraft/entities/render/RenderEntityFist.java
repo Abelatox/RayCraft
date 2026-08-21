@@ -1,99 +1,101 @@
 package com.abelatox.raycraft.entities.render;
 
-import javax.annotation.Nullable;
-
 import com.abelatox.raycraft.entities.EntityFist;
 import com.abelatox.raycraft.lib.Reference;
+import com.abelatox.raycraft.models.ModModels;
 import com.abelatox.raycraft.models.ModelFist;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 
-@OnlyIn(Dist.CLIENT)
-public class RenderEntityFist extends EntityRenderer<EntityFist> {
+public class RenderEntityFist extends EntityRenderer<EntityFist, RenderEntityFist.FistRenderState> {
 
-	public static final Factory FACTORY = new RenderEntityFist.Factory();
-	ModelFist shot;
-	int test;
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/models/fist.png");
 
-	public RenderEntityFist(EntityRendererManager renderManager, ModelFist fist) {
-		super(renderManager);
-		this.shot = fist;
-		this.shadowSize = 0.25F;
+	private final ModelFist model;
+
+	public RenderEntityFist(EntityRendererProvider.Context context) {
+		super(context);
+		this.shadowRadius = 0.25F;
+		this.model = new ModelFist(context.bakeLayer(ModModels.FIST_LAYER));
 	}
 
 	@Override
-	public void render(EntityFist entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		matrixStackIn.push();
-		float r = 0, g = 0, b = 0;
-
-		// Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entity));
-		// GL11.glTranslated(x, y, z);
-		// GL11.glRotatef(entity.prevRotationYaw + (entity.rotationYaw -
-		// entity.prevRotationYaw) * partialTicks - 90.0F, 0.0F, 1.0F, 0.0F);
-		
-		// GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch -
-		// entity.prevRotationPitch) * partialTicks, 0.0F, 0.0F, 1.0F);
-
-		switch (entity.getLvl()) {
-		case 0:
-			r = 1;
-			g = 1;
-			b = 1;
-			break;
-		case 1:
-			r = 0;
-			g = 0.9F;
-			b = 1;
-			break;
-		case 2:
-			r = 1;
-			g = 0.7F;
-			b = 0;
-			break;
-		case 3:
-			r = 1;
-			g = 0.9F;
-			b = 0;
-			break;
-		case 4:
-			r = 1;
-			g = 0.9F;
-			b = 0;
-			matrixStackIn.scale(4, 4, 4);
-			break;
-		}
-		
-		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw)));
-		matrixStackIn.rotate(Vector3f.XN.rotationDegrees(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch)));
-
-
-		if (entity.ticksExisted > 1) //Prevent entity rendering in your face
-			shot.render(matrixStackIn, bufferIn.getBuffer(shot.getRenderType(getEntityTexture(entity))), packedLightIn, OverlayTexture.NO_OVERLAY, r, g, b, 1F);
-		// GL11.glColor4ub((byte) 255, (byte) 255, (byte) 255, (byte) 255);
-
-		matrixStackIn.pop();
-		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+	public FistRenderState createRenderState() {
+		return new FistRenderState();
 	}
 
-	@Nullable
 	@Override
-	public ResourceLocation getEntityTexture(EntityFist entity) {
-		return new ResourceLocation(Reference.MODID, "textures/models/fist.png");
+	public void extractRenderState(EntityFist entity, FistRenderState state, float partialTick) {
+		super.extractRenderState(entity, state, partialTick);
+		state.yRot = entity.yRotO + (entity.getYRot() - entity.yRotO) * partialTick;
+		state.xRot = entity.xRotO + (entity.getXRot() - entity.xRotO) * partialTick;
+		state.lightCoords = LightCoordsUtil.getLightCoords(entity.level(), entity.blockPosition());
+		state.tickCount = entity.tickCount;
+		state.lvl = entity.getLvl();
 	}
 
-	public static class Factory implements IRenderFactory<EntityFist> {
-		@Override
-		public EntityRenderer<? super EntityFist> createRenderFor(EntityRendererManager manager) {
-			return new RenderEntityFist(manager, new ModelFist());
+	@Override
+	public void submit(FistRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
+		super.submit(state, poseStack, collector, cameraState);
+
+		// El proyectil original evita renderizarse durante los primeros ticks para que no tape la cámara
+		if (state.tickCount <= 1) {
+			return;
 		}
+
+		float r, g, b;
+		switch (state.lvl) {
+			case 1 -> {
+				r = 0F;
+				g = 0.9F;
+				b = 1F;
+			}
+			case 2 -> {
+				r = 1F;
+				g = 0.7F;
+				b = 0F;
+			}
+			case 3, 4 -> {
+				r = 1F;
+				g = 0.9F;
+				b = 0F;
+			}
+			default -> {
+				r = 1F;
+				g = 1F;
+				b = 1F;
+			}
+		}
+
+		poseStack.pushPose();
+		if (state.lvl == 4) {
+			poseStack.scale(4F, 4F, 4F);
+		}
+		poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
+		poseStack.mulPose(Axis.XN.rotationDegrees(state.xRot));
+
+		int color = ARGB.colorFromFloat(1F, r, g, b);
+		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, 0, null);
+
+		poseStack.popPose();
+	}
+
+	public static class FistRenderState extends EntityRenderState {
+		public float yRot;
+		public float xRot;
+		public int lightCoords;
+		public int tickCount;
+		public int lvl;
 	}
 }

@@ -1,146 +1,129 @@
 package com.abelatox.raycraft.entities;
 
+import com.abelatox.raycraft.sounds.ModSounds;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+
 import java.util.List;
 
-import com.abelatox.raycraft.sounds.ModSounds;
+public class EntityFist extends ThrowableProjectile {
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.world.Explosion.Mode;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+	private static final EntityDataAccessor<Integer> LEVEL = SynchedEntityData.defineId(EntityFist.class, EntityDataSerializers.INT);
 
-public class EntityFist extends ThrowableEntity {
-	private static final DataParameter<Integer> LEVEL = EntityDataManager.createKey(EntityFist.class, DataSerializers.VARINT);
 	int bounces;
 	int maxBounces;
-
-	int lvl = 0;
 	float power;
 	boolean explosion = false;
 	int maxTicks = 60;
 
-	public EntityFist(World world) {
-		super(ModEntities.TYPE_FIST, world);
-		this.preventEntitySpawning = true;
-		// this.setSize(0.3F, 0.3F);
+	public EntityFist(EntityType<? extends EntityFist> type, Level level) {
+		super(type, level);
 	}
 
-	public EntityFist(EntityType<EntityFist> type, World world) {
-		super(type, world);
-		this.preventEntitySpawning = true;
-	}
-
-	public EntityFist(World world, PlayerEntity player) {
-		super(ModEntities.TYPE_FIST, player, world);
+	public EntityFist(Level level, Player player) {
+		this(ModEntities.FIST.get(), level);
+		this.setOwner(player);
+		this.setPos(player.getX(), player.getEyeY() - 0.1, player.getZ());
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	@Override
-	protected float getGravityVelocity() {
+	protected double getDefaultGravity() {
 		return 0F;
 	}
 
 	@Override
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		builder.define(LEVEL, 0);
+	}
+
+	@Override
 	public void tick() {
-		if (this.ticksExisted > maxTicks) {
-			this.remove();
+		if (this.tickCount > maxTicks) {
+			this.discard();
 		}
 
 		if (getLvl() >= 3) {
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 1, 1, 0);
+			level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 1F, 1F, 0F), getX(), getY(), getZ(), 0, 0, 0);
 		}
 		super.tick();
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult rtRes) {
-		if (!world.isRemote) {
+	protected void onHit(HitResult hitResult) {
+		if (!level().isClientSide()) {
 			if (bounces >= maxBounces) {
-				this.remove();
+				this.discard();
 			}
 
-			EntityRayTraceResult ertResult = null;
-			BlockRayTraceResult brtResult = null;
+			EntityHitResult entityResult = hitResult instanceof EntityHitResult eh ? eh : null;
+			BlockHitResult blockResult = hitResult instanceof BlockHitResult bh ? bh : null;
 
-			if (rtRes instanceof EntityRayTraceResult) {
-				ertResult = (EntityRayTraceResult) rtRes;
-			}
-
-			if (rtRes instanceof BlockRayTraceResult) {
-				brtResult = (BlockRayTraceResult) rtRes;
-			}
-
-			if (ertResult != null && ertResult.getEntity() != null && ertResult.getEntity() instanceof LivingEntity) {
-
-				LivingEntity target = (LivingEntity) ertResult.getEntity();
-				if (target != func_234616_v_()) {
-					target.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), power);
-					// System.out.println(power);
-					if (explosion) { // if is charged && high level do explosion
+			if (entityResult != null && entityResult.getEntity() instanceof LivingEntity target) {
+				if (target != this.getOwner() && level() instanceof ServerLevel serverLevel) {
+					DamageSource damageSource = this.damageSources().thrown(this, this.getOwner());
+					target.hurtServer(serverLevel, damageSource, power);
+					if (explosion) {
 						explode();
 					} else {
-						remove();
+						discard();
 					}
 				}
-			} else { // Block (not ERTR)
-				if (brtResult != null && rtRes.getType() == Type.BLOCK) {
-					if (explosion) { // if is charged && high level do explosion						
+			} else {
+				if (blockResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
+					if (explosion) {
 						explode();
-						
 					} else {
-						world.playSound(null, getPosition(), ModSounds.fistBounce, SoundCategory.MASTER, 1F, 1F);
+						level().playSound(null, blockPosition(), ModSounds.FIST_BOUNCE.get(), SoundSource.MASTER, 1F, 1F);
 
 						bounces++;
-						if (brtResult.getFace() == Direction.NORTH || brtResult.getFace() == Direction.SOUTH) {
-							this.setMotion(getMotion().x, getMotion().y, -getMotion().z);
-						} else if (brtResult.getFace() == Direction.EAST || brtResult.getFace() == Direction.WEST) {
-							this.setMotion(-getMotion().x, getMotion().y, getMotion().z);
-						} else if (brtResult.getFace() == Direction.UP || brtResult.getFace() == Direction.DOWN) {
-							this.setMotion(getMotion().x, -getMotion().y, getMotion().z);
+						Direction face = blockResult.getDirection();
+						if (face == Direction.NORTH || face == Direction.SOUTH) {
+							this.setDeltaMovement(getDeltaMovement().x, getDeltaMovement().y, -getDeltaMovement().z);
+						} else if (face == Direction.EAST || face == Direction.WEST) {
+							this.setDeltaMovement(-getDeltaMovement().x, getDeltaMovement().y, getDeltaMovement().z);
+						} else if (face == Direction.UP || face == Direction.DOWN) {
+							this.setDeltaMovement(getDeltaMovement().x, -getDeltaMovement().y, getDeltaMovement().z);
 						}
 					}
 				} else {
-					remove();
+					discard();
 				}
 			}
 		}
 	}
 
 	private void explode() {
+		if (level() instanceof ServerLevel serverLevel) {
+			serverLevel.explode(this, getX(), getY(), getZ(), 0, Level.ExplosionInteraction.NONE);
 
-		world.createExplosion(this, getPosX(), getPosY(), getPosZ(), 0, Mode.NONE);
-
-		List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4.0D, 4.0D, 4.0D).offset(-2.0D, -2.0D, -2.0D));
-		for(Entity e:entities) {
-			if(e instanceof LivingEntity && e != func_234616_v_()) {
-				e.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), power);
+			List<Entity> entities = level().getEntities(this, getBoundingBox().inflate(4.0D, 4.0D, 4.0D).move(-2.0D, -2.0D, -2.0D));
+			for (Entity e : entities) {
+				if (e instanceof LivingEntity living && e != this.getOwner()) {
+					DamageSource damageSource = this.damageSources().thrown(this, this.getOwner());
+					living.hurtServer(serverLevel, damageSource, power);
+				}
 			}
 		}
-		
-		//for()
 
-		this.remove();
+		this.discard();
 	}
 
 	public int getMaxBounces() {
@@ -152,12 +135,11 @@ public class EntityFist extends ThrowableEntity {
 	}
 
 	public int getLvl() {
-		return lvl;
+		return this.getEntityData().get(LEVEL);
 	}
 
 	public void setLvl(int lvl) {
-		this.dataManager.set(LEVEL, lvl);
-		this.lvl = lvl;
+		this.getEntityData().set(LEVEL, lvl);
 	}
 
 	public float getPower() {
@@ -185,28 +167,12 @@ public class EntityFist extends ThrowableEntity {
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		compound.putInt("lvl", this.getLvl());
+	protected void addAdditionalSaveData(ValueOutput output) {
+		output.putInt("lvl", this.getLvl());
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		this.setLvl(compound.getInt("lvl"));
-	}
-
-	@Override
-	public void notifyDataManagerChange(DataParameter<?> key) {
-		if (key.equals(LEVEL)) {
-			this.lvl = this.getChargedDataManager();
-		}
-	}
-
-	@Override
-	protected void registerData() {
-		this.dataManager.register(LEVEL, 0);
-	}
-
-	public int getChargedDataManager() {
-		return this.dataManager.get(LEVEL);
+	protected void readAdditionalSaveData(ValueInput input) {
+		this.setLvl(input.getIntOr("lvl", 0));
 	}
 }

@@ -2,36 +2,31 @@ package com.abelatox.raycraft.items;
 
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-import com.abelatox.raycraft.network.PacketHandler;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class ItemPowerUp extends BaseItem {
 
 	public ItemPowerUp(Properties properties) {
 		super(properties);
-		// TODO Auto-generated constructor stub
 	}
 
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		// Minecraft.getInstance().displayGuiScreen(new GUIChooseWeebPower(player));
+	@Override
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		IPlayerCapabilities props = ModCapabilities.get(player);
 
-		if (!world.isRemote) {
+		if (!level.isClientSide()) {
 			if (props.getShotLevel() < 3) {
 				props.setShotLevel(props.getShotLevel() + 1);
 			} else {
 				props.setShotLevel(0);
 			}
-		//TODO	player.sendMessage(new TranslationTextComponent("Fist level: " + props.getShotLevel()));
 
+			ModCapabilities.sync(player);
 		}
-		PacketHandler.syncToAllAround(player, props);
-			return new ActionResult<>(ActionResultType.PASS, player.getHeldItem(hand));
+		return InteractionResult.PASS;
 	}
 }

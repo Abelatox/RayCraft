@@ -1,14 +1,13 @@
 package com.abelatox.raycraft.network.packets;
 
-import java.util.function.Supplier;
-
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.network.PacketHandler;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class PacketSyncCapabilityToAllFromClient {
 
@@ -26,12 +25,12 @@ public class PacketSyncCapabilityToAllFromClient {
 	}
 
 	public void encode(PacketBuffer buffer) {
-		
+
 	}
 
 	public static PacketSyncCapabilityToAllFromClient decode(PacketBuffer buffer) {
 		PacketSyncCapabilityToAllFromClient msg = new PacketSyncCapabilityToAllFromClient();
-		
+
 		return msg;
 	}
 

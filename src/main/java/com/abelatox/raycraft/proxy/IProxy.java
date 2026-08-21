@@ -1,12 +1,5 @@
 package com.abelatox.raycraft.proxy;
 
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-
-/**
- * Proxy interface for both client and server
- */
+@Deprecated
 public interface IProxy {
-    //Setup event for the proxy
-    void setup(final FMLCommonSetupEvent event);
-
 }

@@ -1,33 +1,24 @@
 package com.abelatox.raycraft.items;
 
-import com.abelatox.raycraft.MainRayCraft;
+import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.lib.Reference;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.Item.Properties;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.item.BlockItem;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModItems {
-	public static Item barrel, powerUp, lumSpawner;
 
-	@SubscribeEvent
-	public static void registerItems(final RegistryEvent.Register<Item> event) {
-		// Generic property that will cover most standard items
-		Item.Properties genericItemProperties = new Item.Properties().group(MainRayCraft.rayCraftGroup);
+	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Reference.MODID);
 
-		// Register and set item references here, no array needed here as only 1 thing needs to be registered
-		event.getRegistry().registerAll(
-			barrel = new ItemBarrel(new Properties().maxStackSize(1).group(MainRayCraft.rayCraftGroup)).setRegistryName(Reference.MODID, "barrel"),
-			powerUp = new ItemPowerUp(new Properties().maxStackSize(1).group(MainRayCraft.rayCraftGroup)).setRegistryName(Reference.MODID, "power_up"),
-			lumSpawner = new ItemSummonLum(new Properties().maxStackSize(1).group(MainRayCraft.rayCraftGroup)).setRegistryName(Reference.MODID, "lum_spawner")
-		);
-	}
+	public static final DeferredItem<BlockItem> BARREL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(ModBlocks.BARREL);
 
-	public static Item createNewItem(String name, Item.Properties properties) {
-		return new Item(properties).setRegistryName(Reference.MODID, name);
-	}
+	public static final DeferredItem<ItemBarrel> BARREL = ITEMS.registerItem(
+			"barrel", ItemBarrel::new, props -> props.stacksTo(1));
 
+	public static final DeferredItem<ItemPowerUp> POWER_UP = ITEMS.registerItem(
+			"power_up", ItemPowerUp::new, props -> props.stacksTo(1));
+
+	public static final DeferredItem<ItemSummonLum> LUM_SPAWNER = ITEMS.registerItem(
+			"lum_spawner", ItemSummonLum::new, props -> props.stacksTo(1));
 }

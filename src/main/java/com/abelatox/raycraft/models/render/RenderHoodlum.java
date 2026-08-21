@@ -1,16 +1,11 @@
 package com.abelatox.raycraft.models.render;
 
-import org.lwjgl.opengl.GL11;
-
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.models.ModelHoodlum;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -38,15 +33,6 @@ public class RenderHoodlum extends EntityRenderer<LivingEntity> implements IRayC
 		this.scale = scale;
 	}
 
-	/*@Override
-	public void render(LivingEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		// model.render(matrixStackIn,
-		// bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))),
-		// packedLightIn, OverlayTexture.DEFAULT_LIGHT, 1F, 1F, 1F, 1F);
-		System.out.println("Aa");
-		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-	}*/
-	
 	@Override
 	public void doRender(LivingEntity entityLiving, float v, MatrixStack matrixStackIn, IRenderTypeBuffer iRenderTypeBuffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		matrixStackIn.push();
@@ -54,53 +40,39 @@ public class RenderHoodlum extends EntityRenderer<LivingEntity> implements IRayC
 			float ageInTicks = entityLiving.ticksExisted + v;
 
 			float headYawOffset = this.interpolateRotation(entityLiving.prevRenderYawOffset, entityLiving.renderYawOffset, v);
-			//float headYaw = this.interpolateRotation(entityLiving.prevRotationYawHead, entityLiving.rotationYawHead, v);
+
 			float headYaw = entityLiving.prevRotationYaw + (entityLiving.rotationYaw - entityLiving.prevRotationYaw) * v;
 			float headPitch = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * v;
-
-			//this.rotateCorpse(matrixStackIn, entityLiving, ageInTicks, headYawOffset, v);
 
 			float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
 			float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);
 
-			// Minecraft.getInstance().textureManager.bindTexture(getEntityTexture(entityLiving));
 			this.model.setRotationAngles(entityLiving, limbSwing, limbSwingAmount, ageInTicks, headYaw - headYawOffset, headPitch);
 			this.model.render(matrixStackIn, iRenderTypeBuffer.getBuffer(model.getRenderType(getEntityTexture(entityLiving))), packedLightIn, packedOverlayIn, red, green, blue, alpha);
-			
+
 			matrixStackIn.push();
 			{
-				// In-hand item rendering
+
 				ModelRenderer arm = (this.model).bipedRightArm;
 				if (arm != null) {
 					if (entityLiving.isSneaking())
 						matrixStackIn.translate(0, -0.1, -0.2);
-	
-					//RenderSystem.disableTexture();
+
 					matrixStackIn.translate(-0.22F, 0.05F, 0.2F);
-	
+
 					matrixStackIn.rotate(Vector3f.XP.rotationDegrees((float) Math.toDegrees(arm.rotateAngleX)));
 					matrixStackIn.rotate(Vector3f.YP.rotationDegrees((float) Math.toDegrees(arm.rotateAngleY)));
 					matrixStackIn.rotate(Vector3f.ZP.rotationDegrees((float) Math.toDegrees(arm.rotateAngleZ)));
-	
-					/*
-					 * RenderSystem.rotatef((arm.rotateAngleX), 1, 0, 0);
-					 * RenderSystem.rotatef((arm.rotateAngleY), 0, 1, 0);
-					 * RenderSystem.rotatef((arm.rotateAngleZ), 0, 0, 1);
-					 */
+
 					matrixStackIn.translate(-0.05F, 0.45F, -0.75F);
-					//RenderSystem.enableTexture();
-	
+
 					ItemStack stack = entityLiving.getHeldItem(Hand.MAIN_HAND);
 					if (stack != null) {
-						/*
-						 * GlStateManager.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
-						 * GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-						 * GlStateManager.rotatef(180.0F, 0.0F, 0.0F, 1.0F);
-						 */
+
 						matrixStackIn.rotate(Vector3f.XP.rotationDegrees(180));
 						matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180));
 						matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180));
-						//RenderSystem.color4f(1, 1, 1, 1);
+
 						Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entityLiving, stack, TransformType.FIRST_PERSON_RIGHT_HAND, false, matrixStackIn, iRenderTypeBuffer, packedOverlayIn);
 					}
 				}
@@ -108,7 +80,7 @@ public class RenderHoodlum extends EntityRenderer<LivingEntity> implements IRayC
 			matrixStackIn.pop();
 		}
 		matrixStackIn.pop();
-		
+
 		if (ItemStack.areItemStacksEqual(entityLiving.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
 			matrixStackIn.push();
 			matrixStackIn.scale(1.3F, 1.3F, 1.3F);
@@ -117,7 +89,7 @@ public class RenderHoodlum extends EntityRenderer<LivingEntity> implements IRayC
 			model.barrel.render(matrixStackIn, Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().getBuffer(model.barrel.getRenderType(Utils.getBarrelTexture())), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 			matrixStackIn.pop();
 		}
-		
+
 	}
 
 	private float interpolateRotation(float lowerLimit, float upperLimit, float range) {

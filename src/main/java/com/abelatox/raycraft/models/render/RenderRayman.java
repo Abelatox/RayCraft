@@ -44,8 +44,6 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 			float headYaw = this.interpolateRotation(entityLiving.prevRotationYawHead, entityLiving.rotationYawHead, v);
 			float headPitch = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * v;
 
-			//this.rotateCorpse(matrixStackIn,entityLiving, ageInTicks, headYawOffset, v);
-
 			float limbSwingAmount = entityLiving.prevLimbSwingAmount + (entityLiving.limbSwingAmount - entityLiving.prevLimbSwingAmount) * v;
 			float limbSwing = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - v);
 
@@ -55,7 +53,7 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 
 		}
 		matrixStackIn.pop();
-		
+
 		if (ItemStack.areItemStacksEqual(entityLiving.getHeldItemMainhand(), new ItemStack(ModItems.barrel))) {
 			matrixStackIn.push();
 			matrixStackIn.scale(1.3F, 1.3F, 1.3F);
@@ -97,7 +95,7 @@ public class RenderRayman extends EntityRenderer<LivingEntity> implements IRayCr
 	@Override
 	public void renderFirstPersonArm(PlayerEntity player, MatrixStack matrixStackIn, IRenderTypeBuffer buffer, int packedLightIn) {
 		Minecraft mc = Minecraft.getInstance();
-		//RenderHelper.enableStandardItemLighting();
+
 		matrixStackIn.push();
 		{
 			matrixStackIn.translate(1, -1, -0.6);

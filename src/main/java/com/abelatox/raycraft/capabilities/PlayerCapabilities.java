@@ -1,35 +1,10 @@
 package com.abelatox.raycraft.capabilities;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-public class PlayerCapabilities implements IPlayerCapabilities {
-
-	public static class Storage implements IStorage<IPlayerCapabilities> {
-		@Override
-		public INBT writeNBT(Capability<IPlayerCapabilities> capability, IPlayerCapabilities instance, Direction side) {
-			CompoundNBT props = new CompoundNBT();
-			props.putString("PlayerModel", instance.getPlayerType());
-			props.putInt("ShotLevel", instance.getShotLevel());
-			props.putBoolean("Charging", instance.getIsCharging());
-			props.putInt("Lums", instance.getLums());
-			props.putBoolean("Gliding", instance.getIsGliding());
-			return props;
-		}
-
-		@Override
-		public void readNBT(Capability<IPlayerCapabilities> capability, IPlayerCapabilities instance, Direction side, INBT nbt) {
-			CompoundNBT properties = (CompoundNBT) nbt;
-			instance.setPlayerType(properties.getString("PlayerModel"));
-			instance.setShotLevel(properties.getInt("ShotLevel"));
-			instance.setCharging(properties.getBoolean("Charging"));
-			instance.setLums(properties.getInt("Lums"));
-			instance.setGliding(properties.getBoolean("Gliding"));
-		}
-	}
+public class PlayerCapabilities implements IPlayerCapabilities, ValueIOSerializable {
 
 	private String playerModel = "";
 	private int shotLevel = 0;
@@ -38,11 +13,13 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 	private float armRotation;
 	private boolean gliding;
 	private float hairRotation;
-	
+
+	@Override
 	public String getPlayerType() {
 		return playerModel;
 	}
 
+	@Override
 	public void setPlayerType(String modelString) {
 		playerModel = modelString;
 	}
@@ -110,6 +87,23 @@ public class PlayerCapabilities implements IPlayerCapabilities {
 	@Override
 	public void setHairRotation(float val) {
 		hairRotation = val;
-	}	
-	
+	}
+
+	@Override
+	public void serialize(ValueOutput output) {
+		output.putString("PlayerModel", getPlayerType());
+		output.putInt("ShotLevel", getShotLevel());
+		output.putBoolean("Charging", getIsCharging());
+		output.putInt("Lums", getLums());
+		output.putBoolean("Gliding", getIsGliding());
+	}
+
+	@Override
+	public void deserialize(ValueInput input) {
+		setPlayerType(input.getStringOr("PlayerModel", ""));
+		setShotLevel(input.getIntOr("ShotLevel", 0));
+		setCharging(input.getBooleanOr("Charging", false));
+		setLums(input.getIntOr("Lums", 0));
+		setGliding(input.getBooleanOr("Gliding", false));
+	}
 }

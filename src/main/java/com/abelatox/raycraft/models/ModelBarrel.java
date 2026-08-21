@@ -1,106 +1,77 @@
 package com.abelatox.raycraft.models;
 
-import com.abelatox.raycraft.entities.EntityBarrel;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
+public class ModelBarrel extends Model<EntityRenderState> {
 
-public class ModelBarrel extends EntityModel<EntityBarrel>{
-	public ModelRenderer shape1;
-    public ModelRenderer shape2;
-    public ModelRenderer lid1;
-    public ModelRenderer lid2;
-    public ModelRenderer shape3;
-    public ModelRenderer shape4;
-    public ModelRenderer shape5;
-    public ModelRenderer shape6;
-    public ModelRenderer lid12;
-    public ModelRenderer lid13;
-    public ModelRenderer lid21;
-    public ModelRenderer lid22;
-
-	public ModelBarrel() {
-		this.textureWidth = 64;
-        this.textureHeight = 64;
-        this.lid21 = new ModelRenderer(this, 0, 0);
-        this.lid21.setRotationPoint(-0.6F, 1.5F, 0.0F);
-        this.lid21.addBox(0.0F, 0.0F, -0.1F, 2, 2, 1, 0.0F);
-        this.lid2 = new ModelRenderer(this, 30, 0);
-        this.lid2.setRotationPoint(-2.5F, 1.0F, 8.2F);
-        this.lid2.addBox(0.0F, 0.0F, 0.0F, 5, 5, 1, 0.0F);
-        this.shape3 = new ModelRenderer(this, 0, 0);
-        this.shape3.setRotationPoint(4.0F, 0.0F, 0.0F);
-        this.shape3.addBox(0.0F, 0.0F, 0.0F, 4, 1, 9, 0.0F);
-        this.setRotateAngle(shape3, 0.0F, 0.0F, 1.0471975511965976F);
-        this.shape1 = new ModelRenderer(this, 0, 0);
-        this.shape1.setRotationPoint(0.0F, 0.0F, -4.5F);
-        this.shape1.addBox(-2.0F, 0.0F, 0.0F, 4, 1, 9, 0.0F);
-        this.lid1 = new ModelRenderer(this, 30, 0);
-        this.lid1.setRotationPoint(-2.5F, 1.0F, -0.2F);
-        this.lid1.addBox(0.0F, 0.0F, 0.0F, 5, 5, 1, 0.0F);
-        this.lid13 = new ModelRenderer(this, 0, 0);
-        this.lid13.setRotationPoint(3.7F, 1.4F, 0.0F);
-        this.lid13.addBox(0.0F, 0.0F, 0.1F, 2, 2, 1, 0.0F);
-        this.shape4 = new ModelRenderer(this, 0, 0);
-        this.shape4.setRotationPoint(4.0F, 0.0F, 0.0F);
-        this.shape4.addBox(0.0F, 0.0F, 0.0F, 4, 1, 9, 0.0F);
-        this.setRotateAngle(shape4, 0.0F, 0.0F, 1.0471975511965976F);
-        this.shape2 = new ModelRenderer(this, 0, 0);
-        this.shape2.setRotationPoint(2.0F, 0.0F, 0.0F);
-        this.shape2.addBox(0.0F, 0.0F, 0.0F, 4, 1, 9, 0.0F);
-        this.setRotateAngle(shape2, 0.0F, 0.0F, 1.0471975511965976F);
-        this.shape6 = new ModelRenderer(this, 0, 0);
-        this.shape6.setRotationPoint(4.0F, 0.0F, 0.0F);
-        this.shape6.addBox(0.0F, 0.0F, 0.0F, 4, 1, 9, 0.0F);
-        this.setRotateAngle(shape6, 0.0F, 0.0F, 1.0471975511965976F);
-        this.lid12 = new ModelRenderer(this, 0, 0);
-        this.lid12.setRotationPoint(-0.6F, 1.5F, 0.0F);
-        this.lid12.addBox(0.0F, 0.0F, 0.1F, 2, 2, 1, 0.0F);
-        this.shape5 = new ModelRenderer(this, 0, 0);
-        this.shape5.setRotationPoint(4.0F, 0.0F, 0.0F);
-        this.shape5.addBox(0.0F, 0.0F, 0.0F, 4, 1, 9, 0.0F);
-        this.setRotateAngle(shape5, 0.0F, 0.0F, 1.0471975511965976F);
-        this.lid22 = new ModelRenderer(this, 0, 0);
-        this.lid22.setRotationPoint(3.7F, 1.4F, 0.0F);
-        this.lid22.addBox(0.0F, 0.0F, -0.1F, 2, 2, 1, 0.0F);
-        this.lid2.addChild(this.lid21);
-        this.shape1.addChild(this.lid2);
-        this.shape2.addChild(this.shape3);
-        this.shape1.addChild(this.lid1);
-        this.lid1.addChild(this.lid13);
-        this.shape3.addChild(this.shape4);
-        this.shape1.addChild(this.shape2);
-        this.shape5.addChild(this.shape6);
-        this.lid1.addChild(this.lid12);
-        this.shape4.addChild(this.shape5);
-        this.lid2.addChild(this.lid22);
-    }
-
-	/**
-	 * This is a helper function from Tabula to set the rotation of model parts
-	 */
-	public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {
-		ModelRenderer.rotateAngleX = x;
-		ModelRenderer.rotateAngleY = y;
-		ModelRenderer.rotateAngleZ = z;
+	public ModelBarrel(ModelPart root) {
+		super(root, RenderTypes::entityCutout);
 	}
 
 	@Override
-	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		matrixStackIn.push();
-		
-		matrixStackIn.translate(0, 0.1, 0);
-		//matrixStackIn.rotate(Vector3f.YP.rotationDegrees());
-		//rotate(new Vector3f(0,0.707,0.707).rotationDegrees(15)) 
-		shape1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn,red,green,blue,alpha);
-		matrixStackIn.pop();
+	public void setupAnim(EntityRenderState renderState) {
 	}
 
-	@Override
-	public void setRotationAngles(EntityBarrel arg0, float arg1, float arg2, float arg3, float arg4, float arg5) {
-		// TODO Auto-generated method stub
-		
+	public static LayerDefinition createBodyLayer() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+
+		PartDefinition shape1 = root.addOrReplaceChild("shape1",
+				CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, 0.0F, 0.0F, 4, 1, 9),
+				PartPose.offset(0.0F, 0.0F, -4.5F));
+
+		PartDefinition shape2 = shape1.addOrReplaceChild("shape2",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 4, 1, 9),
+				PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0471976F));
+
+		PartDefinition shape3 = shape2.addOrReplaceChild("shape3",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 4, 1, 9),
+				PartPose.offsetAndRotation(4.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0471976F));
+
+		PartDefinition shape4 = shape3.addOrReplaceChild("shape4",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 4, 1, 9),
+				PartPose.offsetAndRotation(4.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0471976F));
+
+		PartDefinition shape5 = shape4.addOrReplaceChild("shape5",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 4, 1, 9),
+				PartPose.offsetAndRotation(4.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0471976F));
+
+		shape5.addOrReplaceChild("shape6",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 4, 1, 9),
+				PartPose.offsetAndRotation(4.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0471976F));
+
+		PartDefinition lid1 = shape1.addOrReplaceChild("lid1",
+				CubeListBuilder.create().texOffs(30, 0).addBox(0.0F, 0.0F, 0.0F, 5, 5, 1),
+				PartPose.offset(-2.5F, 1.0F, -0.2F));
+
+		lid1.addOrReplaceChild("lid12",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.1F, 2, 2, 1),
+				PartPose.offset(-0.6F, 1.5F, 0.0F));
+
+		lid1.addOrReplaceChild("lid13",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.1F, 2, 2, 1),
+				PartPose.offset(3.7F, 1.4F, 0.0F));
+
+		PartDefinition lid2 = shape1.addOrReplaceChild("lid2",
+				CubeListBuilder.create().texOffs(30, 0).addBox(0.0F, 0.0F, 0.0F, 5, 5, 1),
+				PartPose.offset(-2.5F, 1.0F, 8.2F));
+
+		lid2.addOrReplaceChild("lid21",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, -0.1F, 2, 2, 1),
+				PartPose.offset(-0.6F, 1.5F, 0.0F));
+
+		lid2.addOrReplaceChild("lid22",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, -0.1F, 2, 2, 1),
+				PartPose.offset(3.7F, 1.4F, 0.0F));
+
+		return LayerDefinition.create(mesh, 64, 64);
 	}
 }
