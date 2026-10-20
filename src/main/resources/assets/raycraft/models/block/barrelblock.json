@@ -1,6 +1,10 @@
 {
-    "parent": "minecraft:block/cube_all",
-    "textures": {
-        "all": "raycraft:models/barrel"
-    }
+  "loader": "neoforge:obj",
+  "model": "raycraft:models/block/barrel.obj",
+  "flip_v": true,
+  "parent": "minecraft:block/block",
+  "textures": {
+    "barrel": "raycraft:block/barrel",
+    "particle": "raycraft:block/barrel"
+  }
 }

@@ -1,68 +1,311 @@
 {
-	"fist_shot_0": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:fist_shot0", "stream": false}
-		]
-	},
-	"fist_shot_1": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:fist_shot1", "stream": false}
-		]
-	},
-	"fist_shot_2": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:fist_shot2", "stream": false}
-		]
-	},
-	"fist_bounce": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:fist_bounce", "stream": false}
-		]
-	},
-	"fist_gold_charged": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:fist_gold_charged", "stream": false}
-		]
-	},
-	"bomb_explode": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:bomb_explode", "stream": false}
-		]
-	},
-	"pirate_shot1": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:pirate_shot1", "stream": false}
-		]
-	},
-	"pirate_shot2": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:pirate_shot2", "stream": false}
-		]
-	},
-	"lum_yellow": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:lum_yellow", "stream": false}
-		]
-	},
-	"lum_green": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:lum_green", "stream": false}
-		]
-	},
-	"lum_red": {
-		"category": "player",
-		"sounds": [
-			{"name": "raycraft:lum_red", "stream": false}
-		]
-	}
+  "fist_shot_0": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:fist_shot0",
+        "stream": false
+      }
+    ]
+  },
+  "fist_shot_1": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:fist_shot1",
+        "stream": false
+      }
+    ]
+  },
+  "fist_shot_2": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:fist_shot2",
+        "stream": false
+      }
+    ]
+  },
+  "fist_bounce": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:fist_bounce",
+        "stream": false
+      }
+    ]
+  },
+  "fist_gold_charged": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:fist_gold_charged",
+        "stream": false
+      }
+    ]
+  },
+  "bomb_explode": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:bomb_explode",
+        "stream": false
+      }
+    ]
+  },
+  "pirate_shot1": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:pirate_shot1",
+        "stream": false
+      }
+    ]
+  },
+  "pirate_shot2": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:pirate_shot2",
+        "stream": false
+      }
+    ]
+  },
+  "lum_yellow": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:lum_yellow",
+        "stream": false
+      }
+    ]
+  },
+  "lum_green": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:lum_green",
+        "stream": false
+      }
+    ]
+  },
+  "lum_red": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:lum_red",
+        "stream": false
+      }
+    ]
+  },
+  "helico": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:helico",
+        "stream": false
+      }
+    ]
+  },
+  "helico_stop": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:helico_stop",
+        "stream": false
+      }
+    ]
+  },
+  "bomb_throw": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:bomb_throw",
+        "stream": false
+      }
+    ]
+  },
+  "bomb_living": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:bomb_living",
+        "stream": false
+      }
+    ]
+  },
+  "lum_yellow_spawn": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:lum_yellow_spawn",
+        "stream": false
+      }
+    ]
+  },
+  "rayman_death": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:rayman_death",
+        "stream": false
+      }
+    ]
+  },
+  "rayman_respawn": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:rayman_respawn",
+        "stream": false
+      }
+    ]
+  },
+  "rayman_dance": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:rayman_dance",
+        "stream": false
+      }
+    ]
+  },
+  "pirate_hurt": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:pirate_hurt2",
+        "stream": false
+      },
+      {
+        "name": "raycraft:pirate_oof",
+        "stream": false
+      }
+    ]
+  },
+  "pirate_death": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:pirate_kill1",
+        "stream": false
+      },
+      {
+        "name": "raycraft:pirate_kill2",
+        "stream": false
+      }
+    ]
+  },
+  "pirate_living": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:pirate_living",
+        "stream": false
+      }
+    ]
+  },
+  "pirate_sleep": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:pirate_sleep1",
+        "stream": false
+      },
+      {
+        "name": "raycraft:pirate_sleep2",
+        "stream": false
+      }
+    ]
+  },
+  "pirate_dig": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:pirate_dig",
+        "stream": false
+      }
+    ]
+  },
+  "pirate_digup": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:pirate_digup",
+        "stream": false
+      }
+    ]
+  },
+  "pirate_laser": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:lasergun",
+        "stream": false
+      }
+    ]
+  },
+  "fist_underwater": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:fist_underwater",
+        "stream": false
+      }
+    ]
+  },
+  "fist_hit": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:plum_hit",
+        "stream": false
+      }
+    ]
+  },
+  "piranha_bite": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:piranha_bite",
+        "stream": false
+      }
+    ]
+  },
+  "splash": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:water",
+        "stream": false
+      }
+    ]
+  },
+  "burn": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:fire",
+        "stream": false
+      }
+    ]
+  },
+  "electrocuted": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:electrocuted",
+        "stream": false
+      }
+    ]
+  },
+  "trampoline": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "raycraft:tramp_jump",
+        "stream": false
+      }
+    ]
+  }
 }

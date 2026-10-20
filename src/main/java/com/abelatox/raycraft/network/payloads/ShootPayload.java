@@ -8,12 +8,14 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-public record ShootPayload(boolean charged) implements CustomPacketPayload {
+public record ShootPayload(boolean charged, int targetId, int curve) implements CustomPacketPayload {
 
 	public static final Type<ShootPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MODID, "shoot"));
 
 	public static final StreamCodec<ByteBuf, ShootPayload> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.BOOL, ShootPayload::charged,
+			ByteBufCodecs.VAR_INT, ShootPayload::targetId,
+			ByteBufCodecs.VAR_INT, ShootPayload::curve,
 			ShootPayload::new
 	);
 

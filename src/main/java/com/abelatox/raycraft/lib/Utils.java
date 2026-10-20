@@ -5,13 +5,14 @@ import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.EntityFist;
 import com.abelatox.raycraft.entities.EntityPirateShot;
 import com.abelatox.raycraft.entities.EntityPirateShot2;
+import com.abelatox.raycraft.entities.RaycraftProjectile;
+import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.sounds.ModSounds;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -31,7 +32,11 @@ public class Utils {
 		return -1;
 	}
 
-	public static ThrowableProjectile getEntityShot(Player player, boolean charged) {
+	public static boolean canShoot(String playerType) {
+		return Strings.RAYMAN.equals(playerType) || Strings.ROBO_PIRATE_RED.equals(playerType) || Strings.ROBO_PIRATE_GREEN.equals(playerType);
+	}
+
+	public static RaycraftProjectile getEntityShot(Player player, boolean charged) {
 		IPlayerCapabilities props = ModCapabilities.get(player);
 		switch (props.getPlayerType()) {
 			case Strings.ROBO_PIRATE_RED:
@@ -93,7 +98,37 @@ public class Utils {
 	}
 
 	public static void lockSelectedItem(Player player, ItemStack stack) {
-		player.getInventory().setSelectedSlot(Utils.getSlotFor(player, stack));
+		Inventory inventory = player.getInventory();
+		int slot = Utils.getSlotFor(player, stack);
+
+		// setSelectedSlot only accepts hotbar slots (0-8) and throws for any other slot.
+		if (Inventory.isHotbarSlot(slot)) {
+			inventory.setSelectedSlot(slot);
+		} else if (slot >= 0 && slot < Inventory.INVENTORY_SIZE && !player.level().isClientSide()) {
+			int selected = inventory.getSelectedSlot();
+			ItemStack previous = inventory.getItem(selected);
+			inventory.setItem(selected, inventory.getItem(slot));
+			inventory.setItem(slot, previous);
+		}
+	}
+
+	public static boolean tryPickUpBarrel(Player player, BlockPos pos) {
+		Inventory inventory = player.getInventory();
+		ItemStack barrel = new ItemStack(ModItems.BARREL.get());
+
+		if (player.level().isClientSide() || getSlotFor(player, barrel) >= 0) {
+			return false;
+		}
+
+		int slot = inventory.getSelectedItem().isEmpty() ? inventory.getSelectedSlot() : inventory.getFreeSlot();
+		if (slot < 0) {
+			return false;
+		}
+
+		inventory.setItem(slot, barrel);
+		player.level().removeBlock(pos, false);
+		lockSelectedItem(player, barrel);
+		return true;
 	}
 
 	public static BlockPos getAvailablePos(Player player) {
@@ -127,9 +162,9 @@ public class Utils {
 				}
 				break;
 			case Strings.ROBO_PIRATE_GREEN:
-				return ModSounds.PIRATE_SHOT_1.get();
+				return charged ? ModSounds.PIRATE_LASER.get() : ModSounds.PIRATE_SHOT_1.get();
 			case Strings.ROBO_PIRATE_RED:
-				return ModSounds.PIRATE_SHOT_2.get();
+				return charged ? ModSounds.PIRATE_LASER.get() : ModSounds.PIRATE_SHOT_2.get();
 		}
 		return null;
 	}

@@ -52,13 +52,13 @@ public class RenderEntityPirateShot2 extends EntityRenderer<EntityPirateShot2, R
 		}
 
 		poseStack.pushPose();
-		poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
-		poseStack.mulPose(Axis.XN.rotationDegrees(state.xRot));
+		poseStack.rotate(Axis.YP.rotationDegrees(state.yRot));
+		poseStack.rotate(Axis.XN.rotationDegrees(state.xRot));
 		poseStack.scale(2F, 2F, 2F);
 		poseStack.translate(0, 0.05, 0);
-		poseStack.mulPose(Axis.YP.rotationDegrees(180));
+		poseStack.rotate(Axis.YP.rotationDegrees(180));
 
-		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, 0, null);
+		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
 		poseStack.popPose();
 	}

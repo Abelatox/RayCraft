@@ -48,10 +48,10 @@ public class RenderEntityBarrel extends EntityRenderer<EntityBarrel, RenderEntit
 
 		poseStack.pushPose();
 		poseStack.scale(1.5F, 1.5F, 1.5F);
-		poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
-		poseStack.mulPose(Axis.XN.rotationDegrees(state.xRot));
+		poseStack.rotate(Axis.YP.rotationDegrees(state.yRot));
+		poseStack.rotate(Axis.XN.rotationDegrees(state.xRot));
 
-		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, 0, null);
+		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
 		poseStack.popPose();
 	}

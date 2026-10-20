@@ -1,0 +1,21 @@
+{
+  "itemGroup.raycraft": "RayCraft",
+  "block.raycraft.barrelblock": "Barril",
+  "item.raycraft.barrel": "Barril",
+  "item.raycraft.power_up": "Potenciador",
+  "item.raycraft.lum_spawner": "Invocador de Lums",
+  "entity.raycraft.entity_barrel": "Barril",
+  "entity.raycraft.entity_fist": "Puño",
+  "entity.raycraft.entity_pirate_shot": "Disparo pirata",
+  "entity.raycraft.entity_pirate_shot2": "Disparo pirata",
+  "entity.raycraft.entity_lum": "Lum",
+  "key.category.raycraft.raycraft": "RayCraft",
+  "key.raycraft.select": "Elegir personaje",
+  "key.raycraft.lockon": "Fijar objetivo",
+  "message.raycraft.fist_level": "Nivel del puño: %s",
+  "message.raycraft.lum_type": "Tipo de Lum: %s",
+  "lum.raycraft.yellow": "Amarillo",
+  "lum.raycraft.green": "Verde",
+  "lum.raycraft.red": "Rojo",
+  "lum.raycraft.blue": "Azul"
+}

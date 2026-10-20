@@ -6,8 +6,9 @@ import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
-
+import com.abelatox.raycraft.sounds.ModSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -19,8 +20,6 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 public class PlayerEventsHandler {
 
-	boolean warned = false;
-
 	@SubscribeEvent
 	public void updatePlayerEvent(EntityTickEvent.Pre event) {
 		if (event.getEntity() instanceof Player player) {
@@ -28,6 +27,7 @@ public class PlayerEventsHandler {
 			if (props != null) {
 				if (props.getIsGliding()) {
 					player.setDeltaMovement(player.getDeltaMovement().x, -0.1, player.getDeltaMovement().z);
+					player.resetFallDistance();
 				}
 
 				if (ItemStack.isSameItemSameComponents(player.getMainHandItem(), new ItemStack(ModItems.BARREL.get()))) {
@@ -43,16 +43,14 @@ public class PlayerEventsHandler {
 				}
 			}
 
-			// El barril es casi solido (getCollisionShape 1-15), asi que el jugador nunca
-			// llega a solaparse de verdad con el bloque y BlockBarrel#entityInside no siempre
-			// dispara. Revisamos por proximidad (agacharse "al lado" del barril) en vez de
-			// depender de un solape exacto de hitboxes.
-			if (player.isShiftKeyDown() && player.getMainHandItem().isEmpty() && !player.level().isClientSide()) {
+			// The barrel is almost solid (getCollisionShape 1-15), so the player never really
+			// overlaps the block and BlockBarrel#entityInside doesn't always fire. Check by
+			// proximity (crouching next to the barrel) instead of relying on an exact hitbox overlap.
+			if (player.isShiftKeyDown() && !player.level().isClientSide()) {
 				BlockPos center = player.blockPosition();
 				for (BlockPos pos : BlockPos.betweenClosed(center.offset(-1, -1, -1), center.offset(1, 1, 1))) {
 					if (player.level().getBlockState(pos).is(ModBlocks.BARREL.get())) {
-						player.getInventory().setItem(player.getInventory().getSelectedSlot(), new ItemStack(ModItems.BARREL.get()));
-						player.level().removeBlock(pos, true);
+						Utils.tryPickUpBarrel(player, pos.immutable());
 						break;
 					}
 				}
@@ -71,6 +69,7 @@ public class PlayerEventsHandler {
 					player.level().addFreshEntity(barrel);
 					barrel.setOwner(player);
 					barrel.shootFromRotation(player, -90, player.getYRot(), 0, 1F, 0);
+					player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.BOMB_THROW.get(), SoundSource.PLAYERS, 1F, 1F);
 				}
 			}
 		}
@@ -81,15 +80,10 @@ public class PlayerEventsHandler {
 		Player player = event.getPlayer();
 		if (ItemStack.isSameItemSameComponents(event.getEntity().getItem(), new ItemStack(ModItems.BARREL.get()))) {
 			event.setCanceled(true);
-			if (Utils.getAvailablePos(player) == null) {
-				if (!warned) {
-
-					warned = true;
-				}
-			} else {
+			BlockPos pos = Utils.getAvailablePos(player);
+			if (pos != null) {
 				player.getInventory().removeItemNoUpdate(player.getInventory().getSelectedSlot());
-				player.level().setBlockAndUpdate(Utils.getAvailablePos(player), ModBlocks.BARREL.get().defaultBlockState());
-				warned = false;
+				player.level().setBlockAndUpdate(pos, ModBlocks.BARREL.get().defaultBlockState());
 			}
 		}
 	}

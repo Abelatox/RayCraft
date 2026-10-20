@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.1.38'
+    id 'net.neoforged.gradle.userdev' version '7.1.39'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -17,13 +17,6 @@ sourceSets.main.resources {
 
     exclude("**/*.bbmodel")
     exclude("src/generated/**/.cache")
-}
-
-sourceSets.main.java {
-    exclude 'com/abelatox/raycraft/models/RaycraftModel.java'
-    exclude 'com/abelatox/raycraft/models/render/**'
-
-    exclude 'com/abelatox/raycraft/network/packets/**'
 }
 
 repositories {

@@ -10,9 +10,7 @@ public class PlayerCapabilities implements IPlayerCapabilities, ValueIOSerializa
 	private int shotLevel = 0;
 	private boolean charging = false;
 	private int lums = 0;
-	private float armRotation;
 	private boolean gliding;
-	private float hairRotation;
 
 	@Override
 	public String getPlayerType() {
@@ -60,16 +58,6 @@ public class PlayerCapabilities implements IPlayerCapabilities, ValueIOSerializa
 	}
 
 	@Override
-	public float getArmRotation() {
-		return armRotation;
-	}
-
-	@Override
-	public void setArmRotation(float val) {
-		this.armRotation = val;
-	}
-
-	@Override
 	public boolean getIsGliding() {
 		return gliding;
 	}
@@ -77,16 +65,6 @@ public class PlayerCapabilities implements IPlayerCapabilities, ValueIOSerializa
 	@Override
 	public void setGliding(boolean b) {
 		this.gliding = b;
-	}
-
-	@Override
-	public float getHairRotation() {
-		return hairRotation;
-	}
-
-	@Override
-	public void setHairRotation(float val) {
-		hairRotation = val;
 	}
 
 	@Override

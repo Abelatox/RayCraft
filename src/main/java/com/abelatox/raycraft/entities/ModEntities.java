@@ -17,7 +17,8 @@ public class ModEntities {
 
 	public static final Supplier<EntityType<EntityFist>> FIST = ENTITY_TYPES.registerEntityType(
 			"entity_fist", EntityFist::new, MobCategory.MISC,
-			builder -> builder.sized(0.4F, 0.4F).clientTrackingRange(128).updateInterval(1));
+			// Same size as the 4px cube of ModelFist.
+			builder -> builder.sized(0.25F, 0.25F).clientTrackingRange(128).updateInterval(1));
 
 	public static final Supplier<EntityType<EntityPirateShot>> PIRATE_SHOT = ENTITY_TYPES.registerEntityType(
 			"entity_pirate_shot", EntityPirateShot::new, MobCategory.MISC,

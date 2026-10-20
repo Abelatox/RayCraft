@@ -1,18 +1,8 @@
 package com.abelatox.raycraft.lib;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 public class Constants {
 
-	public static final int
-
-        LEFT_MOUSE = 0,
-        RIGHT_MOUSE = 1,
-        MIDDLE_MOUSE = 2,
-        WHEEL_UP = 1,
-        WHEEL_DOWN = -1,
-        SCALE_AUTO = 0,
-        SCALE_SMALL = 1,
-        SCALE_NORMAL = 2,
-        SCALE_LARGE = 3,
-
-	    TICKS_PER_SECOND = 20;
+	public static final int RIGHT_MOUSE = InputConstants.MOUSE_BUTTON_RIGHT;
 }

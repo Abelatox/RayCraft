@@ -22,6 +22,28 @@ public class ModSounds {
 	public static final DeferredHolder<SoundEvent, SoundEvent> LUM_YELLOW = registerSound("lum_yellow");
 	public static final DeferredHolder<SoundEvent, SoundEvent> LUM_GREEN = registerSound("lum_green");
 	public static final DeferredHolder<SoundEvent, SoundEvent> LUM_RED = registerSound("lum_red");
+	public static final DeferredHolder<SoundEvent, SoundEvent> HELICO = registerSound("helico");
+	public static final DeferredHolder<SoundEvent, SoundEvent> HELICO_STOP = registerSound("helico_stop");
+	public static final DeferredHolder<SoundEvent, SoundEvent> BOMB_THROW = registerSound("bomb_throw");
+	public static final DeferredHolder<SoundEvent, SoundEvent> BOMB_LIVING = registerSound("bomb_living");
+	public static final DeferredHolder<SoundEvent, SoundEvent> LUM_YELLOW_SPAWN = registerSound("lum_yellow_spawn");
+	public static final DeferredHolder<SoundEvent, SoundEvent> RAYMAN_DEATH = registerSound("rayman_death");
+	public static final DeferredHolder<SoundEvent, SoundEvent> RAYMAN_RESPAWN = registerSound("rayman_respawn");
+	public static final DeferredHolder<SoundEvent, SoundEvent> RAYMAN_DANCE = registerSound("rayman_dance");
+	public static final DeferredHolder<SoundEvent, SoundEvent> PIRATE_HURT = registerSound("pirate_hurt");
+	public static final DeferredHolder<SoundEvent, SoundEvent> PIRATE_DEATH = registerSound("pirate_death");
+	public static final DeferredHolder<SoundEvent, SoundEvent> PIRATE_LIVING = registerSound("pirate_living");
+	public static final DeferredHolder<SoundEvent, SoundEvent> PIRATE_SLEEP = registerSound("pirate_sleep");
+	public static final DeferredHolder<SoundEvent, SoundEvent> PIRATE_DIG = registerSound("pirate_dig");
+	public static final DeferredHolder<SoundEvent, SoundEvent> PIRATE_DIGUP = registerSound("pirate_digup");
+	public static final DeferredHolder<SoundEvent, SoundEvent> PIRATE_LASER = registerSound("pirate_laser");
+	public static final DeferredHolder<SoundEvent, SoundEvent> FIST_UNDERWATER = registerSound("fist_underwater");
+	public static final DeferredHolder<SoundEvent, SoundEvent> FIST_HIT = registerSound("fist_hit");
+	public static final DeferredHolder<SoundEvent, SoundEvent> PIRANHA_BITE = registerSound("piranha_bite");
+	public static final DeferredHolder<SoundEvent, SoundEvent> SPLASH = registerSound("splash");
+	public static final DeferredHolder<SoundEvent, SoundEvent> BURN = registerSound("burn");
+	public static final DeferredHolder<SoundEvent, SoundEvent> ELECTROCUTED = registerSound("electrocuted");
+	public static final DeferredHolder<SoundEvent, SoundEvent> TRAMPOLINE = registerSound("trampoline");
 
 	private static DeferredHolder<SoundEvent, SoundEvent> registerSound(String name) {
 		return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(Reference.MODID, name)));

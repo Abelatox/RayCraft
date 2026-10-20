@@ -1,9 +1,9 @@
 package com.abelatox.raycraft.client.render;
 
 /**
- * Datos de la capability de RayCraft copiados al {@code AvatarRenderState} del jugador
- * durante {@code RegisterRenderStateModifiersEvent}, para poder leerlos de forma segura
- * en el hilo de render (en {@link RaycraftPlayerRenderHandler}) sin tocar la entidad.
+ * RayCraft capability data copied into the player's {@code AvatarRenderState} during
+ * {@code RegisterRenderStateModifiersEvent}, so it can be read safely on the render thread
+ * (in {@link RaycraftPlayerRenderHandler}) without touching the entity.
  */
 public record RaycraftAvatarRenderData(
 		String playerType,

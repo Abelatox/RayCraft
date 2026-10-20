@@ -13,8 +13,9 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
-public class ModelRayman extends Model<AvatarRenderState> {
+public class ModelRayman extends Model<AvatarRenderState> implements RaycraftCharacterModel {
 
 	public final ModelPart head;
 	public final ModelPart body;
@@ -25,11 +26,20 @@ public class ModelRayman extends Model<AvatarRenderState> {
 	public final ModelPart leftEar1;
 	public final ModelPart rightEar1;
 	public final ModelPart heli1;
-	public final ModelPart rightFoot;
-	public final ModelPart leftFoot;
+
+	public static final int GOLD_FIST_LEVEL = 3;
+	public static final int GOLD_TINT = 0xFFFFE600;
+
+	// The tint applies to the whole model, so gold arms are drawn by a second instance that only shows the arms.
+	private final boolean armsOnly;
 
 	public ModelRayman(ModelPart root) {
+		this(root, false);
+	}
+
+	public ModelRayman(ModelPart root, boolean armsOnly) {
 		super(root, RenderTypes::entityCutout);
+		this.armsOnly = armsOnly;
 		this.head = root.getChild("head");
 		this.body = root.getChild("body");
 		this.rightArm = root.getChild("right_arm");
@@ -39,8 +49,6 @@ public class ModelRayman extends Model<AvatarRenderState> {
 		this.leftEar1 = head.getChild("left_ear1");
 		this.rightEar1 = head.getChild("right_ear1");
 		this.heli1 = head.getChild("heli1");
-		this.rightFoot = rightLeg.getChild("right_foot");
-		this.leftFoot = leftLeg.getChild("left_foot");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -173,5 +181,18 @@ public class ModelRayman extends Model<AvatarRenderState> {
 		} else if (data.charging()) {
 			rightArm.xRot = data.armRotation();
 		}
+
+		boolean goldArms = data.punchLevel() == GOLD_FIST_LEVEL;
+		head.visible = !armsOnly;
+		body.visible = !armsOnly;
+		rightLeg.visible = !armsOnly;
+		leftLeg.visible = !armsOnly;
+		rightArm.visible = armsOnly || !goldArms;
+		leftArm.visible = armsOnly || !goldArms;
+	}
+
+	@Override
+	public ModelPart getArm(HumanoidArm arm) {
+		return arm == HumanoidArm.LEFT ? leftArm : rightArm;
 	}
 }

@@ -13,8 +13,9 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
-public class ModelHoodlum extends Model<AvatarRenderState> {
+public class ModelHoodlum extends Model<AvatarRenderState> implements RaycraftCharacterModel {
 
 	public final ModelPart head;
 	public final ModelPart body;
@@ -84,8 +85,8 @@ public class ModelHoodlum extends Model<AvatarRenderState> {
 		head.xRot = state.xRot / (180F / (float) Math.PI);
 		head.y = 0.0F;
 
-		leftLeg.xRot = Mth.cos(state.walkAnimationPos * 0.6662F) * 0.8F * state.walkAnimationSpeed;
-		rightLeg.xRot = Mth.cos(state.walkAnimationPos * 0.6662F + (float) Math.PI) * 0.8F * state.walkAnimationSpeed;
+		leftLeg.xRot = 0.0F;
+		rightLeg.xRot = 0.0F;
 
 		rightArm.xRot = Mth.cos(state.walkAnimationPos * 0.6662F) * 0.4F * state.walkAnimationSpeed;
 		leftArm.xRot = Mth.cos(state.walkAnimationPos * 0.6662F + (float) Math.PI) * 0.4F * state.walkAnimationSpeed;
@@ -110,5 +111,10 @@ public class ModelHoodlum extends Model<AvatarRenderState> {
 			rightArm.xRot = -(100.0F - state.xRot) * ((float) Math.PI / 180F);
 			rightArm.zRot = -0.7853981634F;
 		}
+	}
+
+	@Override
+	public ModelPart getArm(HumanoidArm arm) {
+		return arm == HumanoidArm.LEFT ? leftArm : rightArm;
 	}
 }

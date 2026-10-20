@@ -2,7 +2,10 @@ package com.abelatox.raycraft.items;
 
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-
+import com.abelatox.raycraft.lib.Strings;
+import com.abelatox.raycraft.sounds.ModSounds;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +29,10 @@ public class ItemPowerUp extends BaseItem {
 			}
 
 			ModCapabilities.sync(player);
+			player.sendOverlayMessage(Component.translatable("message.raycraft.fist_level", props.getShotLevel()));
+			if (Strings.RAYMAN.equals(props.getPlayerType())) {
+				level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.RAYMAN_DANCE.get(), SoundSource.PLAYERS, 1F, 1F);
+			}
 		}
 		return InteractionResult.PASS;
 	}

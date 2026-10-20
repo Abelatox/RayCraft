@@ -7,8 +7,8 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 /**
- * Registro de las {@link ModelLayerLocation} de los modelos de proyectiles simples
- * (barril, puño, disparo pirata) y de los modelos de personaje jugables
+ * Registers the {@link ModelLayerLocation}s of the simple projectile models
+ * (barrel, fist, pirate shot) and of the playable character models
  * (Rayman/Hoodlum/Globox/RoboPirate).
  */
 public class ModModels {

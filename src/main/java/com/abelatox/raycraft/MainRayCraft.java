@@ -4,6 +4,7 @@ import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.ModEntities;
 import com.abelatox.raycraft.events.PlayerEventsHandler;
+import com.abelatox.raycraft.items.ModDataComponents;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.ModCreativeTabs;
 import com.abelatox.raycraft.lib.Reference;
@@ -22,6 +23,7 @@ public class MainRayCraft {
 	public MainRayCraft(IEventBus modEventBus) {
 		ModBlocks.BLOCKS.register(modEventBus);
 		ModItems.ITEMS.register(modEventBus);
+		ModDataComponents.COMPONENTS.register(modEventBus);
 		ModSounds.SOUNDS.register(modEventBus);
 		ModCreativeTabs.TABS.register(modEventBus);
 		ModEntities.ENTITY_TYPES.register(modEventBus);

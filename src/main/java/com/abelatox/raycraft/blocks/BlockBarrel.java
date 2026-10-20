@@ -1,11 +1,10 @@
 package com.abelatox.raycraft.blocks;
 
-import com.abelatox.raycraft.items.ModItems;
+import com.abelatox.raycraft.lib.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -29,9 +28,8 @@ public class BlockBarrel extends BaseBlock {
 	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean intersects) {
 		if (entity instanceof Player player) {
 			boolean notMoving = player.getDeltaMovement().x == 0 && player.getDeltaMovement().y == 0 && player.getDeltaMovement().z == 0;
-			if (notMoving && player.isShiftKeyDown() && player.getMainHandItem().isEmpty()) {
-				player.getInventory().setItem(player.getInventory().getSelectedSlot(), new ItemStack(ModItems.BARREL.get()));
-				level.removeBlock(pos, true);
+			if (notMoving && player.isShiftKeyDown()) {
+				Utils.tryPickUpBarrel(player, pos);
 			}
 		}
 	}

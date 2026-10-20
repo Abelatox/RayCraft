@@ -1,0 +1,15 @@
+{
+  "values": [
+    "#minecraft:ice",
+    {
+      "id": "#c:glass_blocks",
+      "required": false
+    },
+    {
+      "id": "#c:glass_panes",
+      "required": false
+    },
+    "minecraft:iron_door",
+    "minecraft:iron_trapdoor"
+  ]
+}

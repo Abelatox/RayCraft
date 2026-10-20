@@ -1,6 +1,7 @@
 {
-    "parent": "minecraft:item/generated",
-    "textures": {
-        "layer0": "raycraft:item/lum_spawner"
-    }
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "raycraft:item/lum_spawner_wings",
+    "layer1": "raycraft:item/lum_spawner_ball"
+  }
 }

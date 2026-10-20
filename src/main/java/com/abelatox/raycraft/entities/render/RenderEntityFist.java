@@ -48,8 +48,6 @@ public class RenderEntityFist extends EntityRenderer<EntityFist, RenderEntityFis
 	@Override
 	public void submit(FistRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
 		super.submit(state, poseStack, collector, cameraState);
-
-		// El proyectil original evita renderizarse durante los primeros ticks para que no tape la cámara
 		if (state.tickCount <= 1) {
 			return;
 		}
@@ -79,14 +77,16 @@ public class RenderEntityFist extends EntityRenderer<EntityFist, RenderEntityFis
 		}
 
 		poseStack.pushPose();
-		if (state.lvl == 4) {
-			poseStack.scale(4F, 4F, 4F);
+		// The model cube is centred on its origin; lift it to the centre of the hitbox.
+		poseStack.translate(0.0F, state.boundingBoxHeight / 2.0F, 0.0F);
+		if (state.lvl == EntityFist.GIANT_LEVEL) {
+			poseStack.scale(EntityFist.GIANT_SCALE, EntityFist.GIANT_SCALE, EntityFist.GIANT_SCALE);
 		}
-		poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
-		poseStack.mulPose(Axis.XN.rotationDegrees(state.xRot));
+		poseStack.rotate(Axis.YP.rotationDegrees(state.yRot));
+		poseStack.rotate(Axis.XN.rotationDegrees(state.xRot));
 
 		int color = ARGB.colorFromFloat(1F, r, g, b);
-		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, 0, null);
+		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, 0);
 
 		poseStack.popPose();
 	}

@@ -54,11 +54,11 @@ public class RenderEntityPirateShot extends EntityRenderer<EntityPirateShot, Ren
 
 		poseStack.pushPose();
 		poseStack.scale(1.5F, 1.5F, 1.5F);
-		poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
-		poseStack.mulPose(Axis.XN.rotationDegrees(state.xRot));
+		poseStack.rotate(Axis.YP.rotationDegrees(state.yRot));
+		poseStack.rotate(Axis.XN.rotationDegrees(state.xRot));
 
 		int color = ARGB.colorFromFloat(1F, 1F, 0.1F, 0.1F);
-		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, 0, null);
+		collector.submitModel(model, state, poseStack, model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, 0);
 
 		poseStack.popPose();
 	}

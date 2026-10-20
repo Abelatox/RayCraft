@@ -10,11 +10,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -24,9 +21,12 @@ import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
 
-public class EntityFist extends ThrowableProjectile {
+public class EntityFist extends RaycraftProjectile {
 
 	private static final EntityDataAccessor<Integer> LEVEL = SynchedEntityData.defineId(EntityFist.class, EntityDataSerializers.INT);
+
+	public static final int GIANT_LEVEL = 4;
+	public static final float GIANT_SCALE = 4.0F;
 
 	int bounces;
 	int maxBounces;
@@ -45,12 +45,27 @@ public class EntityFist extends ThrowableProjectile {
 	}
 
 	@Override
+	public EntityDimensions getDimensions(Pose pose) {
+		EntityDimensions dimensions = super.getDimensions(pose);
+		return getLvl() == GIANT_LEVEL ? dimensions.scale(GIANT_SCALE) : dimensions;
+	}
+
+	@Override
+	public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
+		super.onSyncedDataUpdated(accessor);
+		if (LEVEL.equals(accessor)) {
+			refreshDimensions();
+		}
+	}
+
+	@Override
 	protected double getDefaultGravity() {
 		return 0F;
 	}
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
 		builder.define(LEVEL, 0);
 	}
 
@@ -80,6 +95,7 @@ public class EntityFist extends ThrowableProjectile {
 				if (target != this.getOwner() && level() instanceof ServerLevel serverLevel) {
 					DamageSource damageSource = this.damageSources().thrown(this, this.getOwner());
 					target.hurtServer(serverLevel, damageSource, power);
+					level().playSound(null, blockPosition(), ModSounds.FIST_HIT.get(), SoundSource.PLAYERS, 1F, 1F);
 					if (explosion) {
 						explode();
 					} else {
@@ -126,10 +142,6 @@ public class EntityFist extends ThrowableProjectile {
 		this.discard();
 	}
 
-	public int getMaxBounces() {
-		return maxBounces;
-	}
-
 	public void setMaxBounces(int maxBounces) {
 		this.maxBounces = maxBounces;
 	}
@@ -142,24 +154,12 @@ public class EntityFist extends ThrowableProjectile {
 		this.getEntityData().set(LEVEL, lvl);
 	}
 
-	public float getPower() {
-		return power;
-	}
-
 	public void setPower(float power) {
 		this.power = power;
 	}
 
-	public boolean isExplosion() {
-		return explosion;
-	}
-
 	public void setExplosion(boolean explosion) {
 		this.explosion = explosion;
-	}
-
-	public int getMaxTicks() {
-		return maxTicks;
 	}
 
 	public void setMaxTicks(int maxTicks) {

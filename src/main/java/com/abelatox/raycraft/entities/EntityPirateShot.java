@@ -8,17 +8,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
-public class EntityPirateShot extends ThrowableProjectile {
+public class EntityPirateShot extends RaycraftProjectile {
 
 	int bounces;
 	int maxBounces;
-	int lvl = 0;
 	float power;
 	int maxTicks = 60;
 
@@ -33,11 +31,6 @@ public class EntityPirateShot extends ThrowableProjectile {
 		this.maxBounces = 0;
 		this.power = 2;
 		this.maxTicks = 60;
-	}
-
-	public EntityPirateShot(Level level, LivingEntity thrower, int lvl) {
-		this(level, thrower);
-		this.lvl = lvl;
 	}
 
 	@Override
@@ -64,7 +57,10 @@ public class EntityPirateShot extends ThrowableProjectile {
 			BlockHitResult blockResult = hitResult instanceof BlockHitResult bh ? bh : null;
 
 			if (entityResult != null && entityResult.getEntity() instanceof LivingEntity target) {
-
+				if (target != this.getOwner() && level() instanceof ServerLevel serverLevel) {
+					target.hurtServer(serverLevel, this.damageSources().thrown(this, this.getOwner()), power);
+					discard();
+				}
 			} else {
 				if (blockResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
 					level().playSound(null, blockPosition(), ModSounds.FIST_BOUNCE.get(), SoundSource.MASTER, 1F, 1F);
@@ -85,15 +81,8 @@ public class EntityPirateShot extends ThrowableProjectile {
 		}
 	}
 
-	private void explode() {
-		if (level() instanceof ServerLevel serverLevel) {
-			serverLevel.explode(this, getX(), getY(), getZ(), power / 4, Level.ExplosionInteraction.NONE);
-		}
-		this.discard();
-	}
-
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
-
+		super.defineSynchedData(builder);
 	}
 }
