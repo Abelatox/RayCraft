@@ -21,6 +21,8 @@ public class ModModels {
 	public static final ModelLayerLocation HOODLUM_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Reference.MODID, "hoodlum"), "main");
 	public static final ModelLayerLocation GLOBOX_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Reference.MODID, "globox"), "main");
 	public static final ModelLayerLocation ROBO_PIRATE_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Reference.MODID, "robo_pirate"), "main");
+	public static final ModelLayerLocation PLUM_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Reference.MODID, "plum"), "main");
+	public static final ModelLayerLocation WALKING_SHELL_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Reference.MODID, "walking_shell"), "main");
 
 	public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
 		event.registerLayerDefinition(BARREL_LAYER, ModelBarrel::createBodyLayer);
@@ -31,5 +33,7 @@ public class ModModels {
 		event.registerLayerDefinition(HOODLUM_LAYER, ModelHoodlum::createBodyLayer);
 		event.registerLayerDefinition(GLOBOX_LAYER, ModelGlobox::createBodyLayer);
 		event.registerLayerDefinition(ROBO_PIRATE_LAYER, ModelRoboPirate::createBodyLayer);
+		event.registerLayerDefinition(PLUM_LAYER, ModelPlum::createBodyLayer);
+		event.registerLayerDefinition(WALKING_SHELL_LAYER, ModelWalkingShell::createBodyLayer);
 	}
 }

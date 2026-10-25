@@ -1,91 +1,108 @@
 {
-  "model": {
-    "type": "minecraft:select",
-    "property": "minecraft:component",
-    "component": "raycraft:lum_type",
-    "cases": [
-      {
-        "when": "yellow",
-        "model": {
-          "type": "minecraft:model",
-          "model": "raycraft:item/lum_spawner",
-          "tints": [
+    "model": {
+        "type": "minecraft:select",
+        "property": "minecraft:component",
+        "component": "raycraft:lum_type",
+        "cases": [
             {
-              "type": "minecraft:constant",
-              "value": 16777215
+                "when": "yellow",
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "raycraft:item/lum_spawner",
+                    "tints": [
+                        {
+                            "type": "minecraft:constant",
+                            "value": 16777215
+                        },
+                        {
+                            "type": "minecraft:constant",
+                            "value": 16769088
+                        }
+                    ]
+                }
             },
             {
-              "type": "minecraft:constant",
-              "value": 16769088
-            }
-          ]
-        }
-      },
-      {
-        "when": "green",
-        "model": {
-          "type": "minecraft:model",
-          "model": "raycraft:item/lum_spawner",
-          "tints": [
-            {
-              "type": "minecraft:constant",
-              "value": 16777215
+                "when": "green",
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "raycraft:item/lum_spawner",
+                    "tints": [
+                        {
+                            "type": "minecraft:constant",
+                            "value": 16777215
+                        },
+                        {
+                            "type": "minecraft:constant",
+                            "value": 5308240
+                        }
+                    ]
+                }
             },
             {
-              "type": "minecraft:constant",
-              "value": 5308240
-            }
-          ]
-        }
-      },
-      {
-        "when": "red",
-        "model": {
-          "type": "minecraft:model",
-          "model": "raycraft:item/lum_spawner",
-          "tints": [
-            {
-              "type": "minecraft:constant",
-              "value": 16777215
+                "when": "red",
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "raycraft:item/lum_spawner",
+                    "tints": [
+                        {
+                            "type": "minecraft:constant",
+                            "value": 16777215
+                        },
+                        {
+                            "type": "minecraft:constant",
+                            "value": 16726586
+                        }
+                    ]
+                }
             },
             {
-              "type": "minecraft:constant",
-              "value": 16726586
-            }
-          ]
-        }
-      },
-      {
-        "when": "blue",
-        "model": {
-          "type": "minecraft:model",
-          "model": "raycraft:item/lum_spawner",
-          "tints": [
-            {
-              "type": "minecraft:constant",
-              "value": 16777215
+                "when": "blue",
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "raycraft:item/lum_spawner",
+                    "tints": [
+                        {
+                            "type": "minecraft:constant",
+                            "value": 16777215
+                        },
+                        {
+                            "type": "minecraft:constant",
+                            "value": 4885759
+                        }
+                    ]
+                }
             },
             {
-              "type": "minecraft:constant",
-              "value": 4885759
+                "when": "purple",
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "raycraft:item/lum_spawner",
+                    "tints": [
+                        {
+                            "type": "minecraft:constant",
+                            "value": 16777215
+                        },
+                        {
+                            "type": "minecraft:constant",
+                            "value": 11820287
+                        }
+                    ]
+                }
             }
-          ]
+        ],
+        "fallback": {
+            "type": "minecraft:model",
+            "model": "raycraft:item/lum_spawner",
+            "tints": [
+                {
+                    "type": "minecraft:constant",
+                    "value": 16777215
+                },
+                {
+                    "type": "minecraft:constant",
+                    "value": 16769088
+                }
+            ]
         }
-      }
-    ],
-    "fallback": {
-      "type": "minecraft:model",
-      "model": "raycraft:item/lum_spawner",
-      "tints": [
-        {
-          "type": "minecraft:constant",
-          "value": 16777215
-        },
-        {
-          "type": "minecraft:constant",
-          "value": 16769088
-        }
-      ]
     }
-  }
 }

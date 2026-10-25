@@ -1,5 +1,7 @@
 package com.abelatox.raycraft.models;
 
+import com.abelatox.raycraft.client.render.RaycraftAvatarRenderData;
+
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.util.Mth;
@@ -13,6 +15,20 @@ import net.minecraft.world.entity.HumanoidArm;
 public final class RaycraftModelAnim {
 
 	private RaycraftModelAnim() {
+	}
+
+	public static void applyShellRide(RaycraftAvatarRenderData data, ModelPart rightLeg, ModelPart leftLeg, boolean feetOnly) {
+		boolean riding = data.ridingShell();
+		float apart = riding ? (feetOnly ? 4.5F : 2.5F) : 0.0F;
+		float spread = riding && !feetOnly ? 0.45F : 0.0F;
+		rightLeg.x = rightLeg.getInitialPose().x() - apart;
+		leftLeg.x = leftLeg.getInitialPose().x() + apart;
+		rightLeg.zRot = spread;
+		leftLeg.zRot = -spread;
+		if (riding && !feetOnly) {
+			rightLeg.xRot = -0.2F;
+			leftLeg.xRot = -0.2F;
+		}
 	}
 
 	public static void applyAttackSwing(AvatarRenderState state, ModelPart rightArm, ModelPart leftArm) {

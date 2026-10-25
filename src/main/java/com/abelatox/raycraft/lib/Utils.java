@@ -4,17 +4,18 @@ import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.EntityFist;
 import com.abelatox.raycraft.entities.EntityPirateShot;
-import com.abelatox.raycraft.entities.EntityPirateShot2;
+import com.abelatox.raycraft.entities.ModEntities;
 import com.abelatox.raycraft.entities.RaycraftProjectile;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.sounds.ModSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class Utils {
 
@@ -25,7 +26,7 @@ public class Utils {
 	public static int getSlotFor(Player player, ItemStack stack) {
 		for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
 			ItemStack slotStack = player.getInventory().getItem(i);
-			if (!slotStack.isEmpty() && stackEqualExact(stack, slotStack)) {
+			if (!slotStack.isEmpty() && ItemStack.isSameItemSameComponents(stack, slotStack)) {
 				return i;
 			}
 		}
@@ -38,63 +39,12 @@ public class Utils {
 
 	public static RaycraftProjectile getEntityShot(Player player, boolean charged) {
 		IPlayerCapabilities props = ModCapabilities.get(player);
-		switch (props.getPlayerType()) {
-			case Strings.ROBO_PIRATE_RED:
-				return new EntityPirateShot2(player.level(), player);
-			case Strings.ROBO_PIRATE_GREEN:
-				return new EntityPirateShot(player.level(), player);
-			case Strings.RAYMAN:
-				return getRaymanPunchLevel(player, charged);
-		}
-		return null;
-	}
-
-	private static EntityFist getRaymanPunchLevel(Player player, boolean charged) {
-		IPlayerCapabilities props = ModCapabilities.get(player);
-		int level = props.getShotLevel();
-		if (charged && level < 4) {
-			level++;
-		}
-		EntityFist projectile = new EntityFist(player.level(), player);
-		switch (level) {
-			case 0:
-				projectile.setLvl(0);
-				projectile.setPower(2);
-				projectile.setMaxBounces(0);
-				projectile.setMaxTicks(60);
-				break;
-			case 1:
-				projectile.setLvl(1);
-				projectile.setPower(4);
-				projectile.setMaxBounces(1);
-				projectile.setMaxTicks(75);
-				break;
-			case 2:
-				projectile.setLvl(2);
-				projectile.setPower(6);
-				projectile.setMaxBounces(2);
-				projectile.setMaxTicks(90);
-				break;
-			case 3:
-				projectile.setLvl(3);
-				projectile.setPower(10);
-				projectile.setMaxBounces(3);
-				projectile.setMaxTicks(100);
-				projectile.setExplosion(charged);
-				break;
-			case 4:
-				projectile.setLvl(4);
-				projectile.setPower(16);
-				projectile.setMaxBounces(4);
-				projectile.setMaxTicks(120);
-				projectile.setExplosion(charged);
-				break;
-		}
-		return projectile;
-	}
-
-	private static boolean stackEqualExact(ItemStack stack1, ItemStack stack2) {
-		return stack1.getItem() == stack2.getItem() && ItemStack.isSameItemSameComponents(stack1, stack2);
+		return switch (props.getPlayerType()) {
+			case Strings.ROBO_PIRATE_RED -> new EntityPirateShot(ModEntities.PIRATE_SHOT_2.get(), player.level(), player);
+			case Strings.ROBO_PIRATE_GREEN -> new EntityPirateShot(ModEntities.PIRATE_SHOT.get(), player.level(), player);
+			case Strings.RAYMAN -> new EntityFist(player.level(), player, props.getShotLevel(), charged);
+			default -> null;
+		};
 	}
 
 	public static void lockSelectedItem(Player player, ItemStack stack) {
@@ -113,10 +63,16 @@ public class Utils {
 	}
 
 	public static boolean tryPickUpBarrel(Player player, BlockPos pos) {
-		Inventory inventory = player.getInventory();
-		ItemStack barrel = new ItemStack(ModItems.BARREL.get());
+		if (!tryCarry(player, new ItemStack(ModItems.BARREL.get()))) {
+			return false;
+		}
+		player.level().removeBlock(pos, false);
+		return true;
+	}
 
-		if (player.level().isClientSide() || getSlotFor(player, barrel) >= 0) {
+	public static boolean tryCarry(Player player, ItemStack carried) {
+		Inventory inventory = player.getInventory();
+		if (player.level().isClientSide() || getSlotFor(player, carried) >= 0) {
 			return false;
 		}
 
@@ -125,47 +81,33 @@ public class Utils {
 			return false;
 		}
 
-		inventory.setItem(slot, barrel);
-		player.level().removeBlock(pos, false);
-		lockSelectedItem(player, barrel);
+		inventory.setItem(slot, carried);
+		lockSelectedItem(player, carried);
 		return true;
 	}
 
 	public static BlockPos getAvailablePos(Player player) {
-		BlockPos pos = player.blockPosition();
-		if (player.level().getBlockState(pos.north()).getBlock() == Blocks.AIR) {
-			return pos.north();
-		} else if (player.level().getBlockState(pos.east()).getBlock() == Blocks.AIR) {
-			return pos.east();
-		} else if (player.level().getBlockState(pos.south()).getBlock() == Blocks.AIR) {
-			return pos.south();
-		} else if (player.level().getBlockState(pos.west()).getBlock() == Blocks.AIR) {
-			return pos.west();
+		for (Direction direction : Direction.Plane.HORIZONTAL) {
+			BlockPos pos = player.blockPosition().relative(direction);
+			if (player.level().getBlockState(pos).isAir()) {
+				return pos;
+			}
 		}
 		return null;
 	}
 
 	public static SoundEvent getShootSound(Player player, boolean charged) {
 		IPlayerCapabilities props = ModCapabilities.get(player);
-		switch (props.getPlayerType()) {
-			case Strings.RAYMAN:
-				switch (props.getShotLevel()) {
-					case 0:
-					case 1:
-						return ModSounds.FIST_SHOT_1.get();
-					case 2:
-						if (charged) return ModSounds.FIST_SHOT_2.get();
-						return ModSounds.FIST_SHOT_1.get();
-					case 3:
-						if (charged) return ModSounds.FIST_GOLD_CHARGED.get();
-						return ModSounds.FIST_SHOT_2.get();
-				}
-				break;
-			case Strings.ROBO_PIRATE_GREEN:
-				return charged ? ModSounds.PIRATE_LASER.get() : ModSounds.PIRATE_SHOT_1.get();
-			case Strings.ROBO_PIRATE_RED:
-				return charged ? ModSounds.PIRATE_LASER.get() : ModSounds.PIRATE_SHOT_2.get();
-		}
-		return null;
+		DeferredHolder<SoundEvent, SoundEvent> sound = switch (props.getPlayerType()) {
+			case Strings.RAYMAN -> switch (props.getShotLevel()) {
+				case 0, 1 -> ModSounds.FIST_SHOT_1;
+				case 2 -> charged ? ModSounds.FIST_SHOT_2 : ModSounds.FIST_SHOT_1;
+				default -> charged ? ModSounds.FIST_GOLD_CHARGED : ModSounds.FIST_SHOT_2;
+			};
+			case Strings.ROBO_PIRATE_GREEN -> charged ? ModSounds.PIRATE_LASER : ModSounds.PIRATE_SHOT_1;
+			case Strings.ROBO_PIRATE_RED -> charged ? ModSounds.PIRATE_LASER : ModSounds.PIRATE_SHOT_2;
+			default -> null;
+		};
+		return sound != null ? sound.get() : null;
 	}
 }

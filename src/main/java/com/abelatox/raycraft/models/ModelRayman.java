@@ -145,6 +145,7 @@ public class ModelRayman extends Model<AvatarRenderState> implements RaycraftCha
 		leftArm.zRot = 0.0F;
 
 		RaycraftModelAnim.applyAttackSwing(state, rightArm, leftArm);
+		RaycraftModelAnim.applyShellRide(data, rightLeg, leftLeg, true);
 
 		if (state.isCrouching) {
 			body.xRot = 0.5F;
@@ -174,7 +175,7 @@ public class ModelRayman extends Model<AvatarRenderState> implements RaycraftCha
 			heli1.visible = false;
 		}
 
-		if (data.holdingBarrel()) {
+		if (data.carriesOverHead()) {
 			rightArm.xRot = -3.0F;
 			leftArm.xRot = -3.0F;
 			head.y += 0.2F * 16.0F;

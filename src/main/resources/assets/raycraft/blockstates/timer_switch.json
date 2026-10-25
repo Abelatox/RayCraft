@@ -1,0 +1,680 @@
+{
+  "variants": {
+    "facing=up,time=0": {
+      "model": "raycraft:block/timer_switch"
+    },
+    "facing=up,time=1": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=2": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=3": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=4": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=5": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=6": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=7": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=8": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=9": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=10": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=11": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=12": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=13": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=14": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=15": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=16": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=17": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=18": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=19": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=20": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=21": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=22": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=23": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=24": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=up,time=25": {
+      "model": "raycraft:block/timer_switch_on"
+    },
+    "facing=down,time=0": {
+      "model": "raycraft:block/timer_switch",
+      "x": 180
+    },
+    "facing=down,time=1": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=2": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=3": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=4": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=5": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=6": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=7": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=8": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=9": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=10": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=11": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=12": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=13": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=14": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=15": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=16": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=17": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=18": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=19": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=20": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=21": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=22": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=23": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=24": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=down,time=25": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 180
+    },
+    "facing=north,time=0": {
+      "model": "raycraft:block/timer_switch",
+      "x": 90
+    },
+    "facing=north,time=1": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=2": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=3": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=4": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=5": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=6": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=7": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=8": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=9": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=10": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=11": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=12": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=13": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=14": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=15": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=16": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=17": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=18": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=19": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=20": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=21": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=22": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=23": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=24": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=north,time=25": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90
+    },
+    "facing=east,time=0": {
+      "model": "raycraft:block/timer_switch",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=1": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=2": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=3": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=4": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=5": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=6": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=7": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=8": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=9": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=10": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=11": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=12": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=13": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=14": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=15": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=16": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=17": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=18": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=19": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=20": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=21": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=22": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=23": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=24": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,time=25": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 90
+    },
+    "facing=south,time=0": {
+      "model": "raycraft:block/timer_switch",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=1": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=2": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=3": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=4": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=5": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=6": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=7": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=8": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=9": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=10": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=11": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=12": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=13": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=14": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=15": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=16": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=17": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=18": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=19": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=20": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=21": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=22": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=23": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=24": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,time=25": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,time=0": {
+      "model": "raycraft:block/timer_switch",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=1": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=2": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=3": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=4": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=5": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=6": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=7": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=8": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=9": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=10": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=11": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=12": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=13": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=14": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=15": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=16": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=17": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=18": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=19": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=20": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=21": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=22": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=23": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=24": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,time=25": {
+      "model": "raycraft:block/timer_switch_on",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

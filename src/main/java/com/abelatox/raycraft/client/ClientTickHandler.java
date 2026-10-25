@@ -2,10 +2,10 @@ package com.abelatox.raycraft.client;
 
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.events.BarrelFlight;
 import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.lib.Strings;
 import com.abelatox.raycraft.network.payloads.SetGlidingPayload;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.neoforged.api.distmarker.Dist;
@@ -36,6 +36,8 @@ public class ClientTickHandler {
 				&& !player.isInWater()
 				&& !player.getAbilities().flying
 				&& !player.isPassenger()
+				&& !GrappleHandler.isSwinging()
+				&& !BarrelFlight.isFlying(player)
 				&& mc.options.keyJump.isDown();
 
 		if (shouldGlide != gliding) {

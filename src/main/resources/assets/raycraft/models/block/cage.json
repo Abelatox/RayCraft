@@ -1,0 +1,12 @@
+{
+  "loader": "neoforge:obj",
+  "model": "raycraft:models/block/cage.obj",
+  "flip_v": true,
+  "render_type": "minecraft:cutout",
+  "ambient_occlusion": false,
+  "parent": "minecraft:block/block",
+  "textures": {
+    "cage": "raycraft:block/cage",
+    "particle": "raycraft:block/cage"
+  }
+}

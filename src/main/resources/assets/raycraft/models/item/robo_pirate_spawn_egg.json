@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "raycraft:item/robo_pirate_spawn_egg"
+  }
+}

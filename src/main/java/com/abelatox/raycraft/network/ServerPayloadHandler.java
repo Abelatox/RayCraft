@@ -1,12 +1,18 @@
 package com.abelatox.raycraft.network;
 
+import com.abelatox.raycraft.blocks.BlockCage;
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.entities.EntityLum;
+import com.abelatox.raycraft.entities.EntityPlum;
 import com.abelatox.raycraft.entities.RaycraftProjectile;
+import com.abelatox.raycraft.events.BarrelFlight;
+import com.abelatox.raycraft.events.GrappleServer;
 import com.abelatox.raycraft.lib.Strings;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.network.payloads.*;
 import com.abelatox.raycraft.sounds.ModSounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -17,33 +23,36 @@ import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 public class ServerPayloadHandler {
 
-	public static void handleSetModel(final SetModelPayload payload, final IPayloadContext context) {
+	private static void updateCapabilities(IPayloadContext context, Consumer<IPlayerCapabilities> change) {
 		context.enqueueWork(() -> {
-			ServerPlayer player = (ServerPlayer) context.player();
-			IPlayerCapabilities props = ModCapabilities.get(player);
-			props.setPlayerType(payload.model());
-			ModCapabilities.sync(player);
+			change.accept(ModCapabilities.get(context.player()));
+			ModCapabilities.sync(context.player());
 		});
+	}
+
+	public static void handleSetModel(final SetModelPayload payload, final IPayloadContext context) {
+		updateCapabilities(context, props -> props.setPlayerType(payload.model()));
 	}
 
 	public static void handleSetCharging(final SetChargingPayload payload, final IPayloadContext context) {
-		context.enqueueWork(() -> {
-			ServerPlayer player = (ServerPlayer) context.player();
-			IPlayerCapabilities props = ModCapabilities.get(player);
-			props.setCharging(payload.charging());
-			ModCapabilities.sync(player);
-		});
+		updateCapabilities(context, props -> props.setCharging(payload.charging()));
+	}
+
+	public static void handleSetBarrelFlight(final SetBarrelFlightPayload payload, final IPayloadContext context) {
+		context.enqueueWork(() -> BarrelFlight.onFlightPayload(context.player(), payload.flying(), payload.letGo()));
+	}
+
+	public static void handleSetSwinging(final SetSwingingPayload payload, final IPayloadContext context) {
+		context.enqueueWork(() -> GrappleServer.setSwinging(context.player(), payload.swinging()));
 	}
 
 	public static void handleSetGliding(final SetGlidingPayload payload, final IPayloadContext context) {
-		context.enqueueWork(() -> {
-			ServerPlayer player = (ServerPlayer) context.player();
-			IPlayerCapabilities props = ModCapabilities.get(player);
-			props.setGliding(payload.gliding());
-			ModCapabilities.sync(player);
-		});
+		updateCapabilities(context, props -> props.setGliding(payload.gliding()));
 	}
 
 	public static void handleShoot(final ShootPayload payload, final IPayloadContext context) {
@@ -56,13 +65,22 @@ public class ServerPayloadHandler {
 					shot.setOwner(player);
 					// Centre the shot on the eye line (its position is the bottom of its hitbox).
 					shot.setPos(shot.getX(), player.getEyeY() - 0.1 - shot.getBbHeight() / 2.0, shot.getZ());
-					LivingEntity target = getLockOnTarget(player, payload.targetId());
+					Entity target = getLockOnTarget(player, payload.targetId());
+					BlockPos cage = getLockOnCage(player, payload.cageTarget());
+					int curve = Mth.clamp(payload.curve(), -1, 1);
 					if (target != null) {
-						aimAtTarget(shot, target, Mth.clamp(payload.curve(), -1, 1));
+						aimAt(shot, target.getBoundingBox().getCenter(), curve);
+						shot.setHomingTarget(target);
+					} else if (cage != null) {
+						aimAt(shot, Vec3.atCenterOf(cage), curve);
+						shot.setHomingTarget(cage);
 					} else {
 						shot.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1F, 0);
 					}
 					player.level().addFreshEntity(shot);
+					if (player.getVehicle() instanceof EntityPlum plum) {
+						plum.pushFrom(shot.getDeltaMovement().reverse());
+					}
 					if (player.isUnderWater() && Strings.RAYMAN.equals(props.getPlayerType())) {
 						player.level().playSound(null, player.blockPosition(), ModSounds.FIST_UNDERWATER.get(), SoundSource.MASTER, 1F, 1F);
 					} else {
@@ -79,25 +97,30 @@ public class ServerPayloadHandler {
 	private static final float CURVE_ANGLE = 35.0F * Mth.DEG_TO_RAD;
 	private static final double FULL_CURVE_DISTANCE = 10.0;
 
-	private static LivingEntity getLockOnTarget(ServerPlayer player, int targetId) {
+	private static Entity getLockOnTarget(ServerPlayer player, int targetId) {
 		if (targetId < 0) {
 			return null;
 		}
 		Entity entity = player.level().getEntity(targetId);
-		if (entity instanceof LivingEntity living && living != player && living.isAlive()
-				&& player.distanceToSqr(living) <= MAX_LOCK_ON_RANGE * MAX_LOCK_ON_RANGE) {
-			return living;
+		boolean lockable = entity instanceof LivingEntity living ? living != player && living.isAlive()
+				: entity instanceof EntityLum lum && lum.isPurple();
+		if (lockable && player.distanceToSqr(entity) <= MAX_LOCK_ON_RANGE * MAX_LOCK_ON_RANGE) {
+			return entity;
 		}
 		return null;
 	}
 
-	private static void aimAtTarget(RaycraftProjectile shot, LivingEntity target, int curve) {
-		Vec3 toTarget = target.getBoundingBox().getCenter().subtract(shot.position());
+	private static BlockPos getLockOnCage(ServerPlayer player, Optional<BlockPos> cage) {
+		return cage.filter(pos -> player.level().getBlockState(pos).getBlock() instanceof BlockCage
+				&& player.distanceToSqr(Vec3.atCenterOf(pos)) <= MAX_LOCK_ON_RANGE * MAX_LOCK_ON_RANGE).orElse(null);
+	}
+
+	private static void aimAt(RaycraftProjectile shot, Vec3 aim, int curve) {
+		Vec3 toTarget = aim.subtract(shot.position());
 		float angle = CURVE_ANGLE * (float) Mth.clamp(toTarget.length() / FULL_CURVE_DISTANCE, 0.3, 1.0);
 		// Vec3#yRot turns left for positive angles, so strafing right uses a negative angle.
 		Vec3 direction = toTarget.normalize().yRot(-curve * angle);
 		shot.shoot(direction.x, direction.y, direction.z, 1F, 0F);
-		shot.setHomingTarget(target);
 	}
 
 	public static void handlePlaySound(final PlaySoundPayload payload, final IPayloadContext context) {

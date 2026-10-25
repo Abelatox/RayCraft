@@ -22,6 +22,7 @@ public class ModCapabilities {
 				ByteBufCodecs.VAR_INT.encode(buf, value.getShotLevel());
 				ByteBufCodecs.BOOL.encode(buf, value.getIsCharging());
 				ByteBufCodecs.BOOL.encode(buf, value.getIsGliding());
+				ByteBufCodecs.VAR_INT.encode(buf, value.getLums());
 			},
 			(buf) -> {
 				PlayerCapabilities data = new PlayerCapabilities();
@@ -29,6 +30,7 @@ public class ModCapabilities {
 				data.setShotLevel(ByteBufCodecs.VAR_INT.decode(buf));
 				data.setCharging(ByteBufCodecs.BOOL.decode(buf));
 				data.setGliding(ByteBufCodecs.BOOL.decode(buf));
+				data.setLums(ByteBufCodecs.VAR_INT.decode(buf));
 				return data;
 			}
 	);

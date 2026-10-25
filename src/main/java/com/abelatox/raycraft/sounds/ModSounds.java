@@ -38,12 +38,21 @@ public class ModSounds {
 	public static final DeferredHolder<SoundEvent, SoundEvent> PIRATE_DIGUP = registerSound("pirate_digup");
 	public static final DeferredHolder<SoundEvent, SoundEvent> PIRATE_LASER = registerSound("pirate_laser");
 	public static final DeferredHolder<SoundEvent, SoundEvent> FIST_UNDERWATER = registerSound("fist_underwater");
-	public static final DeferredHolder<SoundEvent, SoundEvent> FIST_HIT = registerSound("fist_hit");
+	public static final DeferredHolder<SoundEvent, SoundEvent> PLUM_HIT = registerSound("plum_hit");
+	public static final DeferredHolder<SoundEvent, SoundEvent> SHELL_WALK = registerSound("shell_walk");
+	public static final DeferredHolder<SoundEvent, SoundEvent> SHELL_NEIGH = registerSound("shell_neigh");
+	public static final DeferredHolder<SoundEvent, SoundEvent> SHELL_STOP = registerSound("shell_stop");
 	public static final DeferredHolder<SoundEvent, SoundEvent> PIRANHA_BITE = registerSound("piranha_bite");
 	public static final DeferredHolder<SoundEvent, SoundEvent> SPLASH = registerSound("splash");
 	public static final DeferredHolder<SoundEvent, SoundEvent> BURN = registerSound("burn");
 	public static final DeferredHolder<SoundEvent, SoundEvent> ELECTROCUTED = registerSound("electrocuted");
 	public static final DeferredHolder<SoundEvent, SoundEvent> TRAMPOLINE = registerSound("trampoline");
+	public static final DeferredHolder<SoundEvent, SoundEvent> CAGE_HELP = registerSound("cage_help");
+	public static final DeferredHolder<SoundEvent, SoundEvent> CAGE_HIT = registerSound("cage_hit");
+	public static final DeferredHolder<SoundEvent, SoundEvent> CAGE_BREAK = registerSound("cage_break");
+	public static final DeferredHolder<SoundEvent, SoundEvent> CAGE_HEAL_BONUS = registerSound("cage_heal_bonus");
+	public static final DeferredHolder<SoundEvent, SoundEvent> SWITCH_TICK = registerSound("switch_tick");
+	public static final DeferredHolder<SoundEvent, SoundEvent> SWITCH_TOCK = registerSound("switch_tock");
 
 	private static DeferredHolder<SoundEvent, SoundEvent> registerSound(String name) {
 		return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(Reference.MODID, name)));

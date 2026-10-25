@@ -1,6 +1,7 @@
 package com.abelatox.raycraft.client.render;
 
 import com.abelatox.raycraft.client.LockOnHandler;
+import com.abelatox.raycraft.entities.EntityLum;
 import com.abelatox.raycraft.lib.Reference;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,14 +14,17 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
+import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 
 @EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
 public class LockOnRenderer {
@@ -49,14 +53,44 @@ public class LockOnRenderer {
 		}
 
 		PoseStack poseStack = event.getPoseStack();
-		SubmitNodeCollector collector = event.getSubmitNodeCollector();
-		float size = Math.max(state.boundingBoxWidth, state.boundingBoxHeight) * 0.9F + RING_PADDING;
-
 		poseStack.pushPose();
 		poseStack.translate(0.0F, state.boundingBoxHeight * 0.5F, 0.0F);
+		submitIndicator(poseStack, event.getSubmitNodeCollector(), state.boundingBoxWidth, state.boundingBoxHeight);
+		poseStack.popPose();
+	}
+
+	@SubscribeEvent
+	public static void onSubmitCustomGeometry(SubmitCustomGeometryEvent event) {
+		BlockPos cage = LockOnHandler.getCageTarget();
+		EntityLum lum = LockOnHandler.getLumTarget();
+		Vec3 centre;
+		float size;
+		if (cage != null) {
+			centre = Vec3.atCenterOf(cage);
+			size = 1.0F;
+		} else if (lum != null) {
+			float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+			centre = lum.getPosition(partialTick).add(0, lum.getBbHeight() * 0.5, 0);
+			size = lum.getBbWidth();
+		} else {
+			return;
+		}
+		// The pose stack is camera-relative here, so move to the target minus the camera position.
+		Vec3 offset = centre.subtract(event.getLevelRenderState().cameraRenderState.pos);
+		PoseStack poseStack = event.getPoseStack();
+		poseStack.pushPose();
+		poseStack.translate(offset.x, offset.y, offset.z);
+		submitIndicator(poseStack, event.getSubmitNodeCollector(), size, size);
+		poseStack.popPose();
+	}
+
+	private static void submitIndicator(PoseStack poseStack, SubmitNodeCollector collector, float width, float height) {
+		float size = Math.max(width, height) * 0.9F + RING_PADDING;
+
+		poseStack.pushPose();
 		poseStack.rotate(Minecraft.getInstance().gameRenderer.mainCamera().rotation());
-		// Billboard space: +z points at the camera; draw in front of the creature, not inside it.
-		poseStack.translate(0.0F, 0.0F, state.boundingBoxWidth * 0.6F);
+		// Billboard space: +z points at the camera; draw in front of the target, not inside it.
+		poseStack.translate(0.0F, 0.0F, width * 0.6F);
 
 		collector.submitCustomGeometry(poseStack, RING, (pose, buffer) -> quad(buffer, pose, -size / 2.0F, -size / 2.0F, size / 2.0F, size / 2.0F, false));
 
@@ -82,19 +116,10 @@ public class LockOnRenderer {
 
 	private static void quad(VertexConsumer buffer, PoseStack.Pose pose, float x0, float y0, float x1, float y1, boolean mirrorU) {
 		float u0 = mirrorU ? 1.0F : 0.0F;
-		float u1 = mirrorU ? 0.0F : 1.0F;
-		vertex(buffer, pose, x0, y0, u0, 1.0F);
-		vertex(buffer, pose, x1, y0, u1, 1.0F);
-		vertex(buffer, pose, x1, y1, u1, 0.0F);
-		vertex(buffer, pose, x0, y1, u0, 0.0F);
-	}
-
-	private static void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v) {
-		buffer.addVertex(pose, x, y, 0.0F)
-				.setColor(0xFFFFFFFF)
-				.setUv(u, v)
-				.setOverlay(OverlayTexture.NO_OVERLAY)
-				.setLight(LightCoordsUtil.FULL_BRIGHT)
-				.setNormal(pose, 0.0F, 1.0F, 0.0F);
+		float[][] corners = {{x0, y0, u0, 1}, {x1, y0, 1 - u0, 1}, {x1, y1, 1 - u0, 0}, {x0, y1, u0, 0}};
+		for (float[] c : corners) {
+			buffer.addVertex(pose, c[0], c[1], 0.0F).setColor(0xFFFFFFFF).setUv(c[2], c[3]).setOverlay(OverlayTexture.NO_OVERLAY)
+					.setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(pose, 0.0F, 1.0F, 0.0F);
+		}
 	}
 }

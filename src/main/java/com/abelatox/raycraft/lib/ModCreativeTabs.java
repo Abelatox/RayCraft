@@ -21,6 +21,13 @@ public class ModCreativeTabs {
 						output.accept(ModItems.BARREL.get());
 						output.accept(ModItems.POWER_UP.get());
 						output.accept(ModItems.LUM_SPAWNER.get());
+						output.accept(ModItems.CAGE_ITEM.get());
+						output.accept(ModItems.TIMER_SWITCH_ITEM.get());
+						output.accept(ModItems.ROBO_PIRATE_SPAWN_EGG.get());
+						output.accept(ModItems.ROBO_PIRATE_GREEN_SPAWN_EGG.get());
+						output.accept(ModItems.PLUM.get());
+						output.accept(ModItems.WALKING_SHELL_SPAWN_EGG.get());
+						output.accept(ModItems.FLYING_SHELL_SPAWN_EGG.get());
 					})
 					.build());
 }

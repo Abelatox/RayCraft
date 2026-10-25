@@ -92,6 +92,7 @@ public class ModelHoodlum extends Model<AvatarRenderState> implements RaycraftCh
 		leftArm.xRot = Mth.cos(state.walkAnimationPos * 0.6662F + (float) Math.PI) * 0.4F * state.walkAnimationSpeed;
 
 		RaycraftModelAnim.applyAttackSwing(state, rightArm, leftArm);
+		RaycraftModelAnim.applyShellRide(data, rightLeg, leftLeg, false);
 
 		if (state.isCrouching) {
 			body.xRot = 0.5F;
@@ -102,7 +103,7 @@ public class ModelHoodlum extends Model<AvatarRenderState> implements RaycraftCh
 			body.xRot = 0.0F;
 		}
 
-		if (data.holdingBarrel()) {
+		if (data.carriesOverHead()) {
 			rightArm.xRot = -3.0F;
 			leftArm.xRot = -3.0F;
 			head.y += 0.2F * 16.0F;

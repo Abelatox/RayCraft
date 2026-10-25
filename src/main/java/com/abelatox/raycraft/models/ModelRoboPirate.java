@@ -111,6 +111,7 @@ public class ModelRoboPirate extends Model<AvatarRenderState> implements Raycraf
 		leftArm.yRot = 0.0F;
 
 		RaycraftModelAnim.applyAttackSwing(state, rightArm, leftArm);
+		RaycraftModelAnim.applyShellRide(data, rightLeg, leftLeg, false);
 
 		if (state.isCrouching) {
 			body.xRot = 0.5F;
@@ -121,7 +122,7 @@ public class ModelRoboPirate extends Model<AvatarRenderState> implements Raycraf
 			body.xRot = 0.0F;
 		}
 
-		if (data.holdingBarrel()) {
+		if (data.carriesOverHead()) {
 			rightArm.xRot = -3.0F;
 			leftArm.xRot = -3.0F;
 			head.y += 0.2F * 16.0F;

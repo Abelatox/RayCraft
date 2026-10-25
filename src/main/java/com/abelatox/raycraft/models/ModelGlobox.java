@@ -142,6 +142,7 @@ public class ModelGlobox extends Model<AvatarRenderState> implements RaycraftCha
 		leftArm.zRot = -0.1F;
 
 		RaycraftModelAnim.applyAttackSwing(state, rightArm, leftArm);
+		RaycraftModelAnim.applyShellRide(data, rightLeg, leftLeg, false);
 
 		if (state.isCrouching) {
 			body.xRot = 0.5F;
@@ -152,7 +153,7 @@ public class ModelGlobox extends Model<AvatarRenderState> implements RaycraftCha
 			body.xRot = 0.0F;
 		}
 
-		if (data.holdingBarrel()) {
+		if (data.carriesOverHead()) {
 			rightArm.xRot = -3.0F;
 			leftArm.xRot = -3.0F;
 			rightArm.zRot = 0.1F;

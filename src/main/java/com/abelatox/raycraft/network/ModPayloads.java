@@ -17,6 +17,9 @@ public class ModPayloads {
 		registrar.playToServer(SetModelPayload.TYPE, SetModelPayload.STREAM_CODEC, ServerPayloadHandler::handleSetModel);
 		registrar.playToServer(SetChargingPayload.TYPE, SetChargingPayload.STREAM_CODEC, ServerPayloadHandler::handleSetCharging);
 		registrar.playToServer(SetGlidingPayload.TYPE, SetGlidingPayload.STREAM_CODEC, ServerPayloadHandler::handleSetGliding);
+		registrar.playToServer(SetSwingingPayload.TYPE, SetSwingingPayload.STREAM_CODEC, ServerPayloadHandler::handleSetSwinging);
+		registrar.playToServer(SetBarrelFlightPayload.TYPE, SetBarrelFlightPayload.STREAM_CODEC, ServerPayloadHandler::handleSetBarrelFlight);
+		registrar.playToClient(StartGrapplePayload.TYPE, StartGrapplePayload.STREAM_CODEC, ClientboundPayloadHandler::handleStartGrapple);
 		registrar.playToServer(ShootPayload.TYPE, ShootPayload.STREAM_CODEC, ServerPayloadHandler::handleShoot);
 		registrar.playToServer(PlaySoundPayload.TYPE, PlaySoundPayload.STREAM_CODEC, ServerPayloadHandler::handlePlaySound);
 	}

@@ -1,16 +1,19 @@
 package com.abelatox.raycraft.entities;
 
-import com.abelatox.raycraft.sounds.ModSounds;
-import net.minecraft.core.Direction;
+import com.abelatox.raycraft.blocks.BlockCage;
+import com.abelatox.raycraft.network.payloads.StartGrapplePayload;
+
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
@@ -18,30 +21,34 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-
-import java.util.List;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class EntityFist extends RaycraftProjectile {
 
 	private static final EntityDataAccessor<Integer> LEVEL = SynchedEntityData.defineId(EntityFist.class, EntityDataSerializers.INT);
 
+	public static final int GOLD_LEVEL = 3;
 	public static final int GIANT_LEVEL = 4;
 	public static final float GIANT_SCALE = 4.0F;
+	private static final float[] POWER = {2, 4, 6, 10, 16};
+	private static final int[] MAX_TICKS = {60, 75, 90, 100, 120};
 
-	int bounces;
-	int maxBounces;
-	float power;
-	boolean explosion = false;
-	int maxTicks = 60;
+	private boolean explosion;
+	private boolean charged;
 
 	public EntityFist(EntityType<? extends EntityFist> type, Level level) {
 		super(type, level);
 	}
 
-	public EntityFist(Level level, Player player) {
-		this(ModEntities.FIST.get(), level);
-		this.setOwner(player);
-		this.setPos(player.getX(), player.getEyeY() - 0.1, player.getZ());
+	public EntityFist(Level level, Player player, int punchLevel, boolean charged) {
+		super(ModEntities.FIST.get(), level, player);
+		int lvl = charged ? Math.min(punchLevel + 1, GIANT_LEVEL) : punchLevel;
+		setLvl(lvl);
+		setPower(POWER[lvl]);
+		setMaxBounces(lvl);
+		setMaxTicks(MAX_TICKS[lvl]);
+		this.charged = charged;
+		this.explosion = charged && lvl >= GOLD_LEVEL;
 	}
 
 	@Override
@@ -59,11 +66,6 @@ public class EntityFist extends RaycraftProjectile {
 	}
 
 	@Override
-	protected double getDefaultGravity() {
-		return 0F;
-	}
-
-	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
 		builder.define(LEVEL, 0);
@@ -71,11 +73,7 @@ public class EntityFist extends RaycraftProjectile {
 
 	@Override
 	public void tick() {
-		if (this.tickCount > maxTicks) {
-			this.discard();
-		}
-
-		if (getLvl() >= 3) {
+		if (getLvl() >= GOLD_LEVEL) {
 			level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 1F, 1F, 0F), getX(), getY(), getZ(), 0, 0, 0);
 		}
 		super.tick();
@@ -83,67 +81,44 @@ public class EntityFist extends RaycraftProjectile {
 
 	@Override
 	protected void onHit(HitResult hitResult) {
-		if (!level().isClientSide()) {
-			if (bounces >= maxBounces) {
-				this.discard();
+		if (hitResult instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof EntityLum lum && lum.isPurple()) {
+			if (getOwner() instanceof ServerPlayer owner) {
+				PacketDistributor.sendToPlayer(owner, new StartGrapplePayload(lum.getId()));
 			}
-
-			EntityHitResult entityResult = hitResult instanceof EntityHitResult eh ? eh : null;
-			BlockHitResult blockResult = hitResult instanceof BlockHitResult bh ? bh : null;
-
-			if (entityResult != null && entityResult.getEntity() instanceof LivingEntity target) {
-				if (target != this.getOwner() && level() instanceof ServerLevel serverLevel) {
-					DamageSource damageSource = this.damageSources().thrown(this, this.getOwner());
-					target.hurtServer(serverLevel, damageSource, power);
-					level().playSound(null, blockPosition(), ModSounds.FIST_HIT.get(), SoundSource.PLAYERS, 1F, 1F);
-					if (explosion) {
-						explode();
-					} else {
-						discard();
-					}
-				}
-			} else {
-				if (blockResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
-					if (explosion) {
-						explode();
-					} else {
-						level().playSound(null, blockPosition(), ModSounds.FIST_BOUNCE.get(), SoundSource.MASTER, 1F, 1F);
-
-						bounces++;
-						Direction face = blockResult.getDirection();
-						if (face == Direction.NORTH || face == Direction.SOUTH) {
-							this.setDeltaMovement(getDeltaMovement().x, getDeltaMovement().y, -getDeltaMovement().z);
-						} else if (face == Direction.EAST || face == Direction.WEST) {
-							this.setDeltaMovement(-getDeltaMovement().x, getDeltaMovement().y, getDeltaMovement().z);
-						} else if (face == Direction.UP || face == Direction.DOWN) {
-							this.setDeltaMovement(getDeltaMovement().x, -getDeltaMovement().y, getDeltaMovement().z);
-						}
-					}
-				} else {
-					discard();
-				}
+			if (!level().isClientSide()) {
+				discard();
 			}
+			return;
+		}
+		super.onHit(hitResult);
+	}
+
+	@Override
+	protected void onImpact() {
+		if (explosion) {
+			explode();
+		} else {
+			discard();
+		}
+	}
+
+	@Override
+	protected void onHitBlockFace(BlockHitResult hit) {
+		if (explosion) {
+			explode();
+		} else {
+			super.onHitBlockFace(hit);
 		}
 	}
 
 	private void explode() {
 		if (level() instanceof ServerLevel serverLevel) {
 			serverLevel.explode(this, getX(), getY(), getZ(), 0, Level.ExplosionInteraction.NONE);
-
-			List<Entity> entities = level().getEntities(this, getBoundingBox().inflate(4.0D, 4.0D, 4.0D).move(-2.0D, -2.0D, -2.0D));
-			for (Entity e : entities) {
-				if (e instanceof LivingEntity living && e != this.getOwner()) {
-					DamageSource damageSource = this.damageSources().thrown(this, this.getOwner());
-					living.hurtServer(serverLevel, damageSource, power);
-				}
+			for (LivingEntity living : level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(4.0D).move(-2.0D, -2.0D, -2.0D), e -> e != getOwner())) {
+				living.hurtServer(serverLevel, damageSources().thrown(this, getOwner()), power);
 			}
 		}
-
-		this.discard();
-	}
-
-	public void setMaxBounces(int maxBounces) {
-		this.maxBounces = maxBounces;
+		discard();
 	}
 
 	public int getLvl() {
@@ -154,16 +129,9 @@ public class EntityFist extends RaycraftProjectile {
 		this.getEntityData().set(LEVEL, lvl);
 	}
 
-	public void setPower(float power) {
-		this.power = power;
-	}
-
-	public void setExplosion(boolean explosion) {
-		this.explosion = explosion;
-	}
-
-	public void setMaxTicks(int maxTicks) {
-		this.maxTicks = maxTicks;
+	@Override
+	protected int getCageDamage() {
+		return charged || getLvl() >= GOLD_LEVEL ? BlockCage.HITS_TO_BREAK : 1;
 	}
 
 	@Override

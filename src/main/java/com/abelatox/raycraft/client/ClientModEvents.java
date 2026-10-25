@@ -6,6 +6,8 @@ import com.abelatox.raycraft.client.gui.RaycraftHealthOverlay;
 import com.abelatox.raycraft.client.render.LockOnRenderer;
 import com.abelatox.raycraft.client.render.RaycraftAvatarRenderData;
 import com.abelatox.raycraft.client.render.RaycraftRenderData;
+import com.abelatox.raycraft.entities.EntityFlyingShell;
+import com.abelatox.raycraft.entities.EntityWalkingShell;
 import com.abelatox.raycraft.entities.ModEntities;
 import com.abelatox.raycraft.entities.render.*;
 import com.abelatox.raycraft.items.ModItems;
@@ -58,12 +60,18 @@ public class ClientModEvents {
 
 				IPlayerCapabilities caps = ModCapabilities.get(player);
 				boolean holdingBarrel = ItemStack.matches(player.getMainHandItem(), new ItemStack(ModItems.BARREL.get()));
+				boolean holdingPlum = player.getMainHandItem().is(ModItems.PLUM.get());
+				boolean ridingShell = player.getVehicle() instanceof EntityWalkingShell;
+				EntityFlyingShell flyingShell = player.getVehicle() instanceof EntityFlyingShell shell ? shell : null;
+				float shellRoll = flyingShell != null ? flyingShell.getRollAngle(renderState.partialTick) : 0F;
+				float rollPivot = flyingShell != null ? player.getEyeHeight() : 0F;
+				float rollYaw = flyingShell != null ? flyingShell.getYRot(renderState.partialTick) : 0F;
 				int lightCoords = LightCoordsUtil.getLightCoords(player.level(), player.blockPosition());
 
 				float armRotation = caps.getIsCharging() ? -renderState.ageInTicks * ARM_SPIN_PER_TICK : 0F;
 				float hairRotation = caps.getIsGliding() ? -renderState.ageInTicks * HAIR_SPIN_PER_TICK : 0F;
 
-				renderState.setRenderData(RaycraftRenderData.AVATAR_DATA, new RaycraftAvatarRenderData(caps.getPlayerType(), holdingBarrel, caps.getIsCharging(), caps.getIsGliding(), armRotation, hairRotation, caps.getShotLevel(), lightCoords));
+				renderState.setRenderData(RaycraftRenderData.AVATAR_DATA, new RaycraftAvatarRenderData(caps.getPlayerType(), holdingBarrel, holdingPlum, ridingShell, shellRoll, rollPivot, rollYaw, caps.getIsCharging(), caps.getIsGliding(), armRotation, hairRotation, caps.getShotLevel(), lightCoords));
 			}
 		});
 	}
@@ -72,10 +80,15 @@ public class ClientModEvents {
 	public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
 
 		event.registerEntityRenderer(ModEntities.BARREL.get(), RenderEntityBarrel::new);
-		event.registerEntityRenderer(ModEntities.FIST.get(), RenderEntityFist::new);
-		event.registerEntityRenderer(ModEntities.PIRATE_SHOT.get(), RenderEntityPirateShot::new);
-		event.registerEntityRenderer(ModEntities.PIRATE_SHOT_2.get(), RenderEntityPirateShot2::new);
+		event.registerEntityRenderer(ModEntities.FIST.get(), RenderRaycraftProjectile::fist);
+		event.registerEntityRenderer(ModEntities.PIRATE_SHOT.get(), RenderRaycraftProjectile::pirateShot);
+		event.registerEntityRenderer(ModEntities.PIRATE_SHOT_2.get(), RenderRaycraftProjectile::pirateShot2);
 		event.registerEntityRenderer(ModEntities.LUM.get(), RenderEntityLum::new);
+		event.registerEntityRenderer(ModEntities.ROBO_PIRATE.get(), context -> new RenderRoboPirate(context, RenderRoboPirate.RED_TEXTURE));
+		event.registerEntityRenderer(ModEntities.ROBO_PIRATE_GREEN.get(), context -> new RenderRoboPirate(context, RenderRoboPirate.GREEN_TEXTURE));
+		event.registerEntityRenderer(ModEntities.PLUM.get(), RenderEntityPlum::new);
+		event.registerEntityRenderer(ModEntities.WALKING_SHELL.get(), context -> new RenderWalkingShell(context, RenderWalkingShell.WALKING_TEXTURE));
+		event.registerEntityRenderer(ModEntities.FLYING_SHELL.get(), context -> new RenderWalkingShell(context, RenderWalkingShell.FLYING_TEXTURE));
 	}
 
 	@SubscribeEvent

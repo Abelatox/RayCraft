@@ -14,12 +14,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.component.SwingAnimation;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+
+import java.util.Optional;
 
 public class InputHandler {
 	public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(Reference.MODID, Reference.MODID));
@@ -66,7 +67,7 @@ public class InputHandler {
 	public void handleMouseInputEvent(InputEvent.MouseButton.Pre event) {
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
-		if (player == null || mc.gui.screen() != null || event.getButton() != Constants.RIGHT_MOUSE) {
+		if (player == null || mc.gui.screen() != null || event.getButton() != Constants.LEFT_MOUSE) {
 			return;
 		}
 
@@ -75,10 +76,12 @@ public class InputHandler {
 		if (event.getAction() == InputConstants.PRESS) {
 			shouldShoot = false;
 
-			boolean aimingAtNothing = mc.hitResult == null || mc.hitResult.getType() == HitResult.Type.MISS;
-			boolean ctrlDown = event.getMouseButtonInfo().hasControlDown();
+			if (GrappleHandler.isSwinging()) {
+				event.setCanceled(true);
+				return;
+			}
 
-			if (Utils.canShoot(props.getPlayerType()) && player.getMainHandItem().isEmpty() && (aimingAtNothing || ctrlDown)) {
+			if (Utils.canShoot(props.getPlayerType()) && player.getMainHandItem().isEmpty()) {
 				time = System.currentTimeMillis();
 				shouldShoot = true;
 				props.setCharging(true);
@@ -88,8 +91,9 @@ public class InputHandler {
 		} else if (event.getAction() == InputConstants.RELEASE && shouldShoot) {
 			boolean charged = time + 1000 < System.currentTimeMillis();
 
-			LivingEntity target = LockOnHandler.getTarget();
-			ClientPacketDistributor.sendToServer(new ShootPayload(charged, target != null ? target.getId() : -1, LockOnHandler.getStrafe()));
+			Entity target = LockOnHandler.getTarget() != null ? LockOnHandler.getTarget() : LockOnHandler.getLumTarget();
+			ClientPacketDistributor.sendToServer(new ShootPayload(charged, target != null ? target.getId() : -1,
+					Optional.ofNullable(LockOnHandler.getCageTarget()), LockOnHandler.getStrafe()));
 			shouldShoot = false;
 			props.setCharging(false);
 			player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);

@@ -1,7 +1,7 @@
 package com.abelatox.raycraft.entities;
 
-import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
-import com.abelatox.raycraft.capabilities.ModCapabilities;
+import com.abelatox.raycraft.events.LumRewards;
+import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.sounds.ModSounds;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -26,7 +26,8 @@ public class EntityLum extends Entity {
 	private static final int BLUE_LUM_BUBBLES = 3;
 	private static final int AIR_PER_BUBBLE = 30;
 
-	public static final List<String> TYPES = List.of("yellow", "green", "red", "blue");
+	public static final String PURPLE = "purple";
+	public static final List<String> TYPES = List.of("yellow", "green", "red", "blue", PURPLE);
 
 	public static int getColor(String lumType) {
 		return switch (lumType) {
@@ -34,6 +35,7 @@ public class EntityLum extends Entity {
 			case "green" -> 0xFF50FF50;
 			case "red" -> 0xFFFF3A3A;
 			case "blue" -> 0xFF00c4f5;
+			case PURPLE -> 0xFFB45CFF;
 			default -> 0xFFFFFFFF;
 		};
 	}
@@ -65,12 +67,11 @@ public class EntityLum extends Entity {
 
 	@Override
 	public void playerTouch(Player player) {
-		if (this.tickCount > 20) {
+		if (this.tickCount > 20 && !isPurple()) {
 			if (!level().isClientSide()) {
-				IPlayerCapabilities props = ModCapabilities.get(player);
 				switch (getLumType()) {
 					case "yellow" -> {
-						props.setLums(props.getLums() + 1);
+						LumRewards.addLum(player);
 						level().playSound(null, player.blockPosition(), ModSounds.LUM_YELLOW.get(), SoundSource.MASTER, 1F, 1F);
 					}
 					case "green" -> {
@@ -93,6 +94,23 @@ public class EntityLum extends Entity {
 			discard();
 		}
 		super.playerTouch(player);
+	}
+
+	/**
+	 * Every Lum can be targeted, so one can be hit with the Lum spawner to remove it.
+	 */
+	@Override
+	public boolean isPickable() {
+		return true;
+	}
+
+	@Override
+	public boolean canBeHitByProjectile() {
+		return isPurple();
+	}
+
+	public boolean isPurple() {
+		return PURPLE.equals(getLumType());
 	}
 
 	public String getLumType() {
@@ -120,7 +138,10 @@ public class EntityLum extends Entity {
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
-
+		if (damageSource.getEntity() instanceof Player player && player.getMainHandItem().is(ModItems.LUM_SPAWNER.get())) {
+			discard();
+			return true;
+		}
 		return false;
 	}
 }

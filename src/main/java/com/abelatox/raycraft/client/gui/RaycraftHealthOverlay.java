@@ -38,12 +38,23 @@ public class RaycraftHealthOverlay implements GuiLayer {
 	private static final int BAR_H = 6;
 	private static final int PIXELS_PER_HP = 2;
 
+	private static final Identifier LUM_ICON = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/gui/lum.png");
+	private static final int LUM_ICON_SIZE = 9;
+	private static final int LUM_COLOR = 0xFFFFE040;
+
 	private static final Map<String, Identifier> FACES = new HashMap<>();
 
 	private final GuiLayer vanillaHealth;
 
 	public RaycraftHealthOverlay(GuiLayer vanillaHealth) {
 		this.vanillaHealth = vanillaHealth;
+	}
+
+	private static Identifier getFace(Minecraft mc, String playerType) {
+		return FACES.computeIfAbsent(playerType, type -> {
+			Identifier face = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/gui/" + type + "_face.png");
+			return mc.getResourceManager().getResource(face).isPresent() ? face : FALLBACK_FACE;
+		});
 	}
 
 	@Override
@@ -61,8 +72,7 @@ public class RaycraftHealthOverlay implements GuiLayer {
 		guiGraphics.pose().translate(HUD_X, HUD_Y);
 		guiGraphics.pose().scale(HUD_SCALE, HUD_SCALE);
 
-		guiGraphics.blit(getFace(mc, props.getPlayerType()), 0, 0, FACE_W, FACE_H,
-				0F, (float) FACE_U_SIZE / GUI_TEX_SIZE, 0F, (float) FACE_V_SIZE / GUI_TEX_SIZE);
+		guiGraphics.blit(getFace(mc, props.getPlayerType()), 0, 0, FACE_W, FACE_H, 0F, (float) FACE_U_SIZE / GUI_TEX_SIZE, 0F, (float) FACE_V_SIZE / GUI_TEX_SIZE);
 
 		int maxWidth = Math.max(1, Math.round(player.getMaxHealth() * PIXELS_PER_HP));
 		int width = Math.clamp(Math.round(player.getHealth() * PIXELS_PER_HP), 0, maxWidth);
@@ -73,13 +83,10 @@ public class RaycraftHealthOverlay implements GuiLayer {
 			guiGraphics.blit(HP_TEXTURE, BAR_X, BAR_Y, BAR_X + width, BAR_Y + BAR_H, 1F / GUI_TEX_SIZE, 2F / GUI_TEX_SIZE, 0F, barV);
 		}
 
-		guiGraphics.pose().popMatrix();
-	}
+		int lumY = BAR_Y + BAR_H + 3;
+		guiGraphics.blit(LUM_ICON, BAR_X, lumY, BAR_X + LUM_ICON_SIZE, lumY + LUM_ICON_SIZE, 0F, 1F, 0F, 1F);
+		guiGraphics.text(mc.font, "x" + props.getLums(), BAR_X + LUM_ICON_SIZE + 2, lumY + 1, LUM_COLOR, true);
 
-	private static Identifier getFace(Minecraft mc, String playerType) {
-		return FACES.computeIfAbsent(playerType, type -> {
-			Identifier face = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/gui/" + type + "_face.png");
-			return mc.getResourceManager().getResource(face).isPresent() ? face : FALLBACK_FACE;
-		});
+		guiGraphics.pose().popMatrix();
 	}
 }
