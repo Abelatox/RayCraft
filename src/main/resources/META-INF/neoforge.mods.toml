@@ -13,6 +13,9 @@ RayCraft: a Rayman-inspired mod for Minecraft. Choose your character, punch enem
 shoot as the Robo-Pirates, on NeoForge ${minecraft_version}.
 '''
 
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
+
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"

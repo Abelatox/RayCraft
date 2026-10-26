@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
@@ -26,10 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderArmEvent;
-import net.neoforged.neoforge.client.event.RenderFrameEvent;
-import net.neoforged.neoforge.client.event.RenderPlayerEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.event.*;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -99,16 +97,12 @@ public class RaycraftPlayerRenderHandler {
 		return Strings.RAYMAN.equals(playerType) && punchLevel == ModelRayman.GOLD_FIST_LEVEL;
 	}
 
-	/**
-	 * The rider turns with a rolling flying shell, around the shell's own axis.
-	 */
 	private static void applyShellRoll(PoseStack poseStack, RaycraftAvatarRenderData data) {
 		if (data.shellRotation() == null) {
 			return;
 		}
-		poseStack.translate(0.0F, data.rollPivot(), 0.0F);
+		poseStack.translate(data.shellOffset().x, data.shellOffset().y, data.shellOffset().z);
 		poseStack.rotate(data.shellRotation());
-		poseStack.translate(0.0F, -data.rollPivot(), 0.0F);
 	}
 
 	private static final float MAX_HEAD_YAW = 80.0F;
@@ -126,6 +120,41 @@ public class RaycraftPlayerRenderHandler {
 		float headYaw = Mth.wrapDegrees((float) (Mth.atan2(-look.x, look.z) * Mth.RAD_TO_DEG) - state.bodyRot);
 		state.yRot = Mth.clamp(headYaw, -MAX_HEAD_YAW, MAX_HEAD_YAW);
 		state.xRot = (float) (Math.asin(Mth.clamp(-look.y, -1.0F, 1.0F)) * Mth.RAD_TO_DEG);
+	}
+
+	private static boolean pitchLifted;
+	private static float realPitch;
+	private static float realPitchO;
+
+	static {
+		EntityFlyingShell.setTurnHook(RaycraftPlayerRenderHandler::restorePitch);
+	}
+
+	/**
+	 * Vanilla clamps the pitch at +-90 while turning. Riding a flying shell the turn is applied to a zero pitch instead,
+	 * and {@link #restorePitch} adds the result to the real pitch right after, with no limit.
+	 */
+	@SubscribeEvent
+	public static void onCalculateTurn(CalculatePlayerTurnEvent event) {
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player == null || pitchLifted || !(player.getVehicle() instanceof EntityFlyingShell)) {
+			return;
+		}
+		realPitch = player.getXRot();
+		realPitchO = player.xRotO;
+		player.setXRot(0.0F);
+		player.xRotO = 0.0F;
+		pitchLifted = true;
+	}
+
+	private static void restorePitch(Entity passenger) {
+		if (!pitchLifted || passenger != Minecraft.getInstance().player) {
+			return;
+		}
+		pitchLifted = false;
+		float delta = passenger.getXRot();
+		passenger.xRot = realPitch + delta;
+		passenger.xRotO = realPitchO + delta;
 	}
 
 	private static boolean turnTracked;
@@ -148,11 +177,11 @@ public class RaycraftPlayerRenderHandler {
 			float dPitch = player.getXRot() - lastPitch;
 			float roll = shell.getRollAngle(event.getPartialTick().getGameTimeDeltaPartialTick(false)) * Mth.DEG_TO_RAD;
 			float yaw = lastYaw + dYaw * Mth.cos(roll) + dPitch * Mth.sin(roll);
-			float pitch = Mth.clamp(lastPitch + dPitch * Mth.cos(roll) - dYaw * Mth.sin(roll), -90.0F, 90.0F);
+			float pitch = lastPitch + dPitch * Mth.cos(roll) - dYaw * Mth.sin(roll);
 			player.yRotO += yaw - player.getYRot();
 			player.xRotO += pitch - player.getXRot();
 			player.setYRot(yaw);
-			player.setXRot(pitch);
+			player.xRot = pitch;
 		}
 		lastYaw = player.getYRot();
 		lastPitch = player.getXRot();

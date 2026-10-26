@@ -8,6 +8,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -32,6 +34,8 @@ public class EntityWalkingShell extends PathfinderMob {
 
 	private static final double DETECT_RANGE = 16.0;
 	private static final double CHASE_SPEED = 1.0;
+	private static final double CHARGE_DISTANCE = 3.0;
+	private static final double CONTACT_MARGIN = 0.3;
 	private static final int TIRE_AFTER_TICKS = 8 * 20;
 	private static final int TIRED_TICKS = 10 * 20;
 	private static final int REST_AFTER_RIDE_TICKS = 3 * 20;
@@ -165,7 +169,7 @@ public class EntityWalkingShell extends PathfinderMob {
 		}
 		chaseMove(target);
 
-		if (getBoundingBox().inflate(0.2).intersects(target.getBoundingBox())) {
+		if (getBoundingBox().inflate(CONTACT_MARGIN).intersects(target.getBoundingBox())) {
 			explode(null);
 			return;
 		}
@@ -179,9 +183,7 @@ public class EntityWalkingShell extends PathfinderMob {
 	private void tiredTick() {
 		getNavigation().stop();
 		for (Player player : level().getEntitiesOfClass(Player.class, getBoundingBox().inflate(0.2))) {
-			if (!player.isSpectator() && !player.isPassenger() && player.startRiding(this)) {
-				setState(MOUNTING);
-				level().playSound(null, getX(), getY(), getZ(), ModSounds.SHELL_NEIGH.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+			if (!player.isSpectator() && !player.isPassenger() && mount(player)) {
 				return;
 			}
 		}
@@ -190,8 +192,38 @@ public class EntityWalkingShell extends PathfinderMob {
 		}
 	}
 
+	private boolean mount(Player player) {
+		if (!player.startRiding(this)) {
+			return false;
+		}
+		getNavigation().stop();
+		setState(MOUNTING);
+		level().playSound(null, getX(), getY(), getZ(), ModSounds.SHELL_NEIGH.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+		return true;
+	}
+
+	@Override
+	protected InteractionResult mobInteract(Player player, InteractionHand hand) {
+		if (!player.isCreative() || isVehicle() || player.isPassenger()) {
+			return super.mobInteract(player, hand);
+		}
+		if (!level().isClientSide()) {
+			mount(player);
+		}
+		return InteractionResult.SUCCESS;
+	}
+
+	/**
+	 * Pathfinding gives up a little short of its target; once close it charges straight at the player instead,
+	 * so it actually runs into them.
+	 */
 	protected void chaseMove(Player target) {
-		getNavigation().moveTo(target, CHASE_SPEED);
+		if (distanceToSqr(target) < CHARGE_DISTANCE * CHARGE_DISTANCE) {
+			getNavigation().stop();
+			getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), CHASE_SPEED);
+		} else {
+			getNavigation().moveTo(target, CHASE_SPEED);
+		}
 		getLookControl().setLookAt(target);
 	}
 

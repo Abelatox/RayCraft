@@ -31,5 +31,14 @@
     "entity.raycraft.walking_shell": "Walking Shell",
     "item.raycraft.walking_shell_spawn_egg": "Walking Shell Spawn Egg",
     "entity.raycraft.flying_shell": "Flying Shell",
-    "item.raycraft.flying_shell_spawn_egg": "Flying Shell Spawn Egg"
+    "item.raycraft.flying_shell_spawn_egg": "Flying Shell Spawn Egg",
+    "entity.raycraft.spiral_portal": "Spiral Portal",
+    "item.raycraft.spiral_portal": "Spiral Portal",
+    "gui.raycraft.spiral_portal": "Portal destination",
+    "gui.raycraft.spiral_portal.dimension": "Dimension: %s",
+    "gui.raycraft.spiral_portal.here": "Use my position",
+    "gui.raycraft.spiral_portal.color": "Colour: %s",
+    "gui.raycraft.spiral_portal.blue": "Blue",
+    "gui.raycraft.spiral_portal.red": "Red",
+    "gui.raycraft.spiral_portal.size": "Size: %s blocks"
 }

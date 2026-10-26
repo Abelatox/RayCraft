@@ -3,14 +3,7 @@ package com.abelatox.raycraft.network;
 import com.abelatox.raycraft.blocks.BlockCage;
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
-import com.abelatox.raycraft.entities.EntityLum;
-import com.abelatox.raycraft.entities.EntityPlum;
-import com.abelatox.raycraft.entities.EntitySpiralPortal;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.Level;
-import com.abelatox.raycraft.entities.RaycraftProjectile;
+import com.abelatox.raycraft.entities.*;
 import com.abelatox.raycraft.events.BarrelFlight;
 import com.abelatox.raycraft.events.GrappleServer;
 import com.abelatox.raycraft.lib.Strings;
@@ -18,6 +11,9 @@ import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.network.payloads.*;
 import com.abelatox.raycraft.sounds.ModSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -25,6 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.component.SwingAnimation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -32,6 +29,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ServerPayloadHandler {
+
+	private static final double MAX_LOCK_ON_RANGE = 48.0;
+	private static final float CURVE_ANGLE = 35.0F * Mth.DEG_TO_RAD;
+	private static final double FULL_CURVE_DISTANCE = 10.0;
 
 	private static void updateCapabilities(IPayloadContext context, Consumer<IPlayerCapabilities> change) {
 		context.enqueueWork(() -> {
@@ -98,17 +99,12 @@ public class ServerPayloadHandler {
 		});
 	}
 
-	private static final double MAX_LOCK_ON_RANGE = 48.0;
-	private static final float CURVE_ANGLE = 35.0F * Mth.DEG_TO_RAD;
-	private static final double FULL_CURVE_DISTANCE = 10.0;
-
 	private static Entity getLockOnTarget(ServerPlayer player, int targetId) {
 		if (targetId < 0) {
 			return null;
 		}
 		Entity entity = player.level().getEntity(targetId);
-		boolean lockable = entity instanceof LivingEntity living ? living != player && living.isAlive()
-				: entity instanceof EntityLum lum && lum.isPurple();
+		boolean lockable = entity instanceof LivingEntity living ? living != player && living.isAlive() : entity instanceof EntityLum lum && lum.isPurple();
 		if (lockable && player.distanceToSqr(entity) <= MAX_LOCK_ON_RANGE * MAX_LOCK_ON_RANGE) {
 			return entity;
 		}
@@ -116,8 +112,7 @@ public class ServerPayloadHandler {
 	}
 
 	private static BlockPos getLockOnCage(ServerPlayer player, Optional<BlockPos> cage) {
-		return cage.filter(pos -> player.level().getBlockState(pos).getBlock() instanceof BlockCage
-				&& player.distanceToSqr(Vec3.atCenterOf(pos)) <= MAX_LOCK_ON_RANGE * MAX_LOCK_ON_RANGE).orElse(null);
+		return cage.filter(pos -> player.level().getBlockState(pos).getBlock() instanceof BlockCage && player.distanceToSqr(Vec3.atCenterOf(pos)) <= MAX_LOCK_ON_RANGE * MAX_LOCK_ON_RANGE).orElse(null);
 	}
 
 	private static void aimAt(RaycraftProjectile shot, Vec3 aim, int curve) {
@@ -139,8 +134,7 @@ public class ServerPayloadHandler {
 		context.enqueueWork(() -> {
 			ServerPlayer player = (ServerPlayer) context.player();
 			ResourceKey<Level> level = ResourceKey.create(Registries.DIMENSION, Identifier.parse(payload.level()));
-			if (player.isCreative() && player.level().getEntity(payload.portalId()) instanceof EntitySpiralPortal portal
-					&& player.distanceToSqr(portal) < 64 * 64 && player.level().getServer().getLevel(level) != null) {
+			if (player.isCreative() && player.level().getEntity(payload.portalId()) instanceof EntitySpiralPortal portal && player.distanceToSqr(portal) < 64 * 64 && player.level().getServer().getLevel(level) != null) {
 				portal.setDestination(new Vec3(payload.x(), payload.y(), payload.z()), level);
 				portal.setRed(payload.red());
 				resizeKeepingCentre(portal, payload.size());
@@ -148,10 +142,20 @@ public class ServerPayloadHandler {
 		});
 	}
 
-	/** The portal's position is the bottom of its box: move it so the swirl keeps its centre when it grows or shrinks. */
+	/**
+	 * The portal's position is the bottom of its box: move it so the swirl keeps its centre when it grows or shrinks.
+	 */
 	private static void resizeKeepingCentre(EntitySpiralPortal portal, float size) {
 		Vec3 centre = portal.getBoundingBox().getCenter();
 		portal.setSize(size);
 		portal.setPos(centre.x, centre.y - portal.getBbHeight() / 2.0, centre.z);
+	}
+
+	public static void handleSetShellRoll(final SetShellRollPayload payload, final IPayloadContext context) {
+		context.enqueueWork(() -> {
+			if (context.player().level().getEntity(payload.shellId()) instanceof EntityFlyingShell shell && shell.getControllingPassenger() == context.player() && Float.isFinite(payload.roll())) {
+				shell.setRollFromRider(payload.roll());
+			}
+		});
 	}
 }

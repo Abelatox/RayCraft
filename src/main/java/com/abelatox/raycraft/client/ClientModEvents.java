@@ -8,6 +8,7 @@ import com.abelatox.raycraft.client.render.RaycraftAvatarRenderData;
 import com.abelatox.raycraft.client.render.RaycraftRenderData;
 import com.abelatox.raycraft.entities.EntityFlyingShell;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import com.abelatox.raycraft.entities.EntityWalkingShell;
 import com.abelatox.raycraft.entities.ModEntities;
 import com.abelatox.raycraft.entities.render.*;
@@ -32,6 +33,9 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import com.abelatox.raycraft.client.particle.PortalStarParticle;
+import com.abelatox.raycraft.particles.ModParticles;
 
 @EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
 public class ClientModEvents {
@@ -65,15 +69,20 @@ public class ClientModEvents {
 				boolean ridingShell = player.getVehicle() instanceof EntityWalkingShell;
 				EntityFlyingShell flyingShell = player.getVehicle() instanceof EntityFlyingShell shell ? shell : null;
 				Quaternionf shellRotation = flyingShell != null ? flyingShell.getRiderRotation(renderState.partialTick) : null;
-				float rollPivot = flyingShell != null ? player.getEyeHeight() : 0F;
+				Vector3f shellOffset = flyingShell != null ? flyingShell.getRiderRenderOffset(player, renderState.partialTick) : null;
 				int lightCoords = LightCoordsUtil.getLightCoords(player.level(), player.blockPosition());
 
 				float armRotation = caps.getIsCharging() ? -renderState.ageInTicks * ARM_SPIN_PER_TICK : 0F;
 				float hairRotation = caps.getIsGliding() ? -renderState.ageInTicks * HAIR_SPIN_PER_TICK : 0F;
 
-				renderState.setRenderData(RaycraftRenderData.AVATAR_DATA, new RaycraftAvatarRenderData(caps.getPlayerType(), holdingBarrel, holdingPlum, ridingShell, shellRotation, rollPivot, caps.getIsCharging(), caps.getIsGliding(), armRotation, hairRotation, caps.getShotLevel(), lightCoords));
+				renderState.setRenderData(RaycraftRenderData.AVATAR_DATA, new RaycraftAvatarRenderData(caps.getPlayerType(), holdingBarrel, holdingPlum, ridingShell, shellRotation, shellOffset, caps.getIsCharging(), caps.getIsGliding(), armRotation, hairRotation, caps.getShotLevel(), lightCoords));
 			}
 		});
+	}
+
+	@SubscribeEvent
+	public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+		event.registerSpriteSet(ModParticles.PORTAL_STAR.get(), PortalStarParticle.Provider::new);
 	}
 
 	@SubscribeEvent

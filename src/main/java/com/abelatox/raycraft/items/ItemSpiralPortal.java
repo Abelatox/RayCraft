@@ -28,10 +28,8 @@ public class ItemSpiralPortal extends BaseItem {
 		return InteractionResult.SUCCESS;
 	}
 
-	/** Looking further up or down than this lays the portal flat. */
 	private static final float FLAT_PITCH = 50.0F;
 
-	/** Centred on the point aimed at: standing on a floor, hanging from a ceiling, or centred on a wall. */
 	private static Vec3 placement(UseOnContext context, float height) {
 		Vec3 hit = context.getClickLocation();
 		return switch (context.getClickedFace()) {

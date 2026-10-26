@@ -1,5 +1,6 @@
 package com.abelatox.raycraft;
 
+import com.abelatox.raycraft.particles.ModParticles;
 import com.abelatox.raycraft.blocks.ModBlocks;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.ModEntities;
@@ -27,6 +28,7 @@ public class MainRayCraft {
 		ModSounds.SOUNDS.register(modEventBus);
 		ModCreativeTabs.TABS.register(modEventBus);
 		ModEntities.ENTITY_TYPES.register(modEventBus);
+		ModParticles.PARTICLE_TYPES.register(modEventBus);
 		ModCapabilities.ATTACHMENT_TYPES.register(modEventBus);
 
 		NeoForge.EVENT_BUS.register(new PlayerEventsHandler());

@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
 
-/** A spinning spiral standing upright, facing the way it was placed; a smaller, faster copy on top gives it depth. */
 public class RenderSpiralPortal extends EntityRenderer<EntitySpiralPortal, RenderSpiralPortal.PortalRenderState> {
 
 	private static final RenderType BLUE = RenderTypes.entityTranslucent(Identifier.fromNamespaceAndPath(Reference.MODID, "textures/models/spiral_portal.png"));

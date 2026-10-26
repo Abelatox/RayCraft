@@ -25,7 +25,6 @@ public class ModelRayman extends Model<AvatarRenderState> implements RaycraftCha
 	public final ModelPart leftLeg;
 	public final ModelPart leftEar1;
 	public final ModelPart rightEar1;
-	/** How far each lock of hair rises from the horizontal: the helicopter is a V. */
 	private static final float HELI_V_ANGLE = 0.6F;
 
 	public final ModelPart heli1;

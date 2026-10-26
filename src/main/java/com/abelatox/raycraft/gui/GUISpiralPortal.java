@@ -104,9 +104,6 @@ public class GUISpiralPortal extends Screen {
 		return false;
 	}
 
-	/**
-	 * Half-block steps between the portal's smallest and largest size.
-	 */
 	private class SizeSlider extends AbstractSliderButton {
 
 		SizeSlider(int x, int y) {

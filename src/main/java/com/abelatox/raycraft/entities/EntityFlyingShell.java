@@ -4,7 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerPlayer;
+import com.abelatox.raycraft.network.payloads.SetShellRollPayload;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -27,7 +28,7 @@ public class EntityFlyingShell extends EntityWalkingShell {
 	private static final int TAKEOFF_TICKS = 10;
 
 	/**
-	 * Degrees, positive rolling left. The rider's client and the server work it out from the keys; other clients read the synced value.
+	 * Degrees, positive rolling left.
 	 */
 	private float roll;
 	private float rollO;
@@ -52,12 +53,12 @@ public class EntityFlyingShell extends EntityWalkingShell {
 		setNoGravity(isFlying());
 		flyingTicks = isFlying() ? flyingTicks + 1 : 0;
 		rollO = roll;
-		if (getControllingPassenger() instanceof Player rider && (!level().isClientSide() || rider.isLocalPlayer())) {
+		if (getControllingPassenger() instanceof Player rider && rider.isLocalPlayer()) {
 			if (isFlying()) {
-				roll += strafeInput(rider) * ROLL_SPEED;
+				roll += (int) Math.signum(rider.xxa) * ROLL_SPEED;
 			}
-			if (!level().isClientSide()) {
-				getEntityData().set(ROLL, roll);
+			if (roll != rollO) {
+				ClientPacketDistributor.sendToServer(new SetShellRollPayload(getId(), roll));
 			}
 		} else if (level().isClientSide()) {
 			roll = getEntityData().get(ROLL);
@@ -65,15 +66,10 @@ public class EntityFlyingShell extends EntityWalkingShell {
 		super.tick();
 	}
 
-	/**
-	 * 1 holding left, -1 holding right, 0 neither.
-	 */
-	private static int strafeInput(Player rider) {
-		if (rider instanceof ServerPlayer serverPlayer) {
-			boolean left = serverPlayer.getLastClientInput().left();
-			return left == serverPlayer.getLastClientInput().right() ? 0 : left ? 1 : -1;
-		}
-		return (int) Math.signum(rider.xxa);
+	/** The rider's client owns the roll; the server shares it with everyone else. */
+	public void setRollFromRider(float roll) {
+		this.roll = roll;
+		getEntityData().set(ROLL, roll);
 	}
 
 	public float getRollAngle(float partialTick) {
@@ -90,17 +86,27 @@ public class EntityFlyingShell extends EntityWalkingShell {
 		return new Quaternionf().rotateY(facing).rotateX(-pitch * Mth.DEG_TO_RAD).rotateZ(getRollAngle(partialTick) * Mth.DEG_TO_RAD).rotateY(-facing);
 	}
 
-	/**
-	 * The rider turns with the shell around its axis: their eyes (so the camera) go round it, and the
-	 * renderer rolls the model around the eyes by the same angle.
-	 */
 	@Override
 	protected void positionRider(Entity passenger, MoveFunction moveFunction) {
 		Vec3 feet = getPassengerRidingPosition(passenger).subtract(passenger.getVehicleAttachmentPoint(this));
 		Vec3 axis = position().add(0.0, getBbHeight() * 0.5, 0.0);
 		Vector3f eye = feet.add(0.0, passenger.getEyeHeight(), 0.0).subtract(axis).toVector3f();
-		getRiderRotation(1.0F).transform(eye);
+		float facing = (180.0F - getYRot()) * Mth.DEG_TO_RAD;
+		new Quaternionf().rotateY(facing).rotateZ(roll * Mth.DEG_TO_RAD).rotateY(-facing).transform(eye);
 		moveFunction.accept(passenger, axis.x + eye.x, axis.y + eye.y - passenger.getEyeHeight(), axis.z + eye.z);
+	}
+
+	/**
+	 * Where the renderer must move the rider's model (from its feet) before turning it by {@link #getRiderRotation}, so
+	 * it sits on the shell however it's pitched. The rider itself only goes round with the roll: following the pitch too
+	 * would swing the camera about with every mouse movement.
+	 */
+	public Vector3f getRiderRenderOffset(Entity rider, float partialTick) {
+		Vec3 shell = getPosition(partialTick);
+		Vec3 axis = shell.add(0.0, getBbHeight() * 0.5, 0.0);
+		Vec3 seat = shell.add(getPassengerAttachmentPoint(rider, getDimensions(getPose()), 1.0F)).subtract(rider.getVehicleAttachmentPoint(this));
+		Vector3f offset = getRiderRotation(partialTick).transform(seat.subtract(axis).toVector3f());
+		return offset.add(axis.subtract(rider.getPosition(partialTick)).toVector3f());
 	}
 
 	@Override
@@ -129,7 +135,8 @@ public class EntityFlyingShell extends EntityWalkingShell {
 	protected void tickRidden(Player controller, Vec3 riddenInput) {
 		super.tickRidden(controller, riddenInput);
 		if (isFlying()) {
-			setXRot(controller.getXRot());
+			// Not setXRot, which clamps to +-90: the shell loops with its rider.
+			this.xRot = controller.getXRot();
 		}
 	}
 
@@ -142,6 +149,20 @@ public class EntityFlyingShell extends EntityWalkingShell {
 		Vec3 front = center.add(Vec3.directionFromRotation(getXRot(), getYRot()).scale(getBbWidth() / 2 + 0.3));
 		boolean touchingBlock = flyingTicks > TAKEOFF_TICKS && !level().noBlockCollision(this, getBoundingBox().inflate(0.1));
 		return touchingBlock || isSolid(BlockPos.containing(front)) || (getState() == RUNAWAY && verticalCollision);
+	}
+
+	@Override
+	public void onPassengerTurned(Entity passenger) {
+		super.onPassengerTurned(passenger);
+		turnHook.accept(passenger);
+	}
+
+	private static java.util.function.Consumer<Entity> turnHook = passenger -> {
+	};
+
+	/** The client lifts the vertical look limit through this, run right after vanilla turns (and clamps) the rider. */
+	public static void setTurnHook(java.util.function.Consumer<Entity> hook) {
+		turnHook = hook;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.abelatox.raycraft.entities;
 
+import com.abelatox.raycraft.particles.ModParticles;
+
 import com.abelatox.raycraft.network.payloads.OpenPortalConfigPayload;
 
 import net.minecraft.core.registries.Registries;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
@@ -39,6 +42,11 @@ public class EntitySpiralPortal extends Entity {
 	public static final float MAX_SIZE = 10.0F;
 	private static final float DEFAULT_SIZE = 2.0F;
 	private static final float FLAT_HEIGHT = 0.5F;
+	private static final double STAR_RANGE = 2.0;
+	private static final int STARS_PER_TICK = 5;
+	private static final double BODY_MARGIN = 0.15;
+	private static final double STAR_TRAVEL_TICKS = 10.0;
+
 	private Vec3 destination;
 	private ResourceKey<Level> destinationLevel = Level.OVERWORLD;
 
@@ -60,7 +68,6 @@ public class EntitySpiralPortal extends Entity {
 		getEntityData().set(RED, red);
 	}
 
-	/** Lying horizontally (on a floor or ceiling) instead of standing upright. */
 	public boolean isFlat() {
 		return getEntityData().get(FLAT);
 	}
@@ -94,6 +101,9 @@ public class EntitySpiralPortal extends Entity {
 	@Override
 	public void tick() {
 		super.tick();
+		if (level().isClientSide()) {
+			pullStars();
+		}
 		if (destination == null || !(level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
@@ -107,6 +117,19 @@ public class EntitySpiralPortal extends Entity {
 			if (arrived != null) {
 				arrived.setPortalCooldown();
 				target.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1.0F, 1.2F);
+			}
+		}
+	}
+
+	private void pullStars() {
+		Vec3 centre = getBoundingBox().getCenter();
+		for (Player player : level().getEntitiesOfClass(Player.class, getBoundingBox().inflate(STAR_RANGE), p -> !p.isSpectator())) {
+			AABB body = player.getBoundingBox().inflate(BODY_MARGIN);
+			for (int i = 0; i < STARS_PER_TICK; i++) {
+				Vec3 from = new Vec3(Mth.lerp(random.nextDouble(), body.minX, body.maxX), Mth.lerp(random.nextDouble(), body.minY, body.maxY),
+						Mth.lerp(random.nextDouble(), body.minZ, body.maxZ));
+				Vec3 velocity = centre.subtract(from).scale(1.0 / STAR_TRAVEL_TICKS);
+				level().addParticle(ModParticles.PORTAL_STAR.get(), from.x, from.y, from.z, velocity.x, velocity.y, velocity.z);
 			}
 		}
 	}

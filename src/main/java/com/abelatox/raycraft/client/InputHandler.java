@@ -16,6 +16,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.component.SwingAnimation;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -81,7 +82,8 @@ public class InputHandler {
 				return;
 			}
 
-			if (Utils.canShoot(props.getPlayerType()) && player.getMainHandItem().isEmpty()) {
+			boolean mining = player.isShiftKeyDown() && mc.hitResult != null && mc.hitResult.getType() == HitResult.Type.BLOCK;
+			if (Utils.canShoot(props.getPlayerType()) && player.getMainHandItem().isEmpty() && !mining) {
 				time = System.currentTimeMillis();
 				shouldShoot = true;
 				props.setCharging(true);
