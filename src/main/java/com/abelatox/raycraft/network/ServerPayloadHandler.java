@@ -5,6 +5,11 @@ import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.EntityLum;
 import com.abelatox.raycraft.entities.EntityPlum;
+import com.abelatox.raycraft.entities.EntitySpiralPortal;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import com.abelatox.raycraft.entities.RaycraftProjectile;
 import com.abelatox.raycraft.events.BarrelFlight;
 import com.abelatox.raycraft.events.GrappleServer;
@@ -128,5 +133,25 @@ public class ServerPayloadHandler {
 			ServerPlayer player = (ServerPlayer) context.player();
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.PIRATE_SHOT_1.get(), SoundSource.PLAYERS, 1F, 1F);
 		});
+	}
+
+	public static void handleSetPortalDestination(final SetPortalDestinationPayload payload, final IPayloadContext context) {
+		context.enqueueWork(() -> {
+			ServerPlayer player = (ServerPlayer) context.player();
+			ResourceKey<Level> level = ResourceKey.create(Registries.DIMENSION, Identifier.parse(payload.level()));
+			if (player.isCreative() && player.level().getEntity(payload.portalId()) instanceof EntitySpiralPortal portal
+					&& player.distanceToSqr(portal) < 64 * 64 && player.level().getServer().getLevel(level) != null) {
+				portal.setDestination(new Vec3(payload.x(), payload.y(), payload.z()), level);
+				portal.setRed(payload.red());
+				resizeKeepingCentre(portal, payload.size());
+			}
+		});
+	}
+
+	/** The portal's position is the bottom of its box: move it so the swirl keeps its centre when it grows or shrinks. */
+	private static void resizeKeepingCentre(EntitySpiralPortal portal, float size) {
+		Vec3 centre = portal.getBoundingBox().getCenter();
+		portal.setSize(size);
+		portal.setPos(centre.x, centre.y - portal.getBbHeight() / 2.0, centre.z);
 	}
 }

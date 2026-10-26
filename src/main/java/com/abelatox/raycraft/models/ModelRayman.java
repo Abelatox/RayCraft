@@ -25,6 +25,9 @@ public class ModelRayman extends Model<AvatarRenderState> implements RaycraftCha
 	public final ModelPart leftLeg;
 	public final ModelPart leftEar1;
 	public final ModelPart rightEar1;
+	/** How far each lock of hair rises from the horizontal: the helicopter is a V. */
+	private static final float HELI_V_ANGLE = 0.6F;
+
 	public final ModelPart heli1;
 
 	public static final int GOLD_FIST_LEVEL = 3;
@@ -83,13 +86,15 @@ public class ModelRayman extends Model<AvatarRenderState> implements RaycraftCha
 				CubeListBuilder.create().texOffs(40, 0).addBox(0.0F, -3.0F, 0.0F, 2, 4, 1),
 				PartPose.offsetAndRotation(0.0F, 0.0F, -0.3F, 0.6108652381980153F, 0.0F, 0.0F));
 
-		PartDefinition heli1 = head.addOrReplaceChild("heli1",
-				CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 0.0F, -1.0F, 2, 2, 2),
-				PartPose.offset(0.0F, -10.0F, 0.0F));
+		PartDefinition heli1 = head.addOrReplaceChild("heli1", CubeListBuilder.create(), PartPose.offset(0.0F, -8.0F, 0.0F));
 
-		heli1.addOrReplaceChild("heli2",
-				CubeListBuilder.create().texOffs(17, 39).addBox(-4.0F, 0.0F, -1.0F, 8, 2, 2),
-				PartPose.offset(0.0F, -1.0F, 0.0F));
+		heli1.addOrReplaceChild("heli_left",
+				CubeListBuilder.create().texOffs(17, 39).addBox(0.0F, -2.0F, -1.0F, 5, 2, 2),
+				PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -HELI_V_ANGLE));
+
+		heli1.addOrReplaceChild("heli_right",
+				CubeListBuilder.create().texOffs(17, 39).mirror().addBox(-5.0F, -2.0F, -1.0F, 5, 2, 2),
+				PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, HELI_V_ANGLE));
 
 		head.addOrReplaceChild("nose",
 				CubeListBuilder.create().texOffs(18, 32).addBox(0.0F, 0.0F, 0.0F, 5, 3, 3),

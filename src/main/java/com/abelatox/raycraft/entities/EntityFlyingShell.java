@@ -12,6 +12,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class EntityFlyingShell extends EntityWalkingShell {
@@ -80,6 +81,16 @@ public class EntityFlyingShell extends EntityWalkingShell {
 	}
 
 	/**
+	 * The shell's own pitch and roll as a world rotation around its middle, the same the renderer applies to its
+	 * model; the rider is turned by it so they stay seated on it.
+	 */
+	public Quaternionf getRiderRotation(float partialTick) {
+		float facing = (180.0F - getYRot(partialTick)) * Mth.DEG_TO_RAD;
+		float pitch = isFlying() ? getXRot(partialTick) : 0.0F;
+		return new Quaternionf().rotateY(facing).rotateX(-pitch * Mth.DEG_TO_RAD).rotateZ(getRollAngle(partialTick) * Mth.DEG_TO_RAD).rotateY(-facing);
+	}
+
+	/**
 	 * The rider turns with the shell around its axis: their eyes (so the camera) go round it, and the
 	 * renderer rolls the model around the eyes by the same angle.
 	 */
@@ -88,8 +99,7 @@ public class EntityFlyingShell extends EntityWalkingShell {
 		Vec3 feet = getPassengerRidingPosition(passenger).subtract(passenger.getVehicleAttachmentPoint(this));
 		Vec3 axis = position().add(0.0, getBbHeight() * 0.5, 0.0);
 		Vector3f eye = feet.add(0.0, passenger.getEyeHeight(), 0.0).subtract(axis).toVector3f();
-		float yaw = getYRot() * Mth.DEG_TO_RAD;
-		eye.rotateAxis(roll * Mth.DEG_TO_RAD, Mth.sin(yaw), 0.0F, -Mth.cos(yaw));
+		getRiderRotation(1.0F).transform(eye);
 		moveFunction.accept(passenger, axis.x + eye.x, axis.y + eye.y - passenger.getEyeHeight(), axis.z + eye.z);
 	}
 

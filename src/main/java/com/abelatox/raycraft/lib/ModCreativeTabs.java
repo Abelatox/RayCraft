@@ -28,6 +28,7 @@ public class ModCreativeTabs {
 						output.accept(ModItems.PLUM.get());
 						output.accept(ModItems.WALKING_SHELL_SPAWN_EGG.get());
 						output.accept(ModItems.FLYING_SHELL_SPAWN_EGG.get());
+						output.accept(ModItems.SPIRAL_PORTAL.get());
 					})
 					.build());
 }

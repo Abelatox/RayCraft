@@ -30,4 +30,6 @@ public class ModEntities {
 	public static final Supplier<EntityType<EntityWalkingShell>> WALKING_SHELL = ENTITY_TYPES.registerEntityType("walking_shell", EntityWalkingShell::new, MobCategory.CREATURE, builder -> builder.sized(0.6F, 1.0F).fireImmune().clientTrackingRange(10));
 
 	public static final Supplier<EntityType<EntityFlyingShell>> FLYING_SHELL = ENTITY_TYPES.registerEntityType("flying_shell", EntityFlyingShell::new, MobCategory.CREATURE, builder -> builder.sized(0.6F, 1.0F).fireImmune().clientTrackingRange(10));
+
+	public static final Supplier<EntityType<EntitySpiralPortal>> SPIRAL_PORTAL = ENTITY_TYPES.registerEntityType("spiral_portal", EntitySpiralPortal::new, MobCategory.MISC, builder -> builder.sized(1.5F, 2.0F).fireImmune().clientTrackingRange(10));
 }

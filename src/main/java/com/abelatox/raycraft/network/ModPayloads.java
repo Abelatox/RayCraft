@@ -22,5 +22,7 @@ public class ModPayloads {
 		registrar.playToClient(StartGrapplePayload.TYPE, StartGrapplePayload.STREAM_CODEC, ClientboundPayloadHandler::handleStartGrapple);
 		registrar.playToServer(ShootPayload.TYPE, ShootPayload.STREAM_CODEC, ServerPayloadHandler::handleShoot);
 		registrar.playToServer(PlaySoundPayload.TYPE, PlaySoundPayload.STREAM_CODEC, ServerPayloadHandler::handlePlaySound);
+		registrar.playToServer(SetPortalDestinationPayload.TYPE, SetPortalDestinationPayload.STREAM_CODEC, ServerPayloadHandler::handleSetPortalDestination);
+		registrar.playToClient(OpenPortalConfigPayload.TYPE, OpenPortalConfigPayload.STREAM_CODEC, ClientboundPayloadHandler::handleOpenPortalConfig);
 	}
 }

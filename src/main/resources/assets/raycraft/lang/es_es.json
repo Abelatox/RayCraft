@@ -31,5 +31,14 @@
     "entity.raycraft.walking_shell": "Obús Explosivo",
     "item.raycraft.walking_shell_spawn_egg": "Huevo de aparición de Obús Explosivo",
     "entity.raycraft.flying_shell": "Obús Volador",
-    "item.raycraft.flying_shell_spawn_egg": "Huevo de aparición de Obús Volador"
+    "item.raycraft.flying_shell_spawn_egg": "Huevo de aparición de Obús Volador",
+    "entity.raycraft.spiral_portal": "Portal espiral",
+    "item.raycraft.spiral_portal": "Portal espiral",
+    "gui.raycraft.spiral_portal": "Destino del portal",
+    "gui.raycraft.spiral_portal.dimension": "Dimensión: %s",
+    "gui.raycraft.spiral_portal.here": "Usar mi posición",
+    "gui.raycraft.spiral_portal.color": "Color: %s",
+    "gui.raycraft.spiral_portal.blue": "Azul",
+    "gui.raycraft.spiral_portal.red": "Rojo",
+    "gui.raycraft.spiral_portal.size": "Tamaño: %s bloques"
 }

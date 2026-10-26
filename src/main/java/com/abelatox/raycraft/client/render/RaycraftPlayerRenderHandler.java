@@ -103,12 +103,11 @@ public class RaycraftPlayerRenderHandler {
 	 * The rider turns with a rolling flying shell, around the shell's own axis.
 	 */
 	private static void applyShellRoll(PoseStack poseStack, RaycraftAvatarRenderData data) {
-		if (data.shellRoll() == 0.0F) {
+		if (data.shellRotation() == null) {
 			return;
 		}
-		float yaw = data.rollYaw() * Mth.DEG_TO_RAD;
 		poseStack.translate(0.0F, data.rollPivot(), 0.0F);
-		poseStack.rotate(new Quaternionf().rotateAxis(data.shellRoll() * Mth.DEG_TO_RAD, Mth.sin(yaw), 0.0F, -Mth.cos(yaw)));
+		poseStack.rotate(data.shellRotation());
 		poseStack.translate(0.0F, -data.rollPivot(), 0.0F);
 	}
 
@@ -119,12 +118,11 @@ public class RaycraftPlayerRenderHandler {
 	 * direction, so looking at the ground while rolled on a side turns the head sideways instead of nodding.
 	 */
 	private static void alignHeadWithShellRoll(AvatarRenderState state, RaycraftAvatarRenderData data) {
-		if (data.shellRoll() == 0.0F) {
+		if (data.shellRotation() == null) {
 			return;
 		}
-		float yaw = data.rollYaw() * Mth.DEG_TO_RAD;
 		Vector3f look = Vec3.directionFromRotation(state.xRot, state.bodyRot + state.yRot).toVector3f();
-		look.rotateAxis(-data.shellRoll() * Mth.DEG_TO_RAD, Mth.sin(yaw), 0.0F, -Mth.cos(yaw));
+		new Quaternionf(data.shellRotation()).conjugate().transform(look);
 		float headYaw = Mth.wrapDegrees((float) (Mth.atan2(-look.x, look.z) * Mth.RAD_TO_DEG) - state.bodyRot);
 		state.yRot = Mth.clamp(headYaw, -MAX_HEAD_YAW, MAX_HEAD_YAW);
 		state.xRot = (float) (Math.asin(Mth.clamp(-look.y, -1.0F, 1.0F)) * Mth.RAD_TO_DEG);
