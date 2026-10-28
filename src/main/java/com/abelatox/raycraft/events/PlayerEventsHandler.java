@@ -5,6 +5,7 @@ import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.entities.EntityBarrel;
 import com.abelatox.raycraft.entities.EntityPlum;
+import com.abelatox.raycraft.entities.EntityWindCurrent;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Utils;
 import com.abelatox.raycraft.sounds.ModSounds;
@@ -13,6 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
@@ -27,6 +29,7 @@ public class PlayerEventsHandler {
 	private static final double STILL_SQR = 1.0E-4;
 	private static final double PLUM_REACH = 0.5;
 	private static final double PLUM_JUMP_THROW_SPEED = 0.9;
+	private static final double WIND_LIFT = 0.35;
 
 	@SubscribeEvent
 	public void updatePlayerEvent(EntityTickEvent.Pre event) {
@@ -34,7 +37,8 @@ public class PlayerEventsHandler {
 			IPlayerCapabilities props = ModCapabilities.get(player);
 			if (props != null) {
 				if (props.getIsGliding()) {
-					player.setDeltaMovement(player.getDeltaMovement().x, -0.1, player.getDeltaMovement().z);
+					double fall = isInWindCurrent(player) ? WIND_LIFT : -0.1;
+					player.setDeltaMovement(player.getDeltaMovement().x, fall, player.getDeltaMovement().z);
 					player.resetFallDistance();
 				}
 
@@ -75,6 +79,11 @@ public class PlayerEventsHandler {
 				}
 			}
 		}
+	}
+
+	private static boolean isInWindCurrent(Player player) {
+		AABB search = player.getBoundingBox().inflate(EntityWindCurrent.MAX_RADIUS, 0.0, EntityWindCurrent.MAX_RADIUS).expandTowards(0.0, -EntityWindCurrent.MAX_HEIGHT, 0.0);
+		return !player.level().getEntitiesOfClass(EntityWindCurrent.class, search, wind -> wind.catches(player)).isEmpty();
 	}
 
 	@SubscribeEvent

@@ -4,7 +4,6 @@ import com.abelatox.raycraft.entities.EntitySpiralPortal;
 import com.abelatox.raycraft.network.payloads.OpenPortalConfigPayload;
 import com.abelatox.raycraft.network.payloads.SetPortalDestinationPayload;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,6 +24,10 @@ public class GUISpiralPortal extends Screen {
 	private EditBox y;
 	private EditBox z;
 	private Button levelButton;
+
+	public static void open(OpenPortalConfigPayload config) {
+		Minecraft.getInstance().gui.setScreen(new GUISpiralPortal(config));
+	}
 
 	public GUISpiralPortal(OpenPortalConfigPayload config) {
 		super(Component.translatable("gui.raycraft.spiral_portal"));
@@ -60,7 +63,7 @@ public class GUISpiralPortal extends Screen {
 			red = !red;
 			b.setMessage(colorLabel());
 		}).bounds(left, top + 75, 200, 20).build());
-		addRenderableWidget(new SizeSlider(left, top + 100));
+		addRenderableWidget(new ValueSlider(left, top + 100, EntitySpiralPortal.MIN_SIZE, EntitySpiralPortal.MAX_SIZE, 0.5F, size, "gui.raycraft.spiral_portal.size", value -> size = value));
 		addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> save()).bounds(left, top + 125, 200, 20).build());
 	}
 
@@ -102,24 +105,5 @@ public class GUISpiralPortal extends Screen {
 	@Override
 	public boolean isPauseScreen() {
 		return false;
-	}
-
-	private class SizeSlider extends AbstractSliderButton {
-
-		SizeSlider(int x, int y) {
-			super(x, y, 200, 20, Component.empty(), (size - EntitySpiralPortal.MIN_SIZE) / (EntitySpiralPortal.MAX_SIZE - EntitySpiralPortal.MIN_SIZE));
-			updateMessage();
-		}
-
-		@Override
-		protected void updateMessage() {
-			setMessage(Component.translatable("gui.raycraft.spiral_portal.size", String.format(java.util.Locale.ROOT, "%.1f", size)));
-		}
-
-		@Override
-		protected void applyValue() {
-			float raw = EntitySpiralPortal.MIN_SIZE + (float) value * (EntitySpiralPortal.MAX_SIZE - EntitySpiralPortal.MIN_SIZE);
-			size = Math.round(raw * 2.0F) / 2.0F;
-		}
 	}
 }

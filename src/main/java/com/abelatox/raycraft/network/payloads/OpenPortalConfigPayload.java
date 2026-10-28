@@ -1,12 +1,13 @@
 package com.abelatox.raycraft.network.payloads;
 
+import com.abelatox.raycraft.gui.GUISpiralPortal;
 import com.abelatox.raycraft.lib.Reference;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
 
@@ -25,6 +26,10 @@ public record OpenPortalConfigPayload(int portalId, double x, double y, double z
 			ByteBufCodecs.FLOAT, OpenPortalConfigPayload::size,
 			OpenPortalConfigPayload::new
 	);
+
+	public void handle(IPayloadContext context) {
+		context.enqueueWork(() -> GUISpiralPortal.open(this));
+	}
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {

@@ -3,18 +3,18 @@ package com.abelatox.raycraft.client;
 import com.abelatox.raycraft.capabilities.IPlayerCapabilities;
 import com.abelatox.raycraft.capabilities.ModCapabilities;
 import com.abelatox.raycraft.client.gui.RaycraftHealthOverlay;
+import com.abelatox.raycraft.client.particle.PortalStarParticle;
 import com.abelatox.raycraft.client.render.LockOnRenderer;
 import com.abelatox.raycraft.client.render.RaycraftAvatarRenderData;
 import com.abelatox.raycraft.client.render.RaycraftRenderData;
 import com.abelatox.raycraft.entities.EntityFlyingShell;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import com.abelatox.raycraft.entities.EntityWalkingShell;
 import com.abelatox.raycraft.entities.ModEntities;
 import com.abelatox.raycraft.entities.render.*;
 import com.abelatox.raycraft.items.ModItems;
 import com.abelatox.raycraft.lib.Reference;
 import com.abelatox.raycraft.models.ModModels;
+import com.abelatox.raycraft.particles.ModParticles;
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
@@ -29,13 +29,13 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import com.abelatox.raycraft.client.particle.PortalStarParticle;
-import com.abelatox.raycraft.particles.ModParticles;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
 public class ClientModEvents {
@@ -94,6 +94,7 @@ public class ClientModEvents {
 		event.registerEntityRenderer(ModEntities.PIRATE_SHOT_2.get(), RenderRaycraftProjectile::pirateShot2);
 		event.registerEntityRenderer(ModEntities.LUM.get(), RenderEntityLum::new);
 		event.registerEntityRenderer(ModEntities.SPIRAL_PORTAL.get(), RenderSpiralPortal::new);
+		event.registerEntityRenderer(ModEntities.WIND_CURRENT.get(), RenderWindCurrent::new);
 		event.registerEntityRenderer(ModEntities.ROBO_PIRATE.get(), context -> new RenderRoboPirate(context, RenderRoboPirate.RED_TEXTURE));
 		event.registerEntityRenderer(ModEntities.ROBO_PIRATE_GREEN.get(), context -> new RenderRoboPirate(context, RenderRoboPirate.GREEN_TEXTURE));
 		event.registerEntityRenderer(ModEntities.PLUM.get(), RenderEntityPlum::new);

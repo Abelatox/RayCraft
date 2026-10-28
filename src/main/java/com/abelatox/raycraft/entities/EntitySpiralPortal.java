@@ -1,9 +1,7 @@
 package com.abelatox.raycraft.entities;
 
-import com.abelatox.raycraft.particles.ModParticles;
-
 import com.abelatox.raycraft.network.payloads.OpenPortalConfigPayload;
-
+import com.abelatox.raycraft.particles.ModParticles;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -14,22 +12,18 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
@@ -76,13 +70,18 @@ public class EntitySpiralPortal extends Entity {
 		getEntityData().set(FLAT, flat);
 	}
 
-	/** Blocks across the swirl. */
 	public float getSize() {
 		return getEntityData().get(SIZE);
 	}
 
 	public void setSize(float size) {
 		getEntityData().set(SIZE, Mth.clamp(size, MIN_SIZE, MAX_SIZE));
+	}
+
+	public void resizeKeepingCentre(float size) {
+		Vec3 centre = getBoundingBox().getCenter();
+		setSize(size);
+		setPos(centre.x, centre.y - getBbHeight() / 2.0, centre.z);
 	}
 
 	@Override
@@ -164,6 +163,11 @@ public class EntitySpiralPortal extends Entity {
 	@Override
 	public boolean isPickable() {
 		return true;
+	}
+
+	@Override
+	public boolean canBeHitByProjectile() {
+		return false;
 	}
 
 	@Override

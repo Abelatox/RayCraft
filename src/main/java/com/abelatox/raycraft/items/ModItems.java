@@ -33,4 +33,6 @@ public class ModItems {
 	public static final DeferredItem<SpawnEggItem> FLYING_SHELL_SPAWN_EGG = ITEMS.registerItem("flying_shell_spawn_egg", SpawnEggItem::new, props -> props.spawnEgg(ModEntities.FLYING_SHELL.get()));
 
 	public static final DeferredItem<ItemSpiralPortal> SPIRAL_PORTAL = ITEMS.registerItem("spiral_portal", ItemSpiralPortal::new, props -> props.stacksTo(1));
+
+	public static final DeferredItem<ItemWindCurrent> WIND_CURRENT = ITEMS.registerItem("wind_current", ItemWindCurrent::new, props -> props.stacksTo(1));
 }
